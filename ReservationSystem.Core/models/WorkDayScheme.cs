@@ -8,8 +8,8 @@ namespace ReservationSystem.Core.models
 {
     public class WorkDayScheme
     {
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public int StartHour { get; set; }
+        public int EndHour { get; set; }
 
     }
 }

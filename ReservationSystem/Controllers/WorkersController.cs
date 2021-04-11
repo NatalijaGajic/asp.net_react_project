@@ -22,7 +22,7 @@ namespace ReservationSystem.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_accountsServices.GetClientAccounts());
+            return Ok(_accountsServices.GetWorkerAccounts());
         }
 
         [HttpGet("{id}", Name = "GetWorker")]

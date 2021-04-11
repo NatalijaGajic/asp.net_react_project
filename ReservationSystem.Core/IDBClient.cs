@@ -21,7 +21,5 @@ namespace ReservationSystem.Core
         IMongoCollection<SystemRole> GetSytemRolesCollection();
         IMongoCollection<Payment> GetPaymentsCollection();
 
-
-
     }
 }

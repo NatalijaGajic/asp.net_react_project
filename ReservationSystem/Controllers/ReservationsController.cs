@@ -13,8 +13,8 @@ namespace ReservationSystem.Controllers
     [ApiController]
     public class ReservationsController : ControllerBase
     {
-        private readonly IReservationService _reservationService;
-        public ReservationsController(IReservationService reservationService)
+        private readonly IReservationsService _reservationService;
+        public ReservationsController(IReservationsService reservationService)
         {
             _reservationService = reservationService;
         }

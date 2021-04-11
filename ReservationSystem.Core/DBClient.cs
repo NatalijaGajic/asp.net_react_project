@@ -28,11 +28,11 @@ namespace ReservationSystem.Core
             _games = database.GetCollection<Game>(reservationSystemDbConfing.Value.Games_Collection_Name);
             _workers = database.GetCollection<WorkerAccount>(reservationSystemDbConfing.Value.Workers_Collection_Name);
             _clients = database.GetCollection<ClientAccount>(reservationSystemDbConfing.Value.Clients_Collection_Name);
-            _workDays = database.GetCollection<WorkDay>(reservationSystemDbConfing.Value.WorkDays_Collection_Name);
+            _workDays = database.GetCollection<WorkDay>(reservationSystemDbConfing.Value.Work_Days_Collection_Name);
             _reservations = database.GetCollection<Reservation>(reservationSystemDbConfing.Value.Reservations_Collection_Name);
-            _intervalsForWorkDays = database.GetCollection<IntervalsForWorkDay>(reservationSystemDbConfing.Value.IntervalsForWorkDays_Collection_Name);
+            _intervalsForWorkDays = database.GetCollection<IntervalsForWorkDay>(reservationSystemDbConfing.Value.Intervals_For_Work_Days_Collection_Name);
             _tables = database.GetCollection<Table>(reservationSystemDbConfing.Value.Tables_Collection_Name);
-            _systemRoles = database.GetCollection<SystemRole>(reservationSystemDbConfing.Value.SystemRoles_Collection_Name);
+            _systemRoles = database.GetCollection<SystemRole>(reservationSystemDbConfing.Value.System_Roles_Collection_Name);
             _payments = database.GetCollection<Payment>(reservationSystemDbConfing.Value.Payments_Collection_Name);
 
         }

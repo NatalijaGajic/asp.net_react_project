@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ReservationSystem.Core.services
 {
-    public interface IReservationService
+    public interface IReservationsService
     {
         List<Reservation> GetReservations();
         Reservation AddReservation(Reservation reservation);

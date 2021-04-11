@@ -12,8 +12,8 @@ namespace ReservationSystem.Controllers
     [ApiController]
     public class IntervalsForWorkDaysController : ControllerBase
     {
-        private readonly IIntervalsForWorkDayService _intervalsForWorkDayService;
-        public IntervalsForWorkDaysController(IIntervalsForWorkDayService intervalsForWorkDayService)
+        private readonly IIntervalsForWorkDaysService _intervalsForWorkDayService;
+        public IntervalsForWorkDaysController(IIntervalsForWorkDaysService intervalsForWorkDayService)
         {
             _intervalsForWorkDayService = intervalsForWorkDayService;
         }

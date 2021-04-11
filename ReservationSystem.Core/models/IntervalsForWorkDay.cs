@@ -14,8 +14,7 @@ namespace ReservationSystem.Core.models
         public string Id { get; set; }
         public string WorkDayId { get; set; }
 
-        public List<GameTimeInterval> FreeGameTimeIntervals { get; set; }
-        public List<TableTimeInterval> FreeTableTimeIntervals { get; set; }
+        public List<IntervalForWorkDay> FreeTimeIntervals { get; set; }
 
     }
 }

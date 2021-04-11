@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 namespace ReservationSystem.Core
 {
-    public class GamesServices : IGamesServices
+    public class GamesService : IGamesService
     {
         private readonly IMongoCollection<Game> _games;
-        public GamesServices(IDBClient dbClient)
+        public GamesService(IDBClient dbClient)
         {
             _games = dbClient.GetGamesCollection();
         }
