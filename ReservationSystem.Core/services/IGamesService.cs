@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ReservationSystem.Core
 {
-    public interface IGamesServices
+    public interface IGamesService
     {
         List<Game> GetGames();
         Game AddGame(Game game);

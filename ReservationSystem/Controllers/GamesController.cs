@@ -12,8 +12,8 @@ namespace ReservationSystem.Controllers
     [Route("[controller]")]
     public class GamesController : ControllerBase
     {
-        private readonly IGamesServices _gamesServices;
-        public GamesController(IGamesServices gamesServices)
+        private readonly IGamesService _gamesServices;
+        public GamesController(IGamesService gamesServices)
         {
             _gamesServices = gamesServices;
         }

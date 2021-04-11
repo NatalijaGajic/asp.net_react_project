@@ -16,7 +16,16 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DATABASE_NAME": "ReservationSystemDB",
-        "GAMES_COLLECTION_NAME": "Games"
+        "GAMES_COLLECTION_NAME": "Games",
+        "WORKERS_COLLECTION_NAME": "Workers",
+        "CLIENTS_COLLECTION_NAME": "Clients",
+        "WORK_DAYS_COLLECTION_NAME": "WorkDays",
+        "RESERVATIONS_COLLECTION_NAME": "Reservations",
+        "TABLES_COLLECTION_NAME": "Tables",
+        "SYSTEM_ROLES_COLLECTION_NAME": "SystemRoles",
+        "PAYMENTS_COLLECTION_NAME": "Payments",
+        "INTERVALS_FOR_WORK_DAYS_COLLECTION_NAME": "IntervalsForWorkDays"
+
       }
     },
     "ReservationSystem": {
@@ -28,7 +37,15 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DATABASE_NAME": "ReservationSystemDB",
-        "GAMES_COLLECTION_NAME": "Games"
+        "GAMES_COLLECTION_NAME": "Games",
+        "WORKERS_COLLECTION_NAME": "Workers",
+        "CLIENTS_COLLECTION_NAME": "Clients",
+        "WORK_DAYS_COLLECTION_NAME": "WorkDays",
+        "RESERVATIONS_COLLECTION_NAME": "Reservations",
+        "TABLES_COLLECTION_NAME": "Tables",
+        "SYSTEM_ROLES_COLLECTION_NAME": "SystemRoles",
+        "PAYMENTS_COLLECTION_NAME": "Payments",
+         "INTERVALS_FOR_WORK_DAYS_COLLECTION_NAME": "IntervalsForWorkDays"
       }
     }
   }

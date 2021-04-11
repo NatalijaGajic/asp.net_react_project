@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using ReservationSystem.Core;
+using ReservationSystem.Core.services;
 
 namespace ReservationSystem
 {
@@ -29,7 +30,13 @@ namespace ReservationSystem
         {
             services.AddSingleton<IDBClient, DBClient>();
             services.Configure<ReservationSystemDBConfig>(Configuration);
-            services.AddTransient<IGamesServices, GamesServices>();
+            services.AddTransient<IGamesService, GamesService>();
+            services.AddTransient<ITablesService, TablesService>();
+            services.AddTransient<IWorksDaysService, WorkDaysService>();
+            services.AddTransient<IAccountsService, AccountsService>();
+            services.AddTransient<IReservationsService, ReservationsService>();
+            services.AddTransient<IIntervalsForWorkDaysService, IntervalsForWorkDaysService>();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
