@@ -1,5 +1,6 @@
 ﻿using MongoDB.Driver;
 using ReservationSystem.Core.models;
+using ReservationSystem.Core.repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,38 +11,38 @@ namespace ReservationSystem.Core.services
 {
     public class WorkDaysService : IWorksDaysService
     {
-        private readonly IMongoCollection<WorkDay> _workDays;
+        private readonly IWorksDaysRepository _worksDaysRepository;
 
-        public WorkDaysService(IDBClient dbClient)
+        public WorkDaysService(IWorksDaysRepository worksDaysRepository)
         {
-            _workDays = dbClient.GetWorkDaysCollection();
+            _worksDaysRepository = worksDaysRepository;
         }
         public WorkDay AddWorkDay(WorkDay workDay)
         {
-            _workDays.InsertOne(workDay);
+            _worksDaysRepository.AddWorkDay(workDay);
             return workDay;
         }
 
         public void DeleteWorkDay(string id)
         {
-            _workDays.DeleteOne(w => w.Id == id);
+            _worksDaysRepository.DeleteWorkDay(id);
         }
 
         public WorkDay GetWorkDay(string id)
         {
-            return _workDays.Find(w => w.Id == id).First();
+            return _worksDaysRepository.GetWorkDay(id);
         }
 
         public List<WorkDay> GetWorkDays()
         {
-            return _workDays.Find(w => true).ToList();
+            return _worksDaysRepository.GetWorkDays();
 
         }
 
         public WorkDay UpdateWorkDay(WorkDay workDay)
         {
-            GetWorkDay(workDay.Id);
-            _workDays.ReplaceOne(w => w.Id == workDay.Id, workDay);
+            _worksDaysRepository.GetWorkDay(workDay.Id);
+            _worksDaysRepository.UpdateWorkDay(workDay);
             return workDay;
         }
     }

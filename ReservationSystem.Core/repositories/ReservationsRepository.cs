@@ -1,47 +1,46 @@
 ﻿using MongoDB.Driver;
 using ReservationSystem.Core.models;
-using ReservationSystem.Core.repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReservationSystem.Core.services
+namespace ReservationSystem.Core.repositories
 {
-    public class ReservationsService : IReservationsService
+    public class ReservationsRepository : IReservationsRepository
     {
-        private readonly IReservationsRepository _reservationsRepository;
-        public ReservationsService(IReservationsRepository reservationsRepository)
+        private readonly IMongoCollection<Reservation> _reservations;
+        public ReservationsRepository(IDBClient dbClient)
         {
-            _reservationsRepository = reservationsRepository;
+            _reservations = dbClient.GetReservationsCollection();
         }
         public Reservation AddReservation(Reservation reservation)
         {
-            _reservationsRepository.AddReservation(reservation);
+            _reservations.InsertOne(reservation);
             return reservation;
         }
 
         public void DeleteReservation(string id)
         {
-            _reservationsRepository.DeleteReservation(id);
+            _reservations.DeleteOne(r => r.Id == id);
         }
 
         public Reservation GetReservation(string id)
         {
-            return _reservationsRepository.GetReservation(id);
+            return _reservations.Find(r => r.Id == id).First();
         }
 
         public List<Reservation> GetReservations()
         {
-            return _reservationsRepository.GetReservations();
+            return _reservations.Find(r => true).ToList();
         }
 
         public Reservation UpdateReservation(Reservation reservation)
         {
             //TODO: Reservation can only be cancelled, remote procedure call
-            _reservationsRepository.GetReservation(reservation.Id);
-            _reservationsRepository.UpdateReservation(reservation);
+            GetReservation(reservation.Id);
+            _reservations.ReplaceOne(r => r.Id == reservation.Id, reservation);
             return reservation;
         }
     }

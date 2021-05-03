@@ -1,5 +1,6 @@
 ﻿using MongoDB.Driver;
 using ReservationSystem.Core.models;
+using ReservationSystem.Core.repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,36 +11,36 @@ namespace ReservationSystem.Core.services
 {
     public class TablesService : ITablesService
     {
-        private readonly IMongoCollection<Table> _tables;
-        public TablesService(IDBClient dbClient)
+        private readonly ITablesRepository _tablesRepository;
+        public TablesService(ITablesRepository tablesRepository)
         {
-            _tables = dbClient.GetTablesCollection();
+            _tablesRepository = tablesRepository;
         }
         public Table AddTable(Table table)
         {
-            _tables.InsertOne(table);
+            _tablesRepository.AddTable(table);
             return table;
         }
 
         public void DeleteTable(string id)
         {
-            _tables.DeleteOne(t => t.Id == id);
+            _tablesRepository.DeleteTable(id);
         }
 
         public Table GetTable(string id)
         {
-            return _tables.Find(t => t.Id == id).First();
+            return _tablesRepository.GetTable(id);
         }
 
         public List<Table> GetTables()
         {
-            return _tables.Find(t => true).ToList();
+            return _tablesRepository.GetTables();
         }
 
         public Table UpdateTable(Table table)
         {
-            GetTable(table.Id);
-            _tables.ReplaceOne(t => t.Id == table.Id, table);
+            _tablesRepository.GetTable(table.Id);
+            _tablesRepository.UpdateTable(table);
             return table;
         }
     }

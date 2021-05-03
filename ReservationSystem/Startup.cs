@@ -26,7 +26,7 @@ namespace ReservationSystem
             services.AddTransient<IGamesService, GamesService>();
             services.AddTransient<ITablesService, TablesService>();
             services.AddTransient<IWorksDaysService, WorkDaysService>();
-            services.AddTransient<IAccountsService, AccountsService>();
+            services.AddTransient<IAccountsRepository, AccountsService>();
             services.AddTransient<IReservationsService, ReservationsService>();
             services.AddTransient<IIntervalsForWorkDaysService, IntervalsForWorkDaysService>();
             services.AddTransient<ISystemRolesService, SystemRolesService>();

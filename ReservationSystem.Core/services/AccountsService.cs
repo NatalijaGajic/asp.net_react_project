@@ -1,5 +1,6 @@
 ﻿using MongoDB.Driver;
 using ReservationSystem.Core.models;
+using ReservationSystem.Core.repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,72 +11,72 @@ namespace ReservationSystem.Core.services
 {
     public class AccountsService: IAccountsService
     {
-        private readonly IMongoCollection<WorkerAccount> _workers;
-        private readonly IMongoCollection<ClientAccount> _clients;
+        //TODO: account doesnt exist for getById, delete and update
 
-        public AccountsService(IDBClient dbClient)
+        private readonly IAccountsRepository _accountsRepository;
+
+        public AccountsService(IAccountsRepository accountsRepository)
         {
-            _workers = dbClient.GetWorkerAccountsCollection();
-            _clients = dbClient.GetClientAccountsCollection();
+            _accountsRepository = accountsRepository;
         }
 
         public ClientAccount AddClientAccount(ClientAccount clientAccount)
         {
-            _clients.InsertOne(clientAccount);
-            return clientAccount;
+            ClientAccount c = _accountsRepository.AddClientAccount(clientAccount);
+            return c;
         }
 
         public WorkerAccount AddWorkerAccount(WorkerAccount workerAccount)
         {
-            _workers.InsertOne(workerAccount);
+            _accountsRepository.AddWorkerAccount(workerAccount);
             return workerAccount;
         }
 
         public void DeleteClientAccount(string id)
         {
-            _clients.DeleteOne(client => client.Id == id);
+            _accountsRepository.DeleteClientAccount(id);
 
         }
 
         public void DeleteWorkerAccount(string id)
         {
-            _workers.DeleteOne(w => w.Id == id);
+            _accountsRepository.DeleteWorkerAccount(id);
         }
 
         public ClientAccount GetClientAccount(string id)
         {
-            return _clients.Find(c => c.Id == id).First();
+            return _accountsRepository.GetClientAccount(id);
         }
 
         public List<ClientAccount> GetClientAccounts()
         {
-            return _clients.Find(client => true).ToList();
+            return _accountsRepository.GetClientAccounts();
         }
 
         public WorkerAccount GetWorkerAccount(string id)
         {
-            return _workers.Find(w => w.Id == id).First();
+            return _accountsRepository.GetWorkerAccount(id);
 
         }
 
         public List<WorkerAccount> GetWorkerAccounts()
         {
-            return _workers.Find(worker => true).ToList();
+            return _accountsRepository.GetWorkerAccounts();
 
         }
 
         public ClientAccount UpdateClientAccount(ClientAccount clientAccount)
         {
-            GetClientAccount(clientAccount.Id);
-            _clients.ReplaceOne(c => c.Id == clientAccount.Id, clientAccount);
-            return clientAccount;
+            _accountsRepository.GetClientAccount(clientAccount.Id);
+            var c =_accountsRepository.UpdateClientAccount(clientAccount);
+            return c;
         }
 
         public WorkerAccount UpdateWorkerAccount(WorkerAccount workerAccount)
         {
-            GetWorkerAccount(workerAccount.Id);
-            _workers.ReplaceOne(w => w.Id == workerAccount.Id, workerAccount);
-            return workerAccount;
+            _accountsRepository.GetWorkerAccount(workerAccount.Id);
+            var w = _accountsRepository.UpdateWorkerAccount(workerAccount);
+            return w;
         }
     }
 }

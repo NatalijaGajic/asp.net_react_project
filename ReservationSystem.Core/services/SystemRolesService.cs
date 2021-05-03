@@ -1,5 +1,6 @@
 ﻿using MongoDB.Driver;
 using ReservationSystem.Core.models;
+using ReservationSystem.Core.repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,37 +11,37 @@ namespace ReservationSystem.Core.services
 {
     public class SystemRolesService : ISystemRolesService
     {
-        private readonly IMongoCollection<SystemRole> _systemRoles;
+        private readonly ISystemRolesRepository _systemRolesRepository;
 
-        public SystemRolesService(IDBClient dbClient)
+        public SystemRolesService(ISystemRolesRepository systemRolesRepositor)
         {
-            _systemRoles = dbClient.GetSytemRolesCollection();
+            _systemRolesRepository = systemRolesRepositor;
         }
         public SystemRole AddSystemRole(SystemRole role)
         {
-            _systemRoles.InsertOne(role);
+            _systemRolesRepository.AddSystemRole(role);
             return role;
         }
 
         public void DeleteSystemRole(string id)
         {
-            _systemRoles.DeleteOne(r => r.Id == id);
+            _systemRolesRepository.DeleteSystemRole(id);
         }
 
         public SystemRole GetSystemRole(string id)
         {
-            return _systemRoles.Find(r => r.Id == id).First();
+            return _systemRolesRepository.GetSystemRole(id);
         }
 
         public List<SystemRole> GetSystemRoles()
         {
-            return _systemRoles.Find(r => true).ToList();
+            return _systemRolesRepository.GetSystemRoles();
         }
 
         public SystemRole UpdateSystemRole(SystemRole role)
         {
-            GetSystemRole(role.Id);
-            _systemRoles.ReplaceOne(r => r.Id == role.Id, role);
+            _systemRolesRepository.GetSystemRole(role.Id);
+            _systemRolesRepository.UpdateSystemRole(role);
             return role;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using ReservationSystem.Core.repositories;
 using System;
 using System.Collections.Generic;
 
@@ -6,39 +7,37 @@ namespace ReservationSystem.Core
 {
     public class GamesService : IGamesService
     {
-        private readonly IMongoCollection<Game> _games;
-        public GamesService(IDBClient dbClient)
+        private readonly IGamesRepository _gamesRepository;
+        public GamesService(IGamesRepository gamesRepostiory)
         {
-            _games = dbClient.GetGamesCollection();
+            _gamesRepository = gamesRepostiory;
         }
 
         public Game AddGame(Game game)
         {
-            _games.InsertOne(game);
+            _gamesRepository.AddGame(game);
             return game;
         }
 
         public void DeleteGame(string id)
         {
-            _games.DeleteOne(game => game.Id == id);
+            _gamesRepository.DeleteGame(id);
         }
 
         public Game GetGame(string id)
         {
-            //TODO Sequence contains no elements' when id does not exist
-            //Throw exception
-            return _games.Find(game => game.Id == id).First();
+            return _gamesRepository.GetGame(id);
         }
 
         public List<Game> GetGames()
         {
-            return _games.Find(game => true).ToList();
+            return _gamesRepository.GetGames();
         }
 
         public Game UpdateGame(Game game)
         {
-            GetGame(game.Id);
-            _games.ReplaceOne(g => g.Id == game.Id, game);
+            _gamesRepository.GetGame(game.Id);
+            _gamesRepository.UpdateGame(game);
             return game;
         }
     }

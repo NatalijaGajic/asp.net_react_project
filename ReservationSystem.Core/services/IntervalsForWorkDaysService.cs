@@ -1,29 +1,25 @@
-﻿using MongoDB.Driver;
-using ReservationSystem.Core.models;
-using System;
+﻿using ReservationSystem.Core.models;
+using ReservationSystem.Core.repositories;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ReservationSystem.Core.services
 {
     public class IntervalsForWorkDaysService : IIntervalsForWorkDaysService
     {
-        private readonly IMongoCollection<IntervalsForWorkDay> _intervalsForWorkDays;
+        private readonly IIntervalsForWorkDaysRepository _intervalsForWorkDaysRepository;
 
-        public IntervalsForWorkDaysService(IDBClient dbClient)
+        public IntervalsForWorkDaysService(IIntervalsForWorkDaysRepository intervalsForWorkDaysRepository)
         {
-            _intervalsForWorkDays = dbClient.GetIntervalsForWorkDaysCollection();
+            _intervalsForWorkDaysRepository = intervalsForWorkDaysRepository;
         }
         public IntervalsForWorkDay GetIntervalsForWorkDay(string id)
         {
-            return _intervalsForWorkDays.Find(i => i.Id == id).First();
+            return _intervalsForWorkDaysRepository.GetIntervalsForWorkDay(id);
         }
 
         public List<IntervalsForWorkDay> GetIntervalsForWorkDays()
         {
-            return _intervalsForWorkDays.Find(i => true).ToList();
+            return _intervalsForWorkDaysRepository.GetIntervalsForWorkDays();
 
         }
     }

@@ -1,5 +1,6 @@
 ﻿using MongoDB.Driver;
 using ReservationSystem.Core.models;
+using ReservationSystem.Core.repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,38 +11,38 @@ namespace ReservationSystem.Core.services
 {
     public class PaymentService : IPaymentService
     {
-        private readonly IMongoCollection<Payment> _payments;
+        private readonly IPaymentRepository _paymentRepository;
 
-        public PaymentService(IDBClient dbClient)
+        public PaymentService(IPaymentRepository paymentRepository)
         {
-            _payments = dbClient.GetPaymentsCollection();
+            _paymentRepository = paymentRepository;
         }
 
         public Payment AddPayment(Payment payment)
         {
-            _payments.InsertOne(payment);
+            _paymentRepository.AddPayment(payment);
             return payment;
         }
 
         public void DeletePayment(string id)
         {
-            _payments.DeleteOne(p => p.Id == id);
+            _paymentRepository.DeletePayment(id);
         }
 
         public Payment GetPayment(string id)
         {
-            return _payments.Find(p => p.Id == id).First();
+            return _paymentRepository.GetPayment(id);
         }
 
         public List<Payment> GetPayments()
         {
-            return _payments.Find(p => true).ToList();
+            return _paymentRepository.GetPayments();
         }
 
         public Payment UpdatePayment(Payment payment)
         {
-            GetPayment(payment.Id);
-            _payments.ReplaceOne(p => p.Id == payment.Id, payment);
+            _paymentRepository.GetPayment(payment.Id);
+            _paymentRepository.UpdatePayment(payment);
             return payment;
         }
     }
