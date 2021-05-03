@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using ReservationSystem.Core;
+using ReservationSystem.Core.repositories;
 using ReservationSystem.Core.services;
 
 namespace ReservationSystem
@@ -26,11 +27,19 @@ namespace ReservationSystem
             services.AddTransient<IGamesService, GamesService>();
             services.AddTransient<ITablesService, TablesService>();
             services.AddTransient<IWorksDaysService, WorkDaysService>();
-            services.AddTransient<IAccountsRepository, AccountsService>();
+            services.AddTransient<IAccountsService, AccountsService>();
             services.AddTransient<IReservationsService, ReservationsService>();
             services.AddTransient<IIntervalsForWorkDaysService, IntervalsForWorkDaysService>();
             services.AddTransient<ISystemRolesService, SystemRolesService>();
             services.AddTransient<IPaymentService, PaymentService>();
+            services.AddTransient<IPaymentRepository, PaymentRepository>();
+            services.AddTransient<IGamesRepository, GamesRepository>();
+            services.AddTransient<ITablesRepository, TablesRepository>();
+            services.AddTransient<IWorksDaysRepository, WorkDaysRepository>();
+            services.AddTransient<IAccountsRepository, AccountsRepository>();
+            services.AddTransient<IReservationsRepository, ReservationsRepository>();
+            services.AddTransient<IIntervalsForWorkDaysRepository, IntervalsForWorkDaysRepository>();
+            services.AddTransient<ISystemRolesRepository, SystemRolesRepository>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
