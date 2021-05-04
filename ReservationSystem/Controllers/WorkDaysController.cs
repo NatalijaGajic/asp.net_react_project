@@ -1,31 +1,42 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ReservationSystem.Core.contracts;
 using ReservationSystem.Core.models;
 using ReservationSystem.Core.services;
-
+using System;
 
 namespace ReservationSystem.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/workDays")]
     [ApiController]
     public class WorkDaysController : ControllerBase
     {
-        private readonly IWorksDaysService _workDaysService;
-        public WorkDaysController(IWorksDaysService workDaysService)
+        private readonly IWorkDaysService _workDaysService;
+        public WorkDaysController(IWorkDaysService workDaysService)
         {
             _workDaysService = workDaysService;
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetWorkDays([FromQuery] WorkDaysQueryParams queryParams)
         {
+            if (queryParams != null && queryParams.Date != null)
+            {
+                try{
+                    _workDaysService.GetWorkDayByDate(queryParams);
+                }
+                catch(Exception e)
+                {
+                    return BadRequest(e.Message);
+                }
+            }
             return Ok(_workDaysService.GetWorkDays());
         }
 
         [HttpGet("{id}", Name = "GetWorkDay")]
         public IActionResult GetWorkDayById(string id)
         {
-            return Ok(_workDaysService.GetWorkDay(id));
+            return Ok(_workDaysService.GetWorkDay(id)); 
         }
 
 

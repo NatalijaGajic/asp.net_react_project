@@ -1,4 +1,5 @@
-﻿using ReservationSystem.Core.models;
+﻿using ReservationSystem.Core.contracts;
+using ReservationSystem.Core.models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,5 +20,7 @@ namespace ReservationSystem.Core.services
         //void DeleteIntervalsForWorkDay(string id);
         //TODO: Trigger update intervals if reservation is made or canceled (on Reservation insert/update)
         //IntervalsForWorkDay UpdateIntervalsForWorkDay(IntervalsForWorkDay intervalsForWorkDay);
+        IntervalsForWorkDayReservationQueryParamsResponse GetIntervalsForWorkDayReservation(IntervalsForWorkDayReservationQueryParams queryParams);
+
     }
 }

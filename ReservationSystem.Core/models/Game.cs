@@ -14,5 +14,20 @@ namespace ReservationSystem.Core
         public string Valute { get; set; }
         public byte NumberOfPlayers { get; set; }
         public bool IsActive { get; set; }
+
+        public override bool Equals(Object obj)
+        {
+            if (obj.GetType() == this.GetType())
+            {
+                Game game = (Game)obj;
+                return this.Id.Equals(game.Id);
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return 0;
+        }
     }
 }

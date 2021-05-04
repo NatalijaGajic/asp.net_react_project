@@ -26,7 +26,7 @@ namespace ReservationSystem
             services.Configure<ReservationSystemDBConfig>(Configuration);
             services.AddTransient<IGamesService, GamesService>();
             services.AddTransient<ITablesService, TablesService>();
-            services.AddTransient<IWorksDaysService, WorkDaysService>();
+            services.AddTransient<IWorkDaysService, WorkDaysService>();
             services.AddTransient<IAccountsService, AccountsService>();
             services.AddTransient<IReservationsService, ReservationsService>();
             services.AddTransient<IIntervalsForWorkDaysService, IntervalsForWorkDaysService>();
@@ -35,7 +35,7 @@ namespace ReservationSystem
             services.AddTransient<IPaymentRepository, PaymentRepository>();
             services.AddTransient<IGamesRepository, GamesRepository>();
             services.AddTransient<ITablesRepository, TablesRepository>();
-            services.AddTransient<IWorksDaysRepository, WorkDaysRepository>();
+            services.AddTransient<IWorkDaysRepository, WorkDaysRepository>();
             services.AddTransient<IAccountsRepository, AccountsRepository>();
             services.AddTransient<IReservationsRepository, ReservationsRepository>();
             services.AddTransient<IIntervalsForWorkDaysRepository, IntervalsForWorkDaysRepository>();
@@ -57,7 +57,7 @@ namespace ReservationSystem
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ReservationSystem v1"));
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 

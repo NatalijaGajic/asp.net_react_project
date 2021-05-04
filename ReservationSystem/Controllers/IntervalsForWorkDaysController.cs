@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ReservationSystem.Core.contracts;
 using ReservationSystem.Core.services;
 using System;
 using System.Collections.Generic;
@@ -19,8 +20,18 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get([FromQuery] IntervalsForWorkDayReservationQueryParams queryParams)
         {
+            if(queryParams != null)
+            {
+                try
+                {
+                    return Ok(_intervalsForWorkDayService.GetIntervalsForWorkDayReservation(queryParams));
+                }
+                catch (Exception e) {
+                    return BadRequest(e.Message);
+                } 
+            }
             return Ok(_intervalsForWorkDayService.GetIntervalsForWorkDays());
         }
 

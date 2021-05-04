@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using ReservationSystem.Core.contracts;
 using ReservationSystem.Core.models;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,11 @@ namespace ReservationSystem.Core.repositories
         {
             return _intervalsForWorkDays.Find(i => true).ToList();
 
+        }
+
+        public IntervalsForWorkDay GetIntervalsForWorkDayByWorkDayId(String workDayId)
+        {
+            return _intervalsForWorkDays.Find(i => i.WorkDayId == workDayId).FirstOrDefault();
         }
     }
 }

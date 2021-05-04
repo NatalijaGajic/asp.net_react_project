@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ReservationSystem.Core.repositories
 {
-    public class WorkDaysRepository : IWorksDaysRepository
+    public class WorkDaysRepository : IWorkDaysRepository
     {
         private readonly IMongoCollection<WorkDay> _workDays;
 
@@ -29,7 +29,13 @@ namespace ReservationSystem.Core.repositories
 
         public WorkDay GetWorkDay(string id)
         {
-            return _workDays.Find(w => w.Id == id).First();
+            Console.WriteLine(id);
+            return _workDays.Find(w => w.Id == id).FirstOrDefault();
+        }
+
+        public WorkDay GetWorkDayByDate(DateTime date)
+        {
+            return _workDays.Find(w => w.Date == date).FirstOrDefault();
         }
 
         public List<WorkDay> GetWorkDays()

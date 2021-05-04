@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReservationSystem.Core.services
+namespace ReservationSystem.Core.repositories
 {
-   public interface IWorksDaysService
+   public interface IWorkDaysRepository
     {
         List<WorkDay> GetWorkDays();
         WorkDay AddWorkDay(WorkDay workDay);
         WorkDay GetWorkDay(string id);
+        WorkDay GetWorkDayByDate(DateTime date);
         void DeleteWorkDay(string id);
         WorkDay UpdateWorkDay(WorkDay workDay);
     }

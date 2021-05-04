@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using ReservationSystem.Core.contracts;
 using ReservationSystem.Core.models;
 using ReservationSystem.Core.repositories;
 using System;
@@ -9,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace ReservationSystem.Core.services
 {
-    public class WorkDaysService : IWorksDaysService
+    public class WorkDaysService : IWorkDaysService
     {
-        private readonly IWorksDaysRepository _worksDaysRepository;
+        private readonly IWorkDaysRepository _worksDaysRepository;
 
-        public WorkDaysService(IWorksDaysRepository worksDaysRepository)
+        public WorkDaysService(IWorkDaysRepository worksDaysRepository)
         {
             _worksDaysRepository = worksDaysRepository;
         }
@@ -31,6 +32,40 @@ namespace ReservationSystem.Core.services
         public WorkDay GetWorkDay(string id)
         {
             return _worksDaysRepository.GetWorkDay(id);
+        }
+
+        public WorkDay GetWorkDayByDate(WorkDaysQueryParams queryParams) 
+        {
+            string date = queryParams.Date.Trim();
+            if (date.Length > 8)
+            {
+                string[] dateSplits;
+                dateSplits = date.Split("-");
+                if (dateSplits.Length == 3)
+                {
+                    try
+                    {
+                        DateTime dateTime = new DateTime(Convert.ToInt32(dateSplits[0]), Convert.ToInt32(dateSplits[1]), Convert.ToInt32(dateSplits[2]));
+                        return _worksDaysRepository.GetWorkDayByDate(dateTime);
+                        //TODO: conversion and bad date errors
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+                else
+                {
+                    //TODO: Custom exceptions
+                    //Bad spliting custom exception
+                    throw new System.Exception("Wrong date format should be yyyy-MM-dd");
+                }
+            }
+            else
+            {
+                //Bad query param custom exception
+                throw new System.Exception();
+            }
         }
 
         public List<WorkDay> GetWorkDays()
