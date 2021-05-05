@@ -11,5 +11,6 @@ namespace ReservationSystem.Core.contracts
     {
         public List<Table> Tables { get; set; }
         public List<Game> Games { get; set; }
+
     }
 }

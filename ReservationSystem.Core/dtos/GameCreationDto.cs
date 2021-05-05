@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace ReservationSystem.dtos
+namespace ReservationSystem.Core.dtos
 {
     public class GameCreationDto
     {

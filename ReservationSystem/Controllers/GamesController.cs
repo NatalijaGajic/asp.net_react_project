@@ -2,7 +2,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ReservationSystem.Core;
-using ReservationSystem.dtos;
+using ReservationSystem.Core.dtos;
 
 namespace ReservationSystem.Controllers
 {

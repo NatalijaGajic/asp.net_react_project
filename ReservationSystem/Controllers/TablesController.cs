@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using ReservationSystem.dtos;
+using ReservationSystem.Core.dtos;
 using ReservationSystem.Core.models;
 using ReservationSystem.Core.services;
 using System;

@@ -1,4 +1,5 @@
 ﻿using ReservationSystem.Core.contracts;
+using ReservationSystem.Core.exceptions;
 using ReservationSystem.Core.models;
 using ReservationSystem.Core.repositories;
 using System;
@@ -33,20 +34,21 @@ namespace ReservationSystem.Core.services
             {
                 if (workDayId == null || startHour == null || endHour == null)
                 {
-                    throw new Exception("Bad query parameters, required params are missing");
+                    throw new ReservationQueryParametersException("Bad query parameters, required params are missing");
                 }
 
                 IntervalsForWorkDay intervalsForWorkDay = _intervalsForWorkDaysRepository.GetIntervalsForWorkDayByWorkDayId(workDayId);
                 if (intervalsForWorkDay == null)
                 {
                     //No free intervals (it's not a work day)
-                    throw new Exception("No intervals for a works day to show");
+                    throw new IntervalForWorkDayNotFoundException("No intervals for a work day to show");
                 }
 
                 List<IntervalForWorkDay> freeTimeIntervals = intervalsForWorkDay.FreeTimeIntervals;
                 if (freeTimeIntervals == null || freeTimeIntervals.Count == 0)
                 {
-                    throw new Exception("No free intervals to show");
+                    //throw new Exception("No free intervals to show");
+                    return new IntervalsForWorkDayReservationQueryParamsResponse();
                 }
 
                 //TODO: Start hour should be larger than workDay schema startHour, frontend 
@@ -55,7 +57,7 @@ namespace ReservationSystem.Core.services
                 int hours = e - s;
                 if (hours < 0 || hours > 3)
                 {
-                    throw new Exception("Wrong query params StartHour should be smaller than EndHour with max difference 3");
+                    throw new ReservationQueryParametersException("Wrong query params StartHour should be smaller than EndHour with max difference 3");
                 }
                 int i = 0;
                 List<Table> freeTables;
@@ -74,7 +76,15 @@ namespace ReservationSystem.Core.services
                             
                         if (i == 0)
                         {
-                            InitializeTablesAndGamesDict(tablesDict, freeTables, gamesDict, freeGames, gameId);
+                            //TODO: should be better
+                            try
+                            {
+                                InitializeTablesAndGamesDict(tablesDict, freeTables, gamesDict, freeGames, gameId);
+                            }
+                            catch (Exception ex)
+                            {
+                                return new IntervalsForWorkDayReservationQueryParamsResponse();
+                            }
                         }
                         else
                         {
@@ -103,29 +113,33 @@ namespace ReservationSystem.Core.services
                     }
                     else //GameReservation
                     {
-                        foreach(KeyValuePair<Game, int> kvp in gamesDict)
+                        response.Tables = tables;
+                        foreach (KeyValuePair<Game, int> kvp in gamesDict)
                         {
-                            if(kvp.Value == hours)
+                            if (kvp.Value == hours)
                             {
-                                response.Tables = tables;
                                 games.Add(kvp.Key);
                                 response.Games = games;
                                 return response;
                             }
                             else
                             {
-                                throw new Exception("Game is not available");
+                                //TODO: Should be nicer
+                                //throw new Exception("Game is not available");
+                                return response;
                             }
                         }
                         //logically unreachable
-                        throw new Exception("Game is not available");
+                        //throw new Exception("Game is not available");
+                        return response;
                     }
                    
                 }
                 else
                 {
                     //No free tables
-                    throw new Exception("No free tables");
+                    //throw new Exception("No free tables");
+                    return new IntervalsForWorkDayReservationQueryParamsResponse();
                 }
             }
             catch (Exception e)

@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using ReservationSystem.dtos;
+using ReservationSystem.Core.dtos;
 
 namespace ReservationSystem.validators
 {

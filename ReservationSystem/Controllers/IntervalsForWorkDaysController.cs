@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ReservationSystem.Core.contracts;
+using ReservationSystem.Core.exceptions;
 using ReservationSystem.Core.services;
 using System;
 using System.Collections.Generic;
@@ -22,17 +23,33 @@ namespace ReservationSystem.Controllers
         [HttpGet]
         public IActionResult Get([FromQuery] IntervalsForWorkDayReservationQueryParams queryParams)
         {
-            if(queryParams != null)
+            try
             {
-                try
+                if (queryParams != null)
                 {
+
                     return Ok(_intervalsForWorkDayService.GetIntervalsForWorkDayReservation(queryParams));
+
                 }
-                catch (Exception e) {
-                    return BadRequest(e.Message);
-                } 
+                return Ok(_intervalsForWorkDayService.GetIntervalsForWorkDays());
             }
-            return Ok(_intervalsForWorkDayService.GetIntervalsForWorkDays());
+            catch(Exception e)
+            {
+                if (e.GetType().IsAssignableFrom(typeof(ReservationQueryParametersException)))
+                {
+                    return BadRequest(e.Message);
+
+                }
+                else if (e.GetType().IsAssignableFrom(typeof(IntervalForWorkDayNotFoundException)))
+                {
+                    return NotFound(e.Message);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+                }
+            }
+            
         }
 
         [HttpGet("{id}", Name = "GetIntervalsForWorkDay")]

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReservationSystem.dtos
+namespace ReservationSystem.Core.dtos
 {
     public class TableCreationDto
     {
