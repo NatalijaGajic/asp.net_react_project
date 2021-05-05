@@ -7,6 +7,9 @@ using Microsoft.OpenApi.Models;
 using ReservationSystem.Core;
 using ReservationSystem.Core.repositories;
 using ReservationSystem.Core.services;
+using ReservationSystem.filters;
+using System;
+using FluentValidation.AspNetCore;
 
 namespace ReservationSystem
 {
@@ -22,6 +25,11 @@ namespace ReservationSystem
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc(options => {
+                options.Filters.Add<ValidationFilter>();
+            }
+                ).AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<Startup>());
+
             services.AddSingleton<IDBClient, DBClient>();
             services.Configure<ReservationSystemDBConfig>(Configuration);
             services.AddTransient<IGamesService, GamesService>();
@@ -45,6 +53,7 @@ namespace ReservationSystem
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ReservationSystem", Version = "v1" });
             });
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

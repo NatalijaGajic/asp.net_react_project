@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using ReservationSystem.dtos;
 using ReservationSystem.Core.models;
 using ReservationSystem.Core.services;
-
+using System;
 
 namespace ReservationSystem.Controllers
 {
@@ -10,9 +12,11 @@ namespace ReservationSystem.Controllers
     public class TablesController : ControllerBase
     {
         private readonly ITablesService _tablesService;
-        public TablesController(ITablesService tablesService)
+        private readonly IMapper _mapper;
+        public TablesController(ITablesService tablesService, IMapper mapper)
         {
             _tablesService = tablesService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -29,10 +33,18 @@ namespace ReservationSystem.Controllers
 
 
         [HttpPost]
-        public IActionResult AddTable(Table table)
+        public IActionResult AddTable([FromBody] TableCreationDto table)
         {
-            _tablesService.AddTable(table);
-            return CreatedAtRoute("GetTable", new { id = table.Id }, table);
+            try
+            {
+                Table t = _mapper.Map<Table>(table);
+                Table createdTable = _tablesService.AddTable(t);
+                return CreatedAtRoute("GetTable", new { id = createdTable.Id }, createdTable);
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpDelete("{id}")]

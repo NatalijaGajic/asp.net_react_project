@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using ReservationSystem.Core;
+using ReservationSystem.dtos;
 
 namespace ReservationSystem.Controllers
 {
@@ -13,9 +11,13 @@ namespace ReservationSystem.Controllers
     public class GamesController : ControllerBase
     {
         private readonly IGamesService _gamesServices;
-        public GamesController(IGamesService gamesServices)
+        private readonly IMapper _mapper;
+
+
+        public GamesController(IGamesService gamesServices, IMapper mapper)
         {
             _gamesServices = gamesServices;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -32,10 +34,19 @@ namespace ReservationSystem.Controllers
 
 
         [HttpPost]
-        public IActionResult AddGame(Game game)
+        public IActionResult AddGame([FromBody] GameCreationDto game)
         {
-            _gamesServices.AddGame(game);
-            return CreatedAtRoute("GetGame", new { id = game.Id }, game);
+            try
+            {
+                Game g = _mapper.Map<Game>(game);
+                _gamesServices.AddGame(g);
+                return CreatedAtRoute("GetGame", new { id = g.Id }, g);
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
         }
 
         [HttpDelete("{id}")]
