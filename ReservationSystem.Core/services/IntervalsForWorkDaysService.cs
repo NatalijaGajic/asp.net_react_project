@@ -34,7 +34,7 @@ namespace ReservationSystem.Core.services
             {
                 if (workDayId == null || startHour == null || endHour == null)
                 {
-                    throw new ReservationQueryParametersException("Bad query parameters, required params are missing");
+                    throw new InvalidReservationQueryParametersException("Bad query parameters, required params are missing");
                 }
 
                 IntervalsForWorkDay intervalsForWorkDay = _intervalsForWorkDaysRepository.GetIntervalsForWorkDayByWorkDayId(workDayId);
@@ -57,7 +57,7 @@ namespace ReservationSystem.Core.services
                 int hours = e - s;
                 if (hours < 0 || hours > 3)
                 {
-                    throw new ReservationQueryParametersException("Wrong query params StartHour should be smaller than EndHour with max difference 3");
+                    throw new InvalidReservationQueryParametersException("Wrong query params StartHour should be smaller than EndHour with max difference 3");
                 }
                 int i = 0;
                 List<Table> freeTables;

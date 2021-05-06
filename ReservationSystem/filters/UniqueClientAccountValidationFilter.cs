@@ -7,10 +7,11 @@ using ReservationSystem.Core.dtos;
 using ReservationSystem.Core.services;
 using ReservationSystem.Core.models;
 using Microsoft.Extensions.DependencyInjection;
+using System.Text.RegularExpressions;
 
 namespace ReservationSystem.filters
 {
-    public class UniqueAccountFilter : IAsyncActionFilter
+    public class UniqueClientAccountValidationFilter : IAsyncActionFilter
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
@@ -38,6 +39,18 @@ namespace ReservationSystem.filters
                     //TODO: id will be null if post gets updatedto
                     string username = putRequest.Username;
                     string id = (string)context.ActionArguments["id"];
+                    //TODO: Check if id is valid 24 digit hex string, mongodb objectid 
+                    var checkForHexRegExp = new Regex("^[0-9a-fA-F]{24}$");
+                    if (!checkForHexRegExp.IsMatch(id)){
+                        context.Result = new BadRequestObjectResult("Id is not a valid 24 digit hex string");
+                        return;
+                    }
+                    ClientAccount clientWithId = _accountsService.GetClientAccount(id);
+                    if(clientWithId == null)
+                    {
+                        context.Result = new NotFoundObjectResult("Client account with id not found");
+                        return;
+                    }
                     ClientAccount clientWithUsername = _accountsService.GetClientAccountByUsername(username);
                     if (clientWithUsername != null && clientWithUsername.Id != id)
                     {

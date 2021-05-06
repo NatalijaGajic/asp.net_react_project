@@ -36,7 +36,7 @@ namespace ReservationSystem.Controllers
             return Ok(_accountsServices.GetClientAccount(id));
         }
 
-        [ServiceFilter(typeof(UniqueAccountFilter))]
+        [ServiceFilter(typeof(UniqueClientAccountValidationFilter))]
         [HttpPost]
         public IActionResult AddClient(ClientAccountCreationDto clientAccount)
         {
@@ -53,9 +53,9 @@ namespace ReservationSystem.Controllers
             return NoContent();
         }
 
-        [ServiceFilter(typeof(UniqueAccountFilter))]
+        [ServiceFilter(typeof(UniqueClientAccountValidationFilter))]
         [HttpPut("{id}")]
-        public IActionResult UpdateClient(string id, ClientAccountCreationDto clientAccount)
+        public IActionResult UpdateClient(string id, ClientAccountUpdateDto clientAccount)
         {
             ClientAccount client = _mapper.Map<ClientAccount>(clientAccount);
             client.Id = id;

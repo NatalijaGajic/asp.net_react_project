@@ -32,7 +32,7 @@ namespace ReservationSystem.Controllers
             }
             catch(Exception e)
             {
-                if (e.GetType().IsAssignableFrom(typeof(ReservationQueryParametersException)))
+                if (e.GetType().IsAssignableFrom(typeof(InvalidReservationQueryParametersException)))
                 {
                     return BadRequest(e.Message);
 
