@@ -19,5 +19,9 @@ namespace ReservationSystem.Core.services
         ClientAccount GetClientAccount(string id);
         void DeleteClientAccount(string id);
         ClientAccount UpdateClientAccount(ClientAccount clientAccount);
+        ClientAccount GetClientAccountByUsername(string username);
+        ClientAccount GetClientAccountByEmail(string email);
+        WorkerAccount GetWorkerAccountByUsername(string username);
+        WorkerAccount GetWorkerAccountByEmail(string email);
     }
 }

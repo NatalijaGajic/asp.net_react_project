@@ -44,7 +44,17 @@ namespace ReservationSystem.Core.repositories
 
         public ClientAccount GetClientAccount(string id)
         {
-            return _clients.Find(c => c.Id == id).First();
+            return _clients.Find(c => c.Id == id).FirstOrDefault();
+        }
+
+        public ClientAccount GetClientAccountByEmail(string email)
+        {
+            return _clients.Find(w => w.Email.Equals(email)).FirstOrDefault();
+        }
+
+        public ClientAccount GetClientAccountByUsername(string username)
+        {
+            return _clients.Find(w => w.Username.Equals(username)).FirstOrDefault();
         }
 
         public List<ClientAccount> GetClientAccounts()
@@ -54,8 +64,18 @@ namespace ReservationSystem.Core.repositories
 
         public WorkerAccount GetWorkerAccount(string id)
         {
-            return _workers.Find(w => w.Id == id).First();
+            return _workers.Find(w => w.Id == id).FirstOrDefault();
 
+        }
+
+        public WorkerAccount GetWorkerAccountByEmail(string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        public WorkerAccount GetWorkerAccountByUsername(string username)
+        {
+            throw new NotImplementedException();
         }
 
         public List<WorkerAccount> GetWorkerAccounts()

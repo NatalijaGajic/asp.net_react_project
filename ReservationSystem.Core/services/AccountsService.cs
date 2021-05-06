@@ -48,6 +48,16 @@ namespace ReservationSystem.Core.services
             return _accountsRepository.GetClientAccount(id);
         }
 
+        public ClientAccount GetClientAccountByEmail(string email)
+        {
+            return _accountsRepository.GetClientAccountByEmail(email);
+        }
+
+        public ClientAccount GetClientAccountByUsername(string username)
+        {
+            return _accountsRepository.GetClientAccountByUsername(username);
+        }
+
         public List<ClientAccount> GetClientAccounts()
         {
             return _accountsRepository.GetClientAccounts();
@@ -57,6 +67,17 @@ namespace ReservationSystem.Core.services
         {
             return _accountsRepository.GetWorkerAccount(id);
 
+        }
+
+        public WorkerAccount GetWorkerAccountByEmail(string email)
+        {
+            return _accountsRepository.GetWorkerAccountByEmail(email);
+
+        }
+
+        public WorkerAccount GetWorkerAccountByUsername(string username)
+        {
+            return _accountsRepository.GetWorkerAccountByUsername(username);
         }
 
         public List<WorkerAccount> GetWorkerAccounts()

@@ -4,9 +4,6 @@ using ReservationSystem.Core.contracts;
 using ReservationSystem.Core.exceptions;
 using ReservationSystem.Core.services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ReservationSystem.Controllers
 {
