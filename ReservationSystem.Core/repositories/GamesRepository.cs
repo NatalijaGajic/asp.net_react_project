@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using ReservationSystem.Core.contracts;
 using System;
 using System.Collections.Generic;
 
@@ -28,9 +29,9 @@ namespace ReservationSystem.Core.repositories
             return _games.Find(game => game.Id == id).First();
         }
 
-        public List<Game> GetGames()
+        public IMongoCollection<Game> GetGames()
         {
-            return _games.Find(game => true).ToList();
+            return _games;
         }
 
         public Game UpdateGame(Game game)

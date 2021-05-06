@@ -1,8 +1,11 @@
 ﻿using System;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ReservationSystem.Core;
+using ReservationSystem.Core.contracts;
 using ReservationSystem.Core.dtos;
+using ReservationSystem.Core.exceptions;
 
 namespace ReservationSystem.Controllers
 {
@@ -21,9 +24,21 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get([FromQuery] PaginationQuery paginationQuery, [FromQuery] GamesQueryParams gamesQueryParams)
         {
-            return Ok(_gamesServices.GetGames());
+            try
+            {
+                return Ok(_gamesServices.GetGames(paginationQuery, gamesQueryParams));
+            }
+            catch (Exception e)
+            {
+                if (e.GetType().IsAssignableFrom(typeof(InvalidGamesQueryParamsException)))
+                {
+                    return BadRequest(e.Message);
+
+                }
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
         }
 
         [HttpGet("{id}", Name = "GetGame")]

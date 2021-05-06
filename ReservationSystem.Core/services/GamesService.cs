@@ -1,4 +1,6 @@
 ﻿using MongoDB.Driver;
+using ReservationSystem.Core.contracts;
+using ReservationSystem.Core.exceptions;
 using ReservationSystem.Core.repositories;
 using System;
 using System.Collections.Generic;
@@ -29,9 +31,54 @@ namespace ReservationSystem.Core
             return _gamesRepository.GetGame(id);
         }
 
-        public List<Game> GetGames()
+        public List<Game> GetGames(PaginationQuery paginationQuery, GamesQueryParams gamesQueryParams)
         {
-            return _gamesRepository.GetGames();
+            IMongoCollection<Game> _games = _gamesRepository.GetGames();
+            FilterDefinition<Game> filter = Builders<Game>.Filter.Where(game => true);
+            SortDefinition<Game> sort = Builders<Game>.Sort.Ascending("Name");
+
+            if (gamesQueryParams != null)
+            {
+                if (gamesQueryParams.IsActive != null)
+                {
+                    filter = Builders<Game>.Filter.Where(game => game.IsActive == gamesQueryParams.IsActive);
+                }
+                if (gamesQueryParams.NumberOfPeople != null)
+                {
+                    int number = gamesQueryParams.NumberOfPeople;
+                    if (number < 0)
+                    {
+                        throw new InvalidGamesQueryParamsException("Query parameter NumberOfPeople should be a positive integer");
+                    }
+                    filter = Builders<Game>.Filter.And(filter, 
+                        Builders<Game>.Filter.Where(game => game.NumberOfPlayers >= number));
+                }
+                if(gamesQueryParams.SearchByName != null)
+                {
+                    var queryString = gamesQueryParams.SearchByName;
+                    filter = Builders<Game>.Filter.And(filter, 
+                        Builders<Game>.Filter.Where(game => game.Name.Contains(queryString)));
+                }
+            }
+            if (gamesQueryParams != null && gamesQueryParams.OrderBy != null)
+            {
+                //TODO: Check if returns error if value doesnt match any property
+                sort = Builders<Game>.Sort.Ascending(gamesQueryParams.OrderBy);
+            }
+            if (paginationQuery != null)
+            {
+                //TODO: If page size smaller than 0 or page number smaller than 0 (if they are not integers fluent validator catches)
+                
+                var take = paginationQuery.PageSize > 100? 100:paginationQuery.PageSize;
+                var skip = (paginationQuery.PageNumber - 1) * take;
+                if (take < 0 || skip < 0)
+                {
+                    throw new InvalidGamesQueryParamsException("Query parameters PageSize and PageNumber should be a positive integer");
+                }
+                return _games.Find(filter).Sort(sort).Skip(skip).Limit(take).ToList();
+            }
+           
+            return _games.Find(filter).Sort(sort).ToList();
         }
 
         public Game UpdateGame(Game game)

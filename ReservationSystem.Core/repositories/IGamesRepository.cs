@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MongoDB.Driver;
+using ReservationSystem.Core.contracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +10,7 @@ namespace ReservationSystem.Core.repositories
 {
     public interface IGamesRepository
     {
-        List<Game> GetGames();
+        IMongoCollection<Game> GetGames();
         Game AddGame(Game game);
         Game GetGame(string id);
         void DeleteGame(string id);

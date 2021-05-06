@@ -88,7 +88,7 @@ namespace ReservationSystem.Core.services
 
         public ClientAccount UpdateClientAccount(ClientAccount clientAccount)
         {
-            _accountsRepository.GetClientAccount(clientAccount.Id);
+            //_accountsRepository.GetClientAccount(clientAccount.Id);
             var c =_accountsRepository.UpdateClientAccount(clientAccount);
             return c;
         }
