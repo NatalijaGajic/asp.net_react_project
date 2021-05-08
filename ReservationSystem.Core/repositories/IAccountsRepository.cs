@@ -12,13 +12,13 @@ namespace ReservationSystem.Core.repositories
         List<WorkerAccount> GetWorkerAccounts();
         WorkerAccount AddWorkerAccount(WorkerAccount workerAccount);
         WorkerAccount GetWorkerAccount(string id);
-        void DeleteWorkerAccount(string id);
-        WorkerAccount UpdateWorkerAccount(WorkerAccount workerAccount);
+        int DeleteWorkerAccount(string id);
+        bool UpdateWorkerAccount(WorkerAccount workerAccount);
         List<ClientAccount> GetClientAccounts();
         ClientAccount AddClientAccount(ClientAccount clientAccount);
         ClientAccount GetClientAccount(string id);
-        void DeleteClientAccount(string id);
-        ClientAccount UpdateClientAccount(ClientAccount clientAccount);
+        int DeleteClientAccount(string id);
+        bool UpdateClientAccount(ClientAccount clientAccount);
         ClientAccount GetClientAccountByUsername(string username);
         ClientAccount GetClientAccountByEmail(string email);
         WorkerAccount GetWorkerAccountByUsername(string username);

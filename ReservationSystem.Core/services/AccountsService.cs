@@ -3,6 +3,7 @@ using ReservationSystem.Core.models;
 using ReservationSystem.Core.repositories;
 using System;
 using System.Collections.Generic;
+using ReservationSystem.Core.Utils;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,14 +15,20 @@ namespace ReservationSystem.Core.services
         //TODO: account doesnt exist for getById, delete and update
 
         private readonly IAccountsRepository _accountsRepository;
+        private readonly ISystemRolesRepository _systemRolesRepository;
 
-        public AccountsService(IAccountsRepository accountsRepository)
+        public AccountsService(IAccountsRepository accountsRepository, ISystemRolesRepository systemRolesRepository)
         {
             _accountsRepository = accountsRepository;
+            _systemRolesRepository = systemRolesRepository;
         }
 
         public ClientAccount AddClientAccount(ClientAccount clientAccount)
         {
+            string roleName = "Client";
+            SystemRole role = _systemRolesRepository.GetSystemRoleByName(roleName);
+            clientAccount.Role = role;
+            clientAccount.AccountType = "Client";
             ClientAccount c = _accountsRepository.AddClientAccount(clientAccount);
             return c;
         }
@@ -32,19 +39,23 @@ namespace ReservationSystem.Core.services
             return workerAccount;
         }
 
-        public void DeleteClientAccount(string id)
+        public bool DeleteClientAccount(string id)
         {
-            _accountsRepository.DeleteClientAccount(id);
+            return _accountsRepository.DeleteClientAccount(id) > 0;
 
         }
 
-        public void DeleteWorkerAccount(string id)
+        public bool DeleteWorkerAccount(string id)
         {
-            _accountsRepository.DeleteWorkerAccount(id);
+            return _accountsRepository.DeleteWorkerAccount(id) > 0;
         }
 
         public ClientAccount GetClientAccount(string id)
         {
+            if (!CheckIdHelpper.CheckId(id))
+            {
+                throw new InvalidCastException("Id is not a valid 24 digit hex string");
+            }
             return _accountsRepository.GetClientAccount(id);
         }
 
@@ -86,18 +97,29 @@ namespace ReservationSystem.Core.services
 
         }
 
-        public ClientAccount UpdateClientAccount(ClientAccount clientAccount)
+        public bool UpdateClientAccount(ClientAccount clientAccount)
         {
-            //_accountsRepository.GetClientAccount(clientAccount.Id);
-            var c =_accountsRepository.UpdateClientAccount(clientAccount);
-            return c;
+            ClientAccount client = _accountsRepository.GetClientAccount(clientAccount.Id);
+            if(client == null)
+            {
+                return false;
+            }
+            setUpdatedClientAccountFields(client, clientAccount);
+            return _accountsRepository.UpdateClientAccount(client);
         }
 
-        public WorkerAccount UpdateWorkerAccount(WorkerAccount workerAccount)
+        public bool UpdateWorkerAccount(WorkerAccount workerAccount)
         {
             _accountsRepository.GetWorkerAccount(workerAccount.Id);
-            var w = _accountsRepository.UpdateWorkerAccount(workerAccount);
-            return w;
+            return _accountsRepository.UpdateWorkerAccount(workerAccount);
+        }
+
+        private void setUpdatedClientAccountFields(ClientAccount client, ClientAccount clientAccount)
+        {
+            client.Username = clientAccount.Username;
+            client.FirstName = clientAccount.FirstName;
+            client.LastName = clientAccount.LastName;
+            client.Telephone = clientAccount.Telephone;
         }
     }
 }

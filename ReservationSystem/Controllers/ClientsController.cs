@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace ReservationSystem.Controllers
 {
+    //TODO: Trim id in path
     [Route("api/[controller]")]
     [ApiController]
     public class ClientsController : ControllerBase
@@ -25,42 +26,108 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetClientAccounts()
         {
-            return Ok(_accountsServices.GetClientAccounts());
+            try
+            {
+                return Ok(_mapper.Map<List<ClientAccountDto>>(_accountsServices.GetClientAccounts()));
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         [HttpGet("{id}", Name = "GetClient")]
-        public IActionResult GetClientById(string id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetClientAccountById(string id)
         {
-            return Ok(_accountsServices.GetClientAccount(id));
+            try
+            {
+                ClientAccount c = _accountsServices.GetClientAccount(id);
+                if(c == null)
+                {
+                    return NotFound("Client account with id not found");
+                }
+                return Ok(_mapper.Map<ClientAccountDto>(c));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         [ServiceFilter(typeof(UniqueClientAccountValidationFilter))]
         [HttpPost]
-        public IActionResult AddClient(ClientAccountCreationDto clientAccount)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult AddClientAccount(ClientAccountCreationDto clientAccount)
         {
-            ClientAccount client = _mapper.Map<ClientAccount>(clientAccount);
-            //TODO: Add role, AccountType
-            _accountsServices.AddClientAccount(client);
-            return CreatedAtRoute("GetClient", new { id = client.Id }, client);
+            try
+            {
+                ClientAccount client = _mapper.Map<ClientAccount>(clientAccount);
+                //TODO: Add role, AccountType
+                //TODO: password hash
+                client = _accountsServices.AddClientAccount(client);
+                return CreatedAtRoute("GetClient", new { id = client.Id }, client);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
         }
 
+        //TODO: should delete all reservations, authorization
         [HttpDelete("{id}")]
-        public IActionResult DeleteCilent(string id)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult DeleteCilentAccount(string id)
         {
-            _accountsServices.DeleteClientAccount(id);
-            return NoContent();
+            try
+            {
+                if (_accountsServices.DeleteClientAccount(id))
+                {
+                    return NoContent();
+
+                }
+                return NotFound("Client account with id not found");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         [ServiceFilter(typeof(UniqueClientAccountValidationFilter))]
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult UpdateClient(string id, ClientAccountUpdateDto clientAccount)
         {
-            ClientAccount client = _mapper.Map<ClientAccount>(clientAccount);
-            client.Id = id;
-            //TODO: asign role, Email, Password, AccountType from client or do partial update with Attach
-            return Ok(_accountsServices.UpdateClientAccount(client));
+            try
+            {
+                ClientAccount client = _mapper.Map<ClientAccount>(clientAccount);
+                client.Id = id;
+                //TODO: asign role, Email, Password, AccountType from client or do partial update with Attach
+                if (_accountsServices.UpdateClientAccount(client))
+                {
+                    return Ok();
+                }
+                return NotFound("Client account with id not found");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
         }
     }
 }

@@ -9,13 +9,15 @@ using System.Threading.Tasks;
 
 namespace ReservationSystem.Core.profiles
 {
-    public class ClientProfile: Profile
+    public class ClientAccountProfile: Profile
     {
-        public ClientProfile()
+        public ClientAccountProfile()
         {
             CreateMap<ClientAccountCreationDto, ClientAccount>();
             CreateMap<ClientAccountUpdateDto, ClientAccount>();
-
+            CreateMap<ClientAccount, ClientAccountDto>().ForMember(
+                dest => dest.Role,
+                opt => opt.MapFrom(src => $"{src.Role.Name}"));
         }
     }
 }

@@ -29,7 +29,12 @@ namespace ReservationSystem.Core.repositories
 
         public SystemRole GetSystemRole(string id)
         {
-            return _systemRoles.Find(r => r.Id == id).First();
+            return _systemRoles.Find(r => r.Id == id).FirstOrDefault();
+        }
+
+        public SystemRole GetSystemRoleByName(string roleName)
+        {
+            return _systemRoles.Find(r => r.Name.ToLower() == roleName.ToLower()).FirstOrDefault();
         }
 
         public List<SystemRole> GetSystemRoles()

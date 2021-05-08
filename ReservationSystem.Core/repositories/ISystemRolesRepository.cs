@@ -14,5 +14,6 @@ namespace ReservationSystem.Core.repositories
         SystemRole GetSystemRole(string id);
         void DeleteSystemRole(string id);
         SystemRole UpdateSystemRole(SystemRole role);
+        SystemRole GetSystemRoleByName(string roleName);
     }
 }

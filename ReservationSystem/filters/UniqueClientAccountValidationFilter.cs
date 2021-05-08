@@ -8,6 +8,7 @@ using ReservationSystem.Core.services;
 using ReservationSystem.Core.models;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.RegularExpressions;
+using ReservationSystem.Core.Utils;
 
 namespace ReservationSystem.filters
 {
@@ -40,8 +41,7 @@ namespace ReservationSystem.filters
                     string username = putRequest.Username;
                     string id = (string)context.ActionArguments["id"];
                     //TODO: Check if id is valid 24 digit hex string, mongodb objectid 
-                    var checkForHexRegExp = new Regex("^[0-9a-fA-F]{24}$");
-                    if (!checkForHexRegExp.IsMatch(id)){
+                    if (!CheckIdHelpper.CheckId(id)){
                         context.Result = new BadRequestObjectResult("Id is not a valid 24 digit hex string");
                         return;
                     }

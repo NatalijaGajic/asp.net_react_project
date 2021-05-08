@@ -39,11 +39,9 @@ namespace ReservationSystem.Core
 
             if (gamesQueryParams != null)
             {
-                if (gamesQueryParams.IsActive != null)
-                {
-                    filter = Builders<Game>.Filter.Where(game => game.IsActive == gamesQueryParams.IsActive);
-                }
-                if (gamesQueryParams.NumberOfPeople != null)
+                filter = Builders<Game>.Filter.Where(game => game.IsActive == gamesQueryParams.IsActive);
+
+                if (gamesQueryParams.NumberOfPeople != 0)
                 {
                     int number = gamesQueryParams.NumberOfPeople;
                     if (number < 0)
@@ -55,14 +53,14 @@ namespace ReservationSystem.Core
                 }
                 if(gamesQueryParams.SearchByName != null)
                 {
-                    var queryString = gamesQueryParams.SearchByName;
+                    var queryString = gamesQueryParams.SearchByName.ToLower();
                     filter = Builders<Game>.Filter.And(filter, 
-                        Builders<Game>.Filter.Where(game => game.Name.Contains(queryString)));
+                        Builders<Game>.Filter.Where(game => game.Name.ToLower().Contains(queryString)));
                 }
             }
             if (gamesQueryParams != null && gamesQueryParams.OrderBy != null)
             {
-                //TODO: Check if returns error if value doesnt match any property
+                //doesn't cause error if value doesnt match any property
                 sort = Builders<Game>.Sort.Ascending(gamesQueryParams.OrderBy);
             }
             if (paginationQuery != null)

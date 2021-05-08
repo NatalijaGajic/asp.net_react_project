@@ -31,15 +31,18 @@ namespace ReservationSystem.Core.repositories
             return workerAccount;
         }
 
-        public void DeleteClientAccount(string id)
+        public int DeleteClientAccount(string id)
         {
-            _clients.DeleteOne(client => client.Id == id);
+            DeleteResult result = _clients.DeleteOne(client => client.Id == id);
+            return (int)result.DeletedCount;
 
         }
 
-        public void DeleteWorkerAccount(string id)
+        public int DeleteWorkerAccount(string id)
         {
-            _workers.DeleteOne(w => w.Id == id);
+            DeleteResult result = _workers.DeleteOne(w => w.Id == id);
+            return (int)result.DeletedCount;
+
         }
 
         public ClientAccount GetClientAccount(string id)
@@ -84,17 +87,17 @@ namespace ReservationSystem.Core.repositories
 
         }
 
-        public ClientAccount UpdateClientAccount(ClientAccount clientAccount)
+        public bool UpdateClientAccount(ClientAccount clientAccount)
         {
-            _clients.ReplaceOne(c => c.Id == clientAccount.Id, clientAccount);
-            return clientAccount;
+            ReplaceOneResult result = _clients.ReplaceOne(c => c.Id == clientAccount.Id, clientAccount);
+            return (result.MatchedCount > 0);
         }
 
-        public WorkerAccount UpdateWorkerAccount(WorkerAccount workerAccount)
+        public bool UpdateWorkerAccount(WorkerAccount workerAccount)
         {
             //TODO: its not returning from database workerAccount is from body
-            _workers.ReplaceOne(w => w.Id == workerAccount.Id, workerAccount);
-            return workerAccount;
+            ReplaceOneResult result = _workers.ReplaceOne(w => w.Id == workerAccount.Id, workerAccount);
+            return (result.MatchedCount > 0);
         }
     }
 }
