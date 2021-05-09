@@ -12,7 +12,7 @@ namespace ReservationSystem.Core.services
         List<SystemRole> GetSystemRoles();
         SystemRole AddSystemRole(SystemRole role);
         SystemRole GetSystemRole(string id);
-        void DeleteSystemRole(string id);
-        SystemRole UpdateSystemRole(SystemRole role);
+        bool DeleteSystemRole(string id);
+        bool UpdateSystemRole(SystemRole role);
     }
 }

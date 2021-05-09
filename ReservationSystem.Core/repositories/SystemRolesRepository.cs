@@ -22,9 +22,10 @@ namespace ReservationSystem.Core.repositories
             return role;
         }
 
-        public void DeleteSystemRole(string id)
+        public int DeleteSystemRole(string id)
         {
-            _systemRoles.DeleteOne(r => r.Id == id);
+            DeleteResult result = _systemRoles.DeleteOne(r => r.Id == id);
+            return (int)result.DeletedCount;
         }
 
         public SystemRole GetSystemRole(string id)
@@ -42,10 +43,10 @@ namespace ReservationSystem.Core.repositories
             return _systemRoles.Find(r => true).ToList();
         }
 
-        public SystemRole UpdateSystemRole(SystemRole role)
+        public bool UpdateSystemRole(SystemRole role)
         {
-            _systemRoles.ReplaceOne(r => r.Id == role.Id, role);
-            return role;
+            ReplaceOneResult result = _systemRoles.ReplaceOne(r => r.Id == role.Id, role);
+            return result.MatchedCount > 0;
         }
     }
 }

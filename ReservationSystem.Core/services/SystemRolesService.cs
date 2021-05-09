@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using AutoMapper;
+using MongoDB.Driver;
 using ReservationSystem.Core.models;
 using ReservationSystem.Core.repositories;
 using System;
@@ -12,20 +13,27 @@ namespace ReservationSystem.Core.services
     public class SystemRolesService : ISystemRolesService
     {
         private readonly ISystemRolesRepository _systemRolesRepository;
+        private readonly IMapper _mapper;
 
-        public SystemRolesService(ISystemRolesRepository systemRolesRepositor)
+
+        public SystemRolesService(ISystemRolesRepository systemRolesRepositor, IMapper mapper)
         {
             _systemRolesRepository = systemRolesRepositor;
+            _mapper = mapper;
         }
         public SystemRole AddSystemRole(SystemRole role)
         {
-            _systemRolesRepository.AddSystemRole(role);
-            return role;
+            SystemRole result =_systemRolesRepository.AddSystemRole(role);
+            return result;
         }
 
-        public void DeleteSystemRole(string id)
+        public bool DeleteSystemRole(string id)
         {
-            _systemRolesRepository.DeleteSystemRole(id);
+            if (_systemRolesRepository.GetSystemRole(id) == null)
+            {
+                return false;
+            }
+            return _systemRolesRepository.DeleteSystemRole(id) > 0;
         }
 
         public SystemRole GetSystemRole(string id)
@@ -38,11 +46,13 @@ namespace ReservationSystem.Core.services
             return _systemRolesRepository.GetSystemRoles();
         }
 
-        public SystemRole UpdateSystemRole(SystemRole role)
+        public bool UpdateSystemRole(SystemRole role)
         {
-            _systemRolesRepository.GetSystemRole(role.Id);
-            _systemRolesRepository.UpdateSystemRole(role);
-            return role;
+            if (_systemRolesRepository.GetSystemRole(role.Id) == null)
+            {
+                return false;
+            }
+            return _systemRolesRepository.UpdateSystemRole(role);
         }
     }
 }
