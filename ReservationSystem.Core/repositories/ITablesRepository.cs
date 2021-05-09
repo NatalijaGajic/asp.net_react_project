@@ -8,7 +8,7 @@ namespace ReservationSystem.Core.repositories
         List<Table> GetTables();
         Table AddTable(Table table);
         Table GetTable(string id);
-        void DeleteTable(string id);
-        Table UpdateTable(Table table);
+        int DeleteTable(string id);
+        bool UpdateTable(Table table);
     }
 }

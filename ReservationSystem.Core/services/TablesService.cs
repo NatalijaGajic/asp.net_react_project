@@ -22,9 +22,13 @@ namespace ReservationSystem.Core.services
             return table;
         }
 
-        public void DeleteTable(string id)
+        public bool DeleteTable(string id)
         {
-            _tablesRepository.DeleteTable(id);
+            if(_tablesRepository.GetTable(id) == null)
+            {
+                return false;
+            }
+            return _tablesRepository.DeleteTable(id) > 0;
         }
 
         public Table GetTable(string id)
@@ -37,11 +41,12 @@ namespace ReservationSystem.Core.services
             return _tablesRepository.GetTables();
         }
 
-        public Table UpdateTable(Table table)
+        public bool UpdateTable(Table table)
         {
-            _tablesRepository.GetTable(table.Id);
-            _tablesRepository.UpdateTable(table);
-            return table;
+            if (_tablesRepository.GetTable(table.Id) == null){
+                return false;
+            }
+            return _tablesRepository.UpdateTable(table);
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ReservationSystem.Core.contracts;
+using ReservationSystem.Core.dtos;
 using ReservationSystem.Core.exceptions;
 using ReservationSystem.Core.models;
 using ReservationSystem.Core.services;

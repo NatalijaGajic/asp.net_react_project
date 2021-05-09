@@ -21,14 +21,15 @@ namespace ReservationSystem.Core.repositories
             return table;
         }
 
-        public void DeleteTable(string id)
+        public int DeleteTable(string id)
         {
-            _tables.DeleteOne(t => t.Id == id);
+            DeleteResult result = _tables.DeleteOne(t => t.Id == id);
+            return (int)result.DeletedCount;
         }
 
         public Table GetTable(string id)
         {
-            return _tables.Find(t => t.Id == id).First();
+            return _tables.Find(t => t.Id == id).FirstOrDefault();
         }
 
         public List<Table> GetTables()
@@ -36,11 +37,10 @@ namespace ReservationSystem.Core.repositories
             return _tables.Find(t => true).ToList();
         }
 
-        public Table UpdateTable(Table table)
+        public bool UpdateTable(Table table)
         {
-            GetTable(table.Id);
-            _tables.ReplaceOne(t => t.Id == table.Id, table);
-            return table;
+            ReplaceOneResult result = _tables.ReplaceOne(t => t.Id == table.Id, table);
+            return result.MatchedCount > 0;
         }
     }
 }

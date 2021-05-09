@@ -12,7 +12,7 @@ namespace ReservationSystem.Core.services
         List<Table> GetTables();
         Table AddTable(Table table);
         Table GetTable(string id);
-        void DeleteTable(string id);
-        Table UpdateTable(Table table);
+        bool DeleteTable(string id);
+        bool UpdateTable(Table table);
     }
 }

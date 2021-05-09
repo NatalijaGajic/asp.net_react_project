@@ -9,13 +9,14 @@ using System.Threading.Tasks;
 
 namespace ReservationSystem.Core.profiles
 {
-    public class TableProfile: Profile
+    class PaymentProfile: Profile
     {
-        public TableProfile()
+        public PaymentProfile()
         {
-            CreateMap<TableCreationDto, Table>();
-            CreateMap<TableUpdateDto, Table>();
-            CreateMap<Table, TableDto>();
+            CreateMap<Payment, PaymentDto>();
+            CreateMap<PaymentCreationDto, Payment>();
+            CreateMap<PaymentUpdateDto, Payment>();
+
         }
     }
 }

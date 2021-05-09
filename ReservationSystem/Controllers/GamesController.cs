@@ -91,6 +91,7 @@ namespace ReservationSystem.Controllers
         {
             try
             {
+                //TODO: check id format
                 if (_gamesServices.DeleteGame(id))
                 {
                     return NoContent();
@@ -114,6 +115,7 @@ namespace ReservationSystem.Controllers
             {
                 Game g = _mapper.Map<Game>(game);
                 g.Id = id;
+                //TODO: check id format
                 if (_gamesServices.UpdateGame(g))
                 {
                     return Ok();

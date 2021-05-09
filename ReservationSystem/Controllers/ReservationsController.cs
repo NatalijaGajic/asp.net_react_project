@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ReservationSystem.Core.dtos;
 using ReservationSystem.Core.models;
 using ReservationSystem.Core.services;
 using System;
@@ -14,15 +16,29 @@ namespace ReservationSystem.Controllers
     public class ReservationsController : ControllerBase
     {
         private readonly IReservationsService _reservationService;
-        public ReservationsController(IReservationsService reservationService)
+        private readonly IMapper _mapper;
+
+        public ReservationsController(IReservationsService reservationService, IMapper mapper)
         {
             _reservationService = reservationService;
+            _mapper = mapper;
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult Get()
         {
-            return Ok(_reservationService.GetReservations());
+            try
+            {
+                return Ok(_mapper.Map<List<ReservationDto>>(_reservationService.GetReservations()));
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+
+            }
         }
 
         [HttpGet("{id}", Name = "GetReservation")]

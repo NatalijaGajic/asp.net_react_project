@@ -7,7 +7,6 @@ using ReservationSystem.Core.dtos;
 using ReservationSystem.Core.services;
 using ReservationSystem.Core.models;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text.RegularExpressions;
 using ReservationSystem.Core.Utils;
 
 namespace ReservationSystem.filters
