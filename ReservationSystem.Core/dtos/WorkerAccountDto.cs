@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ReservationSystem.Core.dtos
 {
-    public class ClientAccountCreationDto
+    public class WorkerAccountDto
     {
         public string Username { get; set; }
         public string Email { get; set; }
@@ -14,6 +14,9 @@ namespace ReservationSystem.Core.dtos
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Telephone { get; set; }
-
+        public String Role { get; set; }
+        public string AccountType { get; set; }
+        public DateTime StartContractDate { get; set; }
+        public DateTime EndContractDate { get; set; }
     }
 }

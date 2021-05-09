@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ReservationSystem.Core.dtos;
 using ReservationSystem.Core.models;
 using ReservationSystem.Core.services;
 using System;
@@ -14,36 +16,85 @@ namespace ReservationSystem.Controllers
     public class WorkersController : ControllerBase
     {
         private readonly IAccountsService _accountsServices;
-        public WorkersController(IAccountsService accountsServices)
+        private readonly IMapper _mapper;
+        public WorkersController(IAccountsService accountsServices, IMapper mapper)
         {
             _accountsServices = accountsServices;
+            _mapper = mapper;
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult Get()
         {
-            return Ok(_accountsServices.GetWorkerAccounts());
+            try
+            {
+                return Ok(_mapper.Map<List<WorkerAccountDto>>(_accountsServices.GetWorkerAccounts()));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
         }
 
         [HttpGet("{id}", Name = "GetWorker")]
-        public IActionResult GetWirkerById(string id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetWorkerById(string id)
         {
-            return Ok(_accountsServices.GetWorkerAccount(id));
+            try
+            {
+                WorkerAccount w = _accountsServices.GetWorkerAccount(id);
+                if (w == null)
+                {
+                    return NotFound("Worker account with id not found");
+                }
+                return Ok(_mapper.Map<WorkerAccountDto>(w));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
 
         [HttpPost]
-        public IActionResult AddWorker(WorkerAccount workerAccount)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult AddWorker(WorkerAccountCreationDto workerAccount)
         {
-            _accountsServices.AddWorkerAccount(workerAccount);
-            return CreatedAtRoute("GetWorker", new { id = workerAccount.Id }, workerAccount);
+            try
+            {
+                WorkerAccount worker = _mapper.Map<WorkerAccount>(workerAccount);
+                worker = _accountsServices.AddWorkerAccount(worker);
+                ;
+                return CreatedAtRoute("GetWorker", new { id = worker.Id }, worker);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteWorker(string id)
         {
-            _accountsServices.DeleteWorkerAccount(id);
-            return NoContent();
+            try
+            {
+                if (_accountsServices.DeleteWorkerAccount(id))
+                {
+                    return NoContent();
+
+                }
+                return NotFound("Worker account with id not found");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         [HttpPut("{id}")]

@@ -35,8 +35,12 @@ namespace ReservationSystem.Core.services
 
         public WorkerAccount AddWorkerAccount(WorkerAccount workerAccount)
         {
-            _accountsRepository.AddWorkerAccount(workerAccount);
-            return workerAccount;
+            string roleName = "Worker";
+            SystemRole role = _systemRolesRepository.GetSystemRoleByName(roleName);
+            workerAccount.Role = role;
+            workerAccount.AccountType = "Worker";
+            WorkerAccount w =_accountsRepository.AddWorkerAccount(workerAccount);
+            return w;
         }
 
         public bool DeleteClientAccount(string id)
@@ -76,6 +80,10 @@ namespace ReservationSystem.Core.services
 
         public WorkerAccount GetWorkerAccount(string id)
         {
+            if (!CheckIdHelpper.CheckId(id))
+            {
+                throw new InvalidCastException("Id is not a valid 24 digit hex string");
+            }
             return _accountsRepository.GetWorkerAccount(id);
 
         }
@@ -110,8 +118,13 @@ namespace ReservationSystem.Core.services
 
         public bool UpdateWorkerAccount(WorkerAccount workerAccount)
         {
-            _accountsRepository.GetWorkerAccount(workerAccount.Id);
-            return _accountsRepository.UpdateWorkerAccount(workerAccount);
+            WorkerAccount worker = _accountsRepository.GetWorkerAccount(workerAccount.Id);
+            if(worker == null)
+            {
+                return false;
+            }
+            setUpdatedWorkerAccountFields(worker, workerAccount);
+            return _accountsRepository.UpdateWorkerAccount(worker);
         }
 
         private void setUpdatedClientAccountFields(ClientAccount client, ClientAccount clientAccount)
@@ -120,6 +133,17 @@ namespace ReservationSystem.Core.services
             client.FirstName = clientAccount.FirstName;
             client.LastName = clientAccount.LastName;
             client.Telephone = clientAccount.Telephone;
+        }
+
+        private void setUpdatedWorkerAccountFields(WorkerAccount worker, WorkerAccount workerAccount)
+        {
+            worker.Username = workerAccount.Username;
+            worker.FirstName = workerAccount.FirstName;
+            worker.LastName = workerAccount.LastName;
+            worker.Telephone = workerAccount.Telephone;
+            //TODO: ckeck if start < end
+            worker.StartContractDate = workerAccount.StartContractDate;
+            worker.EndContractDate = workerAccount.EndContractDate;
         }
     }
 }
