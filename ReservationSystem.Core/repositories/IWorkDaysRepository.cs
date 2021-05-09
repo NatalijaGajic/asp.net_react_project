@@ -13,7 +13,7 @@ namespace ReservationSystem.Core.repositories
         WorkDay AddWorkDay(WorkDay workDay);
         WorkDay GetWorkDay(string id);
         WorkDay GetWorkDayByDate(DateTime date);
-        void DeleteWorkDay(string id);
-        WorkDay UpdateWorkDay(WorkDay workDay);
+        int DeleteWorkDay(string id);
+        bool UpdateWorkDay(WorkDay workDay);
     }
 }

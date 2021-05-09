@@ -22,14 +22,14 @@ namespace ReservationSystem.Core.repositories
             return workDay;
         }
 
-        public void DeleteWorkDay(string id)
+        public int DeleteWorkDay(string id)
         {
-            _workDays.DeleteOne(w => w.Id == id);
+           DeleteResult result = _workDays.DeleteOne(w => w.Id == id);
+            return (int)result.DeletedCount;
         }
 
         public WorkDay GetWorkDay(string id)
         {
-            Console.WriteLine(id);
             return _workDays.Find(w => w.Id == id).FirstOrDefault();
         }
 
@@ -44,11 +44,10 @@ namespace ReservationSystem.Core.repositories
 
         }
 
-        public WorkDay UpdateWorkDay(WorkDay workDay)
+        public bool UpdateWorkDay(WorkDay workDay)
         {
-            GetWorkDay(workDay.Id);
-            _workDays.ReplaceOne(w => w.Id == workDay.Id, workDay);
-            return workDay;
+            ReplaceOneResult result = _workDays.ReplaceOne(w => w.Id == workDay.Id, workDay);
+            return result.MatchedCount > 0;
         }
     }
 }

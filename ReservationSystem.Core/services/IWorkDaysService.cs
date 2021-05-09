@@ -13,8 +13,8 @@ namespace ReservationSystem.Core.services
         List<WorkDay> GetWorkDays();
         WorkDay AddWorkDay(WorkDay workDay);
         WorkDay GetWorkDay(string id);
-        void DeleteWorkDay(string id);
-        WorkDay UpdateWorkDay(WorkDay workDay);
+        bool DeleteWorkDay(string id);
+        bool UpdateWorkDay(WorkDay workDay);
         WorkDay GetWorkDayByDate(WorkDaysQueryParams queryParams);
     }
 }

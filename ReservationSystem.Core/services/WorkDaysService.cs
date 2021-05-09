@@ -24,9 +24,13 @@ namespace ReservationSystem.Core.services
             return workDay;
         }
 
-        public void DeleteWorkDay(string id)
+        public bool DeleteWorkDay(string id)
         {
-            _worksDaysRepository.DeleteWorkDay(id);
+            if(_worksDaysRepository.GetWorkDay(id) == null)
+            {
+                return false;
+            }
+            return _worksDaysRepository.DeleteWorkDay(id) > 0;
         }
 
         public WorkDay GetWorkDay(string id)
@@ -74,11 +78,14 @@ namespace ReservationSystem.Core.services
 
         }
 
-        public WorkDay UpdateWorkDay(WorkDay workDay)
+        public bool UpdateWorkDay(WorkDay workDay)
         {
-            _worksDaysRepository.GetWorkDay(workDay.Id);
-            _worksDaysRepository.UpdateWorkDay(workDay);
-            return workDay;
+            //TODO: map date because updatedto doesnt have date
+            if(_worksDaysRepository.GetWorkDay(workDay.Id) == null)
+            {
+                return false;
+            }
+            return _worksDaysRepository.UpdateWorkDay(workDay);
         }
     }
 }
