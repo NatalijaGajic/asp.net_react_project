@@ -12,7 +12,7 @@ namespace ReservationSystem.Core
         List<Game> GetGames(PaginationQuery paginationQuery, GamesQueryParams gamesQueryParams);
         Game AddGame(Game game);
         Game GetGame(string id);
-        void DeleteGame(string id);
-        Game UpdateGame(Game game);
+        bool DeleteGame(string id);
+        bool UpdateGame(Game game);
     }
 }

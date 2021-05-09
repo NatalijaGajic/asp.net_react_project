@@ -10,10 +10,11 @@ namespace ReservationSystem.Core.repositories
 {
     public interface IGamesRepository
     {
-        IMongoCollection<Game> GetGames();
+        public List<Game> GetGames();
         Game AddGame(Game game);
         Game GetGame(string id);
-        void DeleteGame(string id);
-        Game UpdateGame(Game game);
+        int DeleteGame(string id);
+        bool UpdateGame(Game game);
+        IMongoCollection<Game> GetGamesCollection();
     }
 }

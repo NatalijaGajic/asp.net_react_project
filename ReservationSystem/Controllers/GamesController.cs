@@ -24,6 +24,8 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult Get([FromQuery] PaginationQuery paginationQuery, [FromQuery] GamesQueryParams gamesQueryParams)
         {
             try
@@ -42,13 +44,30 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpGet("{id}", Name = "GetGame")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetGameById(string id)
         {
-            return Ok(_gamesServices.GetGame(id));
+            try
+            {
+                Game game = _gamesServices.GetGame(id);
+                if (game == null)
+                {
+                    return NotFound("Game with id not found");
+                }
+                return Ok(_mapper.Map<GameDto>(game));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult AddGame([FromBody] GameCreationDto game)
         {
             try
@@ -57,25 +76,54 @@ namespace ReservationSystem.Controllers
                 _gamesServices.AddGame(g);
                 return CreatedAtRoute("GetGame", new { id = g.Id }, g);
             }
-            catch(Exception e)
+            catch(Exception ex)
             {
-                return BadRequest(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
 
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteGame(string id)
         {
-            _gamesServices.DeleteGame(id);
-            return NoContent();
+            try
+            {
+                if (_gamesServices.DeleteGame(id))
+                {
+                    return NoContent();
+
+                }
+                return NotFound("Game with id not found");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateGame(string id, Game game)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult UpdateGame(string id, GameUpdateDto game)
         {
-            game.Id = id;
-            return Ok(_gamesServices.UpdateGame(game));
+            try
+            {
+                Game g = _mapper.Map<Game>(game);
+                g.Id = id;
+                if (_gamesServices.UpdateGame(g))
+                {
+                    return Ok();
+                }
+                return NotFound("Game with id not found");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
     }
 }

@@ -19,25 +19,31 @@ namespace ReservationSystem.Core.repositories
             return game;
         }
 
-        public void DeleteGame(string id)
+        public int DeleteGame(string id)
         {
-            _games.DeleteOne(game => game.Id == id);
+            DeleteResult result = _games.DeleteOne(game => game.Id == id);
+            return (int)result.DeletedCount;
         }
 
         public Game GetGame(string id)
         {
-            return _games.Find(game => game.Id == id).First();
+            return _games.Find(game => game.Id == id).FirstOrDefault();
         }
 
-        public IMongoCollection<Game> GetGames()
+        public List<Game> GetGames()
+        {
+            return _games.Find(w => true).ToList();
+        }
+
+        public bool UpdateGame(Game game)
+        {
+            ReplaceOneResult result =_games.ReplaceOne(g => g.Id == game.Id, game);
+            return result.MatchedCount > 0;
+        }
+
+        public IMongoCollection<Game> GetGamesCollection()
         {
             return _games;
-        }
-
-        public Game UpdateGame(Game game)
-        {
-            _games.ReplaceOne(g => g.Id == game.Id, game);
-            return game;
         }
     }
 }

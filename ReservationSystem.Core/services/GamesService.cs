@@ -17,13 +17,13 @@ namespace ReservationSystem.Core
 
         public Game AddGame(Game game)
         {
-            _gamesRepository.AddGame(game);
-            return game;
+            Game g = _gamesRepository.AddGame(game);
+            return g;
         }
 
-        public void DeleteGame(string id)
+        public bool DeleteGame(string id)
         {
-            _gamesRepository.DeleteGame(id);
+            return _gamesRepository.DeleteGame(id) > 0;
         }
 
         public Game GetGame(string id)
@@ -33,7 +33,7 @@ namespace ReservationSystem.Core
 
         public List<Game> GetGames(PaginationQuery paginationQuery, GamesQueryParams gamesQueryParams)
         {
-            IMongoCollection<Game> _games = _gamesRepository.GetGames();
+            IMongoCollection<Game> _games = _gamesRepository.GetGamesCollection();
             FilterDefinition<Game> filter = Builders<Game>.Filter.Where(game => true);
             SortDefinition<Game> sort = Builders<Game>.Sort.Ascending("Name");
 
@@ -79,11 +79,15 @@ namespace ReservationSystem.Core
             return _games.Find(filter).Sort(sort).ToList();
         }
 
-        public Game UpdateGame(Game game)
+        public bool UpdateGame(Game game)
         {
-            _gamesRepository.GetGame(game.Id);
-            _gamesRepository.UpdateGame(game);
-            return game;
+            Game g = _gamesRepository.GetGame(game.Id);
+            if (g == null)
+            {
+                return false;
+            }
+            return _gamesRepository.UpdateGame(game); 
         }
+
     }
 }
