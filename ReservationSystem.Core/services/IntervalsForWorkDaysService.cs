@@ -2,6 +2,7 @@
 using ReservationSystem.Core.exceptions;
 using ReservationSystem.Core.models;
 using ReservationSystem.Core.repositories;
+using ReservationSystem.Core.Utils;
 using System;
 using System.Collections.Generic;
 
@@ -17,7 +18,11 @@ namespace ReservationSystem.Core.services
         }
         public IntervalsForWorkDay GetIntervalsForWorkDay(string id)
         {
-            return _intervalsForWorkDaysRepository.GetIntervalsForWorkDay(id);
+            if (CheckIdHelpper.CheckId(id))
+            {
+                return _intervalsForWorkDaysRepository.GetIntervalsForWorkDay(id);
+            }
+            throw new InvalidIdFormatException("Id is not a valid 24 digit hex string");
         }
 
         public IntervalsForWorkDayReservationQueryParamsResponse GetIntervalsForWorkDayReservation(IntervalsForWorkDayReservationQueryParams queryParams)
@@ -36,7 +41,10 @@ namespace ReservationSystem.Core.services
                 {
                     throw new InvalidReservationQueryParametersException("Bad query parameters, required params are missing");
                 }
-
+                if (!CheckIdHelpper.CheckId(workDayId))
+                {
+                    throw new InvalidReservationQueryParametersException("Work id is not a valid 24 digit hex string");
+                }
                 IntervalsForWorkDay intervalsForWorkDay = _intervalsForWorkDaysRepository.GetIntervalsForWorkDayByWorkDayId(workDayId);
                 if (intervalsForWorkDay == null)
                 {
