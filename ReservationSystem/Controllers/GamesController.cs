@@ -23,6 +23,26 @@ namespace ReservationSystem.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("/filtered")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetFiltered([FromQuery] PaginationQuery paginationQuery, [FromQuery] GamesQueryParams gamesQueryParams)
+        {
+            try
+            {
+                return Ok(_gamesServices.GetGames(paginationQuery, gamesQueryParams));
+            }
+            catch (Exception e)
+            {
+                if (e.GetType().IsAssignableFrom(typeof(InvalidGamesQueryParamsException)))
+                {
+                    return BadRequest(e.Message);
+
+                }
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -30,7 +50,7 @@ namespace ReservationSystem.Controllers
         {
             try
             {
-                return Ok(_gamesServices.GetGames(paginationQuery, gamesQueryParams));
+                return Ok(_gamesServices.GetAllGames(paginationQuery));
             }
             catch (Exception e)
             {

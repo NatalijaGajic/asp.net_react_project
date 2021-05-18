@@ -68,6 +68,12 @@ namespace ReservationSystem
             }
 
             //app.UseHttpsRedirection();
+            app.UseCors(builder =>
+            {
+                builder.WithOrigins("http://localhost:3001");
+                builder.AllowAnyHeader();
+                builder.AllowAnyMethod();
+            });
 
             app.UseRouting();
 

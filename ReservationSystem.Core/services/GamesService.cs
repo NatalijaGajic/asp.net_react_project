@@ -26,6 +26,21 @@ namespace ReservationSystem.Core
             return _gamesRepository.DeleteGame(id) > 0;
         }
 
+        public List<Game> GetAllGames(PaginationQuery paginationQuery)
+        {
+            IMongoCollection<Game> _games = _gamesRepository.GetGamesCollection();
+            SortDefinition<Game> sort = Builders<Game>.Sort.Ascending("Name");
+            FilterDefinition<Game> filter = Builders<Game>.Filter.Where(game => game.IsActive == true);
+
+            var take = paginationQuery.PageSize > 100 ? 100 : paginationQuery.PageSize;
+            var skip = (paginationQuery.PageNumber - 1) * take;
+            if (take < 0 || skip < 0)
+            {
+                throw new InvalidGamesQueryParamsException("Query parameters PageSize and PageNumber should be a positive integer");
+            }
+            return _games.Find(filter).Sort(sort).Skip(skip).Limit(take).ToList();
+        }
+
         public Game GetGame(string id)
         {
             return _gamesRepository.GetGame(id);
