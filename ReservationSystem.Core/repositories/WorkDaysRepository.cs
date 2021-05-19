@@ -35,7 +35,9 @@ namespace ReservationSystem.Core.repositories
 
         public WorkDay GetWorkDayByDate(DateTime date)
         {
-            return _workDays.Find(w => w.Date == date).FirstOrDefault();
+            var filterBuilder = Builders<WorkDay>.Filter;
+            var filter = filterBuilder.Where(x => x.Date.Equals(date));
+            return _workDays.Find(filter).FirstOrDefault();
         }
 
         public List<WorkDay> GetWorkDays()

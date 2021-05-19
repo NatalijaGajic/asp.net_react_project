@@ -2,18 +2,15 @@ import React, {useState, useEffect} from 'react'
 import {UseForm, Form} from '../components/UseForm'
 import {Grid} from '@material-ui/core'
 import Controls from '../components/controls/Controls'
-import { createAPIEndpoint, ENDPOINTS } from '../api'
+import { createAPIEndpoint, ENDPOINTS, workDayByDate} from '../api'
 
 const initialFieldValues = {
     firstAndLastName:''
 }
 
-// [{id:2, title:2}]
-
 export default function ReservationForm() {
     const [startHour, setStartHour] = useState([]);
     const [endHour, setEndHour] = useState([]);
-
 
     function range(size, startAt) {
         let array = [...Array(size).keys()].map(i => {
@@ -56,7 +53,11 @@ export default function ReservationForm() {
             </Grid>
             <Grid container>
                 <Grid item sm={6}>
-
+                    <Controls.DatePicker
+                    name="date"
+                    label="Date"
+                    value={values.date}
+                    onChange={handleInputChange}/>
                 </Grid>     
                 <Grid item sm={3}>
                     <Controls.Select

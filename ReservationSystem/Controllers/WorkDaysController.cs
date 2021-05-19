@@ -35,7 +35,7 @@ namespace ReservationSystem.Controllers
                     try
                     {
                         //TODO: make date in WorkDaysQueryParams type datetime validation easier
-                        _workDaysService.GetWorkDayByDate(queryParams);
+                        return Ok(_workDaysService.GetWorkDayByDate(queryParams));
                     }
                     catch (Exception e)
                     {

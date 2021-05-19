@@ -35,7 +35,8 @@ namespace ReservationSystem.Core.services
 
         public WorkDay GetWorkDay(string id)
         {
-            return _worksDaysRepository.GetWorkDay(id);
+           WorkDay workDay = _worksDaysRepository.GetWorkDay(id);
+            return workDay;
         }
 
         public WorkDay GetWorkDayByDate(WorkDaysQueryParams queryParams) 
@@ -50,6 +51,9 @@ namespace ReservationSystem.Core.services
                     try
                     {
                         DateTime dateTime = new DateTime(Convert.ToInt32(dateSplits[0]), Convert.ToInt32(dateSplits[1]), Convert.ToInt32(dateSplits[2]));
+                        //Has to be converted to UTC because Mongo stores dates in UTC
+                        dateTime = dateTime.ToUniversalTime();
+                        Console.WriteLine(dateTime);
                         return _worksDaysRepository.GetWorkDayByDate(dateTime);
                         //TODO: conversion and bad date errors
                     }
