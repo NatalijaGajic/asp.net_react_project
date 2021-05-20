@@ -70,7 +70,7 @@ namespace ReservationSystem
             //app.UseHttpsRedirection();
             app.UseCors(builder =>
             {
-                builder.WithOrigins("http://localhost:3001");
+                builder.WithOrigins("http://localhost:3000");
                 builder.AllowAnyHeader();
                 builder.AllowAnyMethod();
             });

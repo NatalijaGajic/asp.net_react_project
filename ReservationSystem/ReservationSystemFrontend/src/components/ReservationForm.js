@@ -5,7 +5,10 @@ import Controls from '../components/controls/Controls'
 import { createAPIEndpoint, ENDPOINTS, workDayByDate} from '../api'
 
 const initialFieldValues = {
-    firstAndLastName:''
+    firstAndLastName:'',
+    startHour:0,
+    endHour:0,
+    date: new Date()
 }
 
 export default function ReservationForm() {
@@ -39,16 +42,43 @@ export default function ReservationForm() {
         .catch(err => console.log(err))
     }, []);
 
-    const {values, setValues, handleInputChange} = UseForm(initialFieldValues);   
+    const validate = (fieldValues = values) => {
+        let temp = {...errors}
+        if('firstAndLastName' in fieldValues)
+            temp.firstAndLastName = fieldValues.firstAndLastName?"":"This field is required"
+        if('startHour' in fieldValues)
+            temp.startHour = fieldValues.startHour.length !=0?"":"This field is required"
+        if('endHour' in fieldValues)
+            temp.endHour = fieldValues.endHour.length != 0?"":"This field is required"
+        if('endHour' in fieldValues)
+            temp.endHour = fieldValues.startHour<fieldValues.endHour?"":"Value must be greater than start hour"
+        if('date' in fieldValues)
+            temp.date = fieldValues.date != null?"":"This field is required"
+        setErrors({
+            ...temp
+        })
+        //Only returns when validate is called from handleSubmit:
+        if(fieldValues == values)
+            return Object.values(temp).every(x=> x == "");
+    }
+
+    const handleSubmit = e => {
+        e.preventDefault()
+        if(!validate())
+            window.alert('Testing');
+    }
+
+    const {values, setValues, handleInputChange,  errors, setErrors} = UseForm(initialFieldValues, true, validate);   
      return (
-        <Form>
+       <Form onSubmit={handleSubmit}>
             <Grid container>
                 <Grid item sm={6}>
                     <Controls.Input
                         name="firstAndLastName"
                         value={values.firstAndLastName}
                         label="First and Last Name"
-                        onChange={handleInputChange}/>
+                        onChange={handleInputChange}
+                        error={errors.firstAndLastName}/>
                 </Grid>
             </Grid>
             <Grid container>
@@ -57,7 +87,9 @@ export default function ReservationForm() {
                     name="date"
                     label="Date"
                     value={values.date}
-                    onChange={handleInputChange}/>
+                    onChange={handleInputChange}
+                    error={errors.date}
+                    />
                 </Grid>     
                 <Grid item sm={3}>
                     <Controls.Select
@@ -65,7 +97,8 @@ export default function ReservationForm() {
                     label="Start Hour"
                     value={values.startHour}
                     onChange={handleInputChange}
-                    options={startHour}/>
+                    options={startHour}
+                    error={errors.startHour}/>
                 </Grid>
                 <Grid item sm={3}>
                     <Controls.Select
@@ -73,7 +106,20 @@ export default function ReservationForm() {
                     label="End Hour"
                     value={values.endHour}
                     onChange={handleInputChange}
-                    options={endHour}/>
+                    options={endHour}
+                    error={errors.endHour}/>
+                </Grid>
+            </Grid>
+            <Grid container>
+                <Grid item sm={9}></Grid>
+                <Grid container sm={3} alignItems="center" justify="center">
+                    <Controls.Button
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    text="submit"
+                    type="submit"/>
+
                 </Grid>
             </Grid>
         </Form>

@@ -1,10 +1,11 @@
 import React from 'react'
-import {FormControl, InputLabel, MenuItem, Select as MuiSelect} from '@material-ui/core'
+import {FormControl, FormHelperText, InputLabel, MenuItem, Select as MuiSelect} from '@material-ui/core'
 
 export default function Select(props) {
-    const {name, label, value, onChange, options} = props;
+    const {name, label, value, onChange, options, error=null} = props;
     return (
-        <FormControl variant="outlined">
+        <FormControl variant="outlined"
+        {...(error && {error:true, helperText:error})}>
             <InputLabel>{label}</InputLabel>
             <MuiSelect
             name={name}
@@ -18,6 +19,7 @@ export default function Select(props) {
                     )
                 }
             </MuiSelect>
+            {error && <FormHelperText>{error}</FormHelperText>}
         </FormControl>
     )
 }
