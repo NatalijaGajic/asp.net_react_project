@@ -2,12 +2,9 @@ import React, {useState, useEffect} from 'react'
 import {UseForm, Form} from '../components/UseForm'
 import {Grid} from '@material-ui/core'
 import Controls from '../components/controls/Controls'
-import { createAPIEndpoint, ENDPOINTS, workDayByDate} from '../api'
-import ReservationGamesList from './ReservationGamesList'
-import ReservationTablesList from './ReservationTablesList'
+import { workDayByDate} from '../api'
 import PaperForm from '../components/PaperForm';
-import { setDate } from 'date-fns'
-
+import GamesAndTablesForm from '../components/GamesAndTablesForm'
 
 const initialFieldValues = {
     firstAndLastName:'',
@@ -16,11 +13,12 @@ const initialFieldValues = {
     date: new Date(),
     startHours:[],
     endHours:[],
-    game: {}
+    game: {name:''},
+    table: {code:''}
 }
 
 export default function ReservationForm() {
-    const [isSbmitted, setSubmitted] = useState(false);
+    const [isSubmitted, setSubmitted] = useState(false);
     const [queryParams, setQueryParams] = useState({workDayId:'', startHour:0, endHour:0});
     const [workDayId, setWorkDayId] = useState('');
     const [date, setDate] = useState(new Date());
@@ -114,21 +112,6 @@ export default function ReservationForm() {
                 endHours:[]
             });
         });
-       /* createAPIEndpoint(ENDPOINTS.WORK_DAYS).fetchById("609a5f65525f3f3a483b9f84")
-        .then(res => {
-            console.log('Fetching work day scheme');
-            let start = res.data.workDayScheme.startHour;
-            let end = res.data.workDayScheme.endHour;
-            let size = end - start;
-            //setStartHour(range(size, start));
-            //setEndHour(range(size, start));
-            setValues({
-                ...values,
-                startHours:range(size, start),
-                endHours:range(size, start)
-            })
-        })
-        .catch(err => console.log(err))*/
     }, [date]); //when date is changed fetch new work day scheme, it its values.date loop
 
     const handleSubmit = e => {
@@ -148,10 +131,19 @@ export default function ReservationForm() {
     }
 
     const chooseGame = game => {
+        console.log(game);
         setValues({
             ...values,
             game:game
         });
+    }
+
+    const chooseTable = table => {
+        console.log(table);
+        setValues({
+            ...values,
+            table:table
+        })
     }
 
      return (
@@ -205,7 +197,7 @@ export default function ReservationForm() {
                         variant="contained"
                         color="primary"
                         size="large"
-                        text="submit"
+                        text="search"
                         type="submit"/>
 
                     </Grid>
@@ -213,19 +205,8 @@ export default function ReservationForm() {
             </Grid>
         </Form>
         </PaperForm>
-        <PaperForm>
-            <Form>
-                <Grid container>
-                    <Grid item sm={6}>
-                        <ReservationGamesList 
-                        {...{queryParams, setQueryParams, chooseGame}}/>
-                    </Grid>
-                    <Grid item sm={6}>
-                        <ReservationTablesList/>
-                    </Grid>
-                </Grid>
-            </Form>
-        </PaperForm>
+        <GamesAndTablesForm
+        {... {queryParams, setQueryParams, chooseGame, chooseTable}}/>
         <PaperForm>
             <Form>
             <Grid container>
@@ -255,6 +236,36 @@ export default function ReservationForm() {
                     name="endHourDisabled"
                     label="End Hour"
                     value={values.endHour}/>
+                </Grid>
+            </Grid>
+            <Grid container>
+                <Grid item sm={6}>
+                    <Controls.InputDisabled
+                    name="gameDisabled"
+                    label="Game"
+                    value={values.game.name}
+                    />
+                </Grid>
+                <Grid item sm={6}>
+                    <Controls.InputDisabled
+                    name="tableDisabled"
+                    label="Table"
+                    value={values.table.code}
+                    />
+                </Grid>
+            </Grid>
+            <Grid container>
+                <Grid item sm={9}></Grid>
+                <Grid item sm={3} >
+                    <Grid container alignItems="center" justify="center">
+                        <Controls.Button
+                        variant="contained"
+                        color="primary"
+                        size="large"
+                        text="submit"
+                        type="submit"/>
+
+                    </Grid>
                 </Grid>
             </Grid>
             </Form>

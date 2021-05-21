@@ -1,9 +1,7 @@
 import { ListItemText, List, ListItem, Paper, IconButton, InputBase, makeStyles, ListItemSecondaryAction} from '@material-ui/core';
 import React, {useState, useEffect} from 'react'
-import {intervalsForWorkDay} from '../api/index';
 import SearchTwoToneIcon from '@material-ui/icons/SearchTwoTone';
 import AddCircleOutlineTwoToneIcon from '@material-ui/icons/AddCircleOutlineTwoTone';
-import { Autocomplete } from '@material-ui/lab';
 
 const useStyles = makeStyles(theme => ({
     searchPaper: {
@@ -38,24 +36,9 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function ReservationGamesList(props) {
-    const {queryParams, setQueryParams, chooseGame} = props;
-    const [gamesArray, setGamesArray] = useState([]);
-    const [searchList, setSearchList] = useState([]);
+    const {searchList, setSearchList, gamesArray, setGamesArray, chooseGame} = props;
     const [searchKey, setSearchKey] = useState('');
     const classes = useStyles();
-
-    useEffect(() => {
-        intervalsForWorkDay(queryParams.workDayId, queryParams.startHour, queryParams.endHour)
-        .fetch()
-        .then(res => {
-            console.log(res.data);
-            setGamesArray(res.data.games);
-            setSearchList(res.data.games);
-        })
-        .catch(err => {
-            console.log(err);
-        });
-    }, [queryParams]);
 
     useEffect(() => {
         let x = [...gamesArray];
@@ -69,7 +52,7 @@ export default function ReservationGamesList(props) {
         <div>
             <Paper className={classes.searchPaper}>
                 <InputBase
-                placeholder="Search for games"
+                placeholder="Search for game"
                 className={classes.searchInput}
                 value={searchKey}
                 onChange={e => setSearchKey(e.target.value)}/>
@@ -87,7 +70,7 @@ export default function ReservationGamesList(props) {
                             secondary={item.valute + item.price+' per hour'}
                             />
                                 <ListItemSecondaryAction>
-                                    <IconButton>
+                                    <IconButton onClick={e => chooseGame(item)}>
                                         <AddCircleOutlineTwoToneIcon/>
                                     </IconButton>
                                 </ListItemSecondaryAction>
