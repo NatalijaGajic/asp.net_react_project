@@ -14,9 +14,9 @@ namespace ReservationSystem.Core.profiles
         public PaymentProfile()
         {
             CreateMap<Payment, PaymentDto>();
-            CreateMap<PaymentCreationDto, Payment>().ForMember(
+            CreateMap<PaymentCreationDto, Payment>().ForPath(
                 dest => dest.Reservation.Id,
-                opt => opt.MapFrom(src => $"{src.ReservationId}")).ForMember(
+                opt => opt.MapFrom(src => $"{src.ReservationId}")).ForPath(
                 dest => dest.WorkerAccount.Id,
                 opt => opt.MapFrom(src => $"{src.WorkerAccountId}"));
             CreateMap<PaymentUpdateDto, Payment>();

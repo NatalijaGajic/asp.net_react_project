@@ -13,12 +13,10 @@ namespace ReservationSystem.Validators
         public PaymentCreationDtoValidator()
         {
             //TODO: Custom check with utils function if ids are in the right format
-            RuleFor(x => x.WorkerAccountId).NotNull().NotEmpty();
             RuleFor(x => x.Price).NotNull().NotEmpty().GreaterThan(0);
             RuleFor(x => x.Valute).NotNull().NotEmpty();
-            RuleFor(x => x.ReservationId).NotNull().NotEmpty();
-            RuleFor(x => x.WorkerAccountId).Must(id => CheckIdHelpper.CheckId(id)).WithMessage("WorkerAccountId is not a valid 24 digit hex string");
-            RuleFor(x => x.ReservationId).Must(id => CheckIdHelpper.CheckId(id)).WithMessage("ReservationId is not a valid 24 digit hex string");
+            RuleFor(x => x.WorkerAccountId).Must(id => id!= null && CheckIdHelpper.CheckId(id)).WithMessage("WorkerAccountId is not a valid 24 digit hex string");
+            RuleFor(x => x.ReservationId).Must(id => id != null && CheckIdHelpper.CheckId(id)).WithMessage("ReservationId is not a valid 24 digit hex string");
 
         }
     }

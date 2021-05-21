@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {UseForm, Form} from '../components/UseForm'
 import {Grid} from '@material-ui/core'
 import Controls from '../components/controls/Controls'
-import { workDayByDate} from '../api'
+import { workDayByDate, createAPIEndpoint, ENDPOINTS} from '../api'
 import PaperForm from '../components/PaperForm';
 import GamesAndTablesForm from '../components/GamesAndTablesForm'
 
@@ -17,14 +17,29 @@ const initialFieldValues = {
     startHours:[],
     endHours:[],
     game: {name:''},
-    table: {code:''}
+    table: {code:''},
+    workDayId:''
 }
+
 
 export default function ReservationForm() {
     const [isSubmitted, setSubmitted] = useState(false);
     const [queryParams, setQueryParams] = useState({workDayId:'', startHour:0, endHour:0});
-    const [workDayId, setWorkDayId] = useState('');
-    const [date, setDate] = useState(new Date());
+    const [postBody, setPostBody] = useState({
+        firstAndLastName: '',
+        startHour: 0,
+        endHour: 0,
+        hours: 0,
+        numberOfPeople: 0,
+        account: {},
+        game: {name: ''},
+        table: {code: ''},
+        workDayId:''});
+    
+    //const [workDayId, setWorkDayId] = useState(''); //can be changed but if its not clicked search shouldn't be changed
+    const [date, setDate] = useState(new Date()); //because of useEffect, so it doesnt loop
+    const [submitDate, setSubmitDate] = useState(new Date()); 
+    //const [firstAndLastName, setFirstAndLastName] = useState('');
 
     const validate = (fieldValues = values) => {
         console.log('in validate:');
@@ -100,9 +115,11 @@ export default function ReservationForm() {
                 setValues({
                     ...values,
                     startHours:array,
-                    endHours:array
+                    endHours:array,
+                    workDayId: res.data.id,
+                    date:date
                 });
-                setWorkDayId(res.data.id);
+                //setWorkDayId(res.data.id);
             }
             
         })
@@ -123,26 +140,56 @@ export default function ReservationForm() {
             window.alert('Valid form');
             //setQueryParams, queryParams are props and triggers onEffect in ReservationGamesList component
             setQueryParams({
-                workDayId:workDayId,
                 startHour:values.startHour,
-                endHour:values.endHour
+                endHour:values.endHour,
+                workDayId:values.workDayId
             });
             setValues({
                 ...values,
                 game:{name:''},
                 table:{code:''}
             })
-            let date = getStringDate(values.date);
+            /*let date = getStringDate(values.date);
             console.log(date);
-            setDate(date);
+            setDate(date);*/
+            setPostBody({
+                firstAndLastName: values.firstAndLastName,
+                startHour: values.startHour,
+                endHour: values.endHour,
+                hours: values.endHour - values.startHour,
+                numberOfPeople: 0,
+                account: {},
+                game: values.game,
+                table: values.table,
+                workDayId: values.workDayId
+            })
+            setSubmitDate(values.date);
         }
     }
 
     const handleSubmit = e => {
         e.preventDefault();
+        //TODO: check penalties
         if(validate() && values.game.name!='' && values.table.code!=''){
             window.alert('Valid form');
-
+            createAPIEndpoint(ENDPOINTS.RESERVATIONS).create(
+                {
+                    account: {},
+                    game: values.game,
+                    table: values.table,
+                    firstAndLastName: values.firstAndLastName,
+                    startHour: values.startHour,
+                    endHour: values.endHour,
+                    hours: values.endHour - values.startHour,
+                    numberOfPeople: 0,
+                    workDayId: values.workDayId
+                  }
+            ).then(res => {
+                console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
+            });
         }
 
     }
@@ -230,7 +277,7 @@ export default function ReservationForm() {
                 <Grid item sm={6}>
                     <Controls.InputDisabled
                         name="firstAndLastNameDisabled"
-                        value={values.firstAndLastName}
+                        value={postBody.firstAndLastName}
                         label="First and Last Name"/>
                 </Grid>
             </Grid>
@@ -239,20 +286,20 @@ export default function ReservationForm() {
                     <Controls.InputDisabled
                     name="dateDisabled"
                     label="Date"
-                    value={date.length>8?date:''}
+                    value={submitDate.length>8?submitDate:''}
                     />
                 </Grid>     
                 <Grid item sm={3}>
                     <Controls.InputDisabled
                     name="startHourDisabled"
                     label="Start Hour"
-                    value={values.startHour}/>
+                    value={postBody.startHour}/>
                 </Grid>
                 <Grid item sm={3}>
                     <Controls.InputDisabled
                     name="endHourDisabled"
                     label="End Hour"
-                    value={values.endHour}/>
+                    value={postBody.endHour}/>
                 </Grid>
             </Grid>
             <Grid container>
