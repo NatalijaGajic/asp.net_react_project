@@ -13,8 +13,7 @@ namespace ReservationSystem.Core.dtos
         public decimal Price { get; set; }
         public string Valute { get; set; }
         public DateTime DateTime { get; set; }
-        public String WorkerAccountId { get; set; }
-        public String Worker { get; set; }
+        public WorkerAccount Worker { get; set; }
         public Reservation Reservation { get; set; }
     }
 }

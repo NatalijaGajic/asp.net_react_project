@@ -8,6 +8,6 @@ namespace ReservationSystem.Core.dtos
 {
     class PaymentUpdateDto
     {
-
+        //Can't be updated because reservation can only be canceled
     }
 }

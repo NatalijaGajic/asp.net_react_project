@@ -30,7 +30,7 @@ namespace ReservationSystem.Core.services
             String workDayId = queryParams.WorkDayId;
             String startHour = queryParams.StartHour;
             String endHour = queryParams.EndHour;
-            String numberOfPeople = queryParams.NumberOfPeople;
+            //String numberOfPeople = queryParams.NumberOfPeople;
             String gameId = queryParams.GameId;
             Dictionary<Table, int> tablesDict = new Dictionary<Table, int>();
             Dictionary<Game, int> gamesDict = new Dictionary<Game, int>();
@@ -89,7 +89,7 @@ namespace ReservationSystem.Core.services
                             {
                                 InitializeTablesAndGamesDict(tablesDict, freeTables, gamesDict, freeGames, gameId);
                             }
-                            catch (Exception ex)
+                            catch (Exception)
                             {
                                 return new IntervalsForWorkDayReservationQueryParamsResponse();
                             }

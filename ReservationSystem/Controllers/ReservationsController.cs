@@ -42,31 +42,86 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpGet("{id}", Name = "GetReservation")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetReservationById(string id)
         {
-            return Ok(_reservationService.GetReservation(id));
+            try
+            {
+                Reservation res =_reservationService.GetReservation(id);
+                if (res == null)
+                {
+                    return NotFound("Reservation with id not found");
+                }
+                return Ok(_mapper.Map<ReservationDto>(_reservationService.GetReservation(id)));
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
 
         [HttpPost]
-        public IActionResult AddReservation(Reservation reservation)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult AddReservation(ReservationCreationDto reservation)
         {
-            _reservationService.AddReservation(reservation);
-            return CreatedAtRoute("GetReservation", new { id = reservation.Id }, reservation);
+            try
+            {
+                Reservation res = _mapper.Map<Reservation>(reservation);
+                res = _reservationService.AddReservation(res);
+                return CreatedAtRoute("GetReservation", new { id = res.Id }, res);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteReservation(string id)
         {
-            _reservationService.DeleteReservation(id);
-            return NoContent();
+            try
+            {
+                if (_reservationService.DeleteReservation(id))
+                {
+                    return NoContent();
+                }
+                return NotFound("Reservation with id not found");
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+
+            }
         }
 
-        [HttpPut("{id}")]
-        public IActionResult UpdateReservation(string id, Reservation reservation)
+        [HttpPut("cancel/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult CancelReservation(string id)
         {
-            reservation.Id = id;
-            return Ok(_reservationService.UpdateReservation(reservation));
+            try
+            {
+                if (_reservationService.CancelReservation(id))
+                {
+                    return Ok();
+                }
+                return NotFound("Reservation with id not found");
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+
+            }
         }
     }
 }

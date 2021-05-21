@@ -16,7 +16,7 @@ namespace ReservationSystem.Core.dtos
         public byte NumberOfPeople { get; set; }
         //TODO: set is cancelled to false
         //TODO: Not all fields of account, only account info
-        public string AccountId { get; set; }
+        public Account Account { get; set; }
         public Game Game { get; set; }
         public Table Table { get; set; }
         public string WorkDayId { get; set; }

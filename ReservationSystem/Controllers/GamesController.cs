@@ -45,6 +45,7 @@ namespace ReservationSystem.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult Get([FromQuery] PaginationQuery paginationQuery, [FromQuery] GamesQueryParams gamesQueryParams)
         {
@@ -93,7 +94,7 @@ namespace ReservationSystem.Controllers
             try
             {
                 Game g = _mapper.Map<Game>(game);
-                _gamesServices.AddGame(g);
+                g = _gamesServices.AddGame(g);
                 return CreatedAtRoute("GetGame", new { id = g.Id }, g);
             }
             catch(Exception ex)

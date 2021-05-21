@@ -6,6 +6,9 @@ import { workDayByDate} from '../api'
 import PaperForm from '../components/PaperForm';
 import GamesAndTablesForm from '../components/GamesAndTablesForm'
 
+//const userId = "6072e15c7636626e81ac21fb"; //3 penalties
+const userId = "6072e13b7636626e81ac21fa";
+
 const initialFieldValues = {
     firstAndLastName:'',
     startHour:0,
@@ -114,20 +117,34 @@ export default function ReservationForm() {
         });
     }, [date]); //when date is changed fetch new work day scheme, it its values.date loop
 
-    const handleSubmit = e => {
+    const handleSearch = e => {
         e.preventDefault()
         if(validate()){
-            window.alert('Testing');
+            window.alert('Valid form');
             //setQueryParams, queryParams are props and triggers onEffect in ReservationGamesList component
             setQueryParams({
                 workDayId:workDayId,
                 startHour:values.startHour,
                 endHour:values.endHour
             });
+            setValues({
+                ...values,
+                game:{name:''},
+                table:{code:''}
+            })
             let date = getStringDate(values.date);
             console.log(date);
             setDate(date);
         }
+    }
+
+    const handleSubmit = e => {
+        e.preventDefault();
+        if(validate() && values.game.name!='' && values.table.code!=''){
+            window.alert('Valid form');
+
+        }
+
     }
 
     const chooseGame = game => {
@@ -149,7 +166,7 @@ export default function ReservationForm() {
      return (
         <div>
         <PaperForm>
-       <Form onSubmit={handleSubmit}>
+       <Form onSubmit={handleSearch}>
             <Grid container>
                 <Grid item sm={6}>
                     <Controls.Input
@@ -207,8 +224,8 @@ export default function ReservationForm() {
         </PaperForm>
         <GamesAndTablesForm
         {... {queryParams, setQueryParams, chooseGame, chooseTable}}/>
-        <PaperForm>
-            <Form>
+        <PaperForm >
+            <Form onSubmit={handleSubmit}>
             <Grid container>
                 <Grid item sm={6}>
                     <Controls.InputDisabled
@@ -222,7 +239,7 @@ export default function ReservationForm() {
                     <Controls.InputDisabled
                     name="dateDisabled"
                     label="Date"
-                    value={date}
+                    value={date.length>8?date:''}
                     />
                 </Grid>     
                 <Grid item sm={3}>
@@ -247,11 +264,13 @@ export default function ReservationForm() {
                     />
                 </Grid>
                 <Grid item sm={6}>
-                    <Controls.InputDisabled
-                    name="tableDisabled"
-                    label="Table"
-                    value={values.table.code}
-                    />
+                    <Grid container alignItems="center" justify="center">
+                        <Controls.InputDisabled
+                        name="tableDisabled"
+                        label="Table"
+                        value={values.table.code}
+                        />
+                    </Grid>
                 </Grid>
             </Grid>
             <Grid container>

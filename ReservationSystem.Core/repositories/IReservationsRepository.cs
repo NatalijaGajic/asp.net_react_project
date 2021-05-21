@@ -12,7 +12,7 @@ namespace ReservationSystem.Core.repositories
         List<Reservation> GetReservations();
         Reservation AddReservation(Reservation reservation);
         Reservation GetReservation(string id);
-        void DeleteReservation(string id);
-        Reservation UpdateReservation(Reservation reservation);
+        int DeleteReservation(string id);
+        bool UpdateReservation(Reservation reservation);
     }
 }

@@ -12,7 +12,8 @@ namespace ReservationSystem.Core.services
         List<Reservation> GetReservations();
         Reservation AddReservation(Reservation reservation);
         Reservation GetReservation(string id);
-        void DeleteReservation(string id);
-        Reservation UpdateReservation(Reservation reservation);
+        bool DeleteReservation(string id);
+        bool UpdateReservation(Reservation reservation);
+        bool CancelReservation(string id);
     }
 }

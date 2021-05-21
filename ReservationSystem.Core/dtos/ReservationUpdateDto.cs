@@ -8,5 +8,6 @@ namespace ReservationSystem.Core.dtos
 {
     public class ReservationUpdateDto
     {
+        public bool IsCancelled { get; set; }
     }
 }

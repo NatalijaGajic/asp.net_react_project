@@ -22,9 +22,22 @@ namespace ReservationSystem.Core.services
             return reservation;
         }
 
-        public void DeleteReservation(string id)
+        public bool CancelReservation(string id)
         {
-            _reservationsRepository.DeleteReservation(id);
+            Reservation reservation = _reservationsRepository.GetReservation(id);
+            if (reservation == null)
+            {
+                return false;
+            }
+            //TODO: Check penalties and date of reservation 
+            reservation.IsCancelled = true;
+            return _reservationsRepository.UpdateReservation(reservation);
+
+        }
+
+        public bool DeleteReservation(string id)
+        {
+            return _reservationsRepository.DeleteReservation(id) > 0;
         }
 
         public Reservation GetReservation(string id)
@@ -37,12 +50,15 @@ namespace ReservationSystem.Core.services
             return _reservationsRepository.GetReservations();
         }
 
-        public Reservation UpdateReservation(Reservation reservation)
+        public bool UpdateReservation(Reservation reservation)
         {
             //TODO: Reservation can only be cancelled, remote procedure call
-            _reservationsRepository.GetReservation(reservation.Id);
-            _reservationsRepository.UpdateReservation(reservation);
-            return reservation;
+            Reservation res = _reservationsRepository.GetReservation(reservation.Id);
+            if(res == null)
+            {
+                return false;
+            }
+            return _reservationsRepository.UpdateReservation(reservation);
         }
     }
 }

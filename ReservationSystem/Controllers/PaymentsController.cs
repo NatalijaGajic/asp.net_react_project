@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ReservationSystem.Core.dtos;
+using ReservationSystem.Core.Exceptions;
 using ReservationSystem.Core.models;
 using ReservationSystem.Core.services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net;
 
 namespace ReservationSystem.Controllers
 {
@@ -14,43 +15,98 @@ namespace ReservationSystem.Controllers
     public class PaymentsController : ControllerBase
     {
         private readonly IPaymentService _paymentsService;
-        public PaymentsController(IPaymentService paymentsService)
+        private readonly IMapper _mapper;
+
+        public PaymentsController(IPaymentService paymentsService, IMapper mapper)
         {
             _paymentsService = paymentsService;
+            _mapper = mapper;
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult Get()
         {
-            return Ok(_paymentsService.GetPayments());
+            try
+            {
+                return (Ok(_mapper.Map<PaymentDto>(_paymentsService.GetPayments())));
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         [HttpGet("{id}", Name = "GetPayment")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetPaymentById(string id)
         {
-            return Ok(_paymentsService.GetPayment(id));
+            try
+            {
+                Payment p = _paymentsService.GetPayment(id);
+                if (p == null)
+                {
+                    return NotFound("Payment with id not found");
+                }
+                return Ok(_mapper.Map<PaymentDto>(p));
+            }
+            catch ( Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+
+            }
+
         }
 
 
         [HttpPost]
-        public IActionResult AddPayment(Payment payment)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public IActionResult AddPayment(PaymentCreationDto payment)
         {
-            _paymentsService.AddPayment(payment);
-            return CreatedAtRoute("GetPayment", new { id = payment.Id }, payment);
+            try
+            {
+                Payment p = _mapper.Map<Payment>(payment);
+                p = _paymentsService.AddPayment(p);
+                return CreatedAtRoute("GetPayment", new { id = p.Id }, p);
+            }
+            catch (Exception ex)
+            {
+                if (ex.GetType().IsAssignableFrom(typeof(InvalidForeignKeyException)))
+                {
+                    return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+                }
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+
+            }
+            
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult DeletePayment(string id)
         {
-            _paymentsService.DeletePayment(id);
-            return NoContent();
-        }
+            try
+            {
+                if (_paymentsService.DeletePayment(id))
+                {
+                    return NotFound("Payment with id not found");
+                }
+                return NoContent();
 
-        [HttpPut("{id}")]
-        public IActionResult UpdateGame(string id, Payment payment)
-        {
-            payment.Id = id;
-            return Ok(_paymentsService.UpdatePayment(payment));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+
+            }
         }
+        //No put
     }
 }

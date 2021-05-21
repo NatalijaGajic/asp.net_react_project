@@ -112,7 +112,7 @@ namespace ReservationSystem.Core.services
             {
                 return false;
             }
-            setUpdatedClientAccountFields(client, clientAccount);
+            SetUpdatedClientAccountFields(client, clientAccount);
             return _accountsRepository.UpdateClientAccount(client);
         }
 
@@ -123,11 +123,11 @@ namespace ReservationSystem.Core.services
             {
                 return false;
             }
-            setUpdatedWorkerAccountFields(worker, workerAccount);
+            SetUpdatedWorkerAccountFields(worker, workerAccount);
             return _accountsRepository.UpdateWorkerAccount(worker);
         }
 
-        private void setUpdatedClientAccountFields(ClientAccount client, ClientAccount clientAccount)
+        private static void SetUpdatedClientAccountFields(ClientAccount client, ClientAccount clientAccount)
         {
             client.Username = clientAccount.Username;
             client.FirstName = clientAccount.FirstName;
@@ -135,7 +135,7 @@ namespace ReservationSystem.Core.services
             client.Telephone = clientAccount.Telephone;
         }
 
-        private void setUpdatedWorkerAccountFields(WorkerAccount worker, WorkerAccount workerAccount)
+        private static void SetUpdatedWorkerAccountFields(WorkerAccount worker, WorkerAccount workerAccount)
         {
             worker.Username = workerAccount.Username;
             worker.FirstName = workerAccount.FirstName;

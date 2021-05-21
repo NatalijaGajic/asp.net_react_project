@@ -9,7 +9,7 @@ namespace ReservationSystem.Core.repositories
         List<Payment> GetPayments();
         Payment AddPayment(Payment payment);
         Payment GetPayment(string id);
-        void DeletePayment(string id);
-        Payment UpdatePayment(Payment payment);
+        int DeletePayment(string id);
+        bool UpdatePayment(Payment payment);
     }
 }

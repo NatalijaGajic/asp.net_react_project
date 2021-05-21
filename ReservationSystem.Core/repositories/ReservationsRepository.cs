@@ -21,14 +21,15 @@ namespace ReservationSystem.Core.repositories
             return reservation;
         }
 
-        public void DeleteReservation(string id)
+        public int DeleteReservation(string id)
         {
-            _reservations.DeleteOne(r => r.Id == id);
+            DeleteResult result = _reservations.DeleteOne(r => r.Id == id);
+            return (int)result.DeletedCount;
         }
 
         public Reservation GetReservation(string id)
         {
-            return _reservations.Find(r => r.Id == id).First();
+            return _reservations.Find(r => r.Id == id).FirstOrDefault();
         }
 
         public List<Reservation> GetReservations()
@@ -36,12 +37,11 @@ namespace ReservationSystem.Core.repositories
             return _reservations.Find(r => true).ToList();
         }
 
-        public Reservation UpdateReservation(Reservation reservation)
+        public bool UpdateReservation(Reservation reservation)
         {
             //TODO: Reservation can only be cancelled, remote procedure call
-            GetReservation(reservation.Id);
-            _reservations.ReplaceOne(r => r.Id == reservation.Id, reservation);
-            return reservation;
+            ReplaceOneResult res =_reservations.ReplaceOne(r => r.Id == reservation.Id, reservation);
+            return res.MatchedCount > 0;
         }
     }
 }

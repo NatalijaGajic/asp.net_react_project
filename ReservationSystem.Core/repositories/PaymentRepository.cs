@@ -23,14 +23,15 @@ namespace ReservationSystem.Core.repositories
             return payment;
         }
 
-        public void DeletePayment(string id)
+        public int DeletePayment(string id)
         {
-            _payments.DeleteOne(p => p.Id == id);
+            DeleteResult res = _payments.DeleteOne(p => p.Id == id);
+            return (int)res.DeletedCount;
         }
 
         public Payment GetPayment(string id)
         {
-            return _payments.Find(p => p.Id == id).First();
+            return _payments.Find(p => p.Id == id).FirstOrDefault();
         }
 
         public List<Payment> GetPayments()
@@ -38,10 +39,10 @@ namespace ReservationSystem.Core.repositories
             return _payments.Find(p => true).ToList();
         }
 
-        public Payment UpdatePayment(Payment payment)
+        public bool UpdatePayment(Payment payment)
         {
-            _payments.ReplaceOne(p => p.Id == payment.Id, payment);
-            return payment;
+            ReplaceOneResult res = _payments.ReplaceOne(p => p.Id == payment.Id, payment);
+            return res.MatchedCount > 0;
         }
     }
 }
