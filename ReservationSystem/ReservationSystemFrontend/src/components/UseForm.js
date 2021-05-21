@@ -23,7 +23,10 @@ export function UseForm(initialFieldValues, validateOnChange=false, validate) {
         setValues({
             ...values,
             [name]:value
-        }) 
+        })
+        if(validateOnChange){
+            validate({[name]:value});
+        } 
     }
     return {
         values,

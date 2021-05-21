@@ -39,8 +39,9 @@ export default function RegisterForm() {
     
     const handleSubmit = e => {
         e.preventDefault()
-        if(!validate())
+        if(validate()){
             window.alert('Testing');
+        }
     }
 
     return (
@@ -119,7 +120,6 @@ export default function RegisterForm() {
                     size="large"
                     text="submit"
                     type="submit"/>
-
                 </Grid>
             </Grid>
         </Form>
