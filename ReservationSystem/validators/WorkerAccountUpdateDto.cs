@@ -9,5 +9,6 @@ namespace ReservationSystem.validators
 {
     public class WorkerAccountUpdateDto: AbstractValidator<GameCreationDto>
     {
+        //TODO: Validators for worker and other classes
     }
 }

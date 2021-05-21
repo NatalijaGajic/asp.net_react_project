@@ -12,7 +12,7 @@ namespace ReservationSystem.Validators
         public ReservationCreationDtoValidator()
         {
             RuleFor(x => x.FirstAndLastName).NotNull().NotEmpty();
-            RuleFor(x => x.AccountId).NotNull().NotEmpty();
+            RuleFor(x => x.Account).NotNull();
             RuleFor(x => x.EndHour).NotNull().GreaterThan(0).LessThan(24);
             RuleFor(x => x.StartHour).NotNull().GreaterThan(0).LessThan(24);
             RuleFor(x => x.Table).NotNull();
