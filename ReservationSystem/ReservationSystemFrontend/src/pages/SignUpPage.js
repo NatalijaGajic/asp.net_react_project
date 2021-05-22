@@ -3,11 +3,7 @@ import React from 'react';
 import PageHeader from '../components/PageHeader'
 import RegisterForm from '../components/RegisterForm'
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
-import {makeStyles, Paper} from '@material-ui/core';
 import PaperForm from '../components/PaperForm';
-
-
-
 
 const SignUp = () => {
   return (

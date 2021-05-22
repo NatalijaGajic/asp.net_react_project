@@ -15,5 +15,6 @@ namespace ReservationSystem.Core.services
         bool DeleteReservation(string id);
         bool UpdateReservation(Reservation reservation);
         bool CancelReservation(string id);
+        public List<Reservation> GetReservationsForAccount(string id);
     }
 }

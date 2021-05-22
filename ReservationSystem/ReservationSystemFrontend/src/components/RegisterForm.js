@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React from 'react'
 import {Grid} from "@material-ui/core"
 import {UseForm, Form} from './UseForm'
 import Controls from '../components/controls/Controls'
@@ -29,12 +29,12 @@ export default function RegisterForm() {
         temp.lastName = values.lastName?"":"This field is required"
         temp.email = (/$^|.+@.+..+/).test(values.email)?"":"Email is not valid"
         temp.username = values.username.length>3?"":"Minimum 4 characters required"
-        temp.password = values.password.length != 0?"":"This field is required"
+        temp.password = values.password.length !== 0?"":"This field is required"
         temp.telephone = values.telephone.length>8?"":"Minimum 9 characters required"
         setErrors({
             ...temp
         })
-        return Object.values(temp).every(x=> x == "");
+        return Object.values(temp).every(x=> x === "");
     }
     
     const handleSubmit = e => {

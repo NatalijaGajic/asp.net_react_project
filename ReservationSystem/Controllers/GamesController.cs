@@ -11,6 +11,7 @@ namespace ReservationSystem.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    //TODO: DTO mapping
     public class GamesController : ControllerBase
     {
         private readonly IGamesService _gamesServices;

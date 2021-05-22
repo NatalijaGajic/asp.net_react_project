@@ -7,7 +7,7 @@ import PaperForm from '../components/PaperForm';
 import GamesAndTablesForm from '../components/GamesAndTablesForm'
 
 //const userId = "6072e15c7636626e81ac21fb"; //3 penalties
-const userId = "6072e13b7636626e81ac21fa";
+//const userId = "6072e13b7636626e81ac21fa";
 
 const initialFieldValues = {
     firstAndLastName:'',
@@ -23,7 +23,7 @@ const initialFieldValues = {
 
 
 export default function ReservationForm() {
-    const [isSubmitted, setSubmitted] = useState(false);
+    //const [isSubmitted, setSubmitted] = useState(false);
     const [queryParams, setQueryParams] = useState({workDayId:'', startHour:0, endHour:0});
     const [postBody, setPostBody] = useState({
         firstAndLastName: '',
@@ -47,19 +47,19 @@ export default function ReservationForm() {
         if('firstAndLastName' in fieldValues)
             temp.firstAndLastName = fieldValues.firstAndLastName?"":"This field is required"
         if('startHour' in fieldValues)
-            temp.startHour = fieldValues.startHour.length !=0?"":"This field is required"
+            temp.startHour = fieldValues.startHour.length !== 0?"":"This field is required"
         if('endHour' in fieldValues)
-            temp.endHour = fieldValues.endHour.length != 0?"":"This field is required"
+            temp.endHour = fieldValues.endHour.length !== 0?"":"This field is required"
         if('endHour' in fieldValues) //values. startHour -> when validating onChange endHour startHour is undefined
             temp.endHour = values.startHour<fieldValues.endHour?"":"Value must be greater than start hour"
         if('date' in fieldValues)
-            temp.date = fieldValues.date != null?"":"This field is required"
+            temp.date = fieldValues.date !== null?"":"This field is required"
         setErrors({
             ...temp
         })
         //Only returns when validate is called from handleSubmit:
-        if(fieldValues == values)
-            return Object.values(temp).every(x=> x == "");
+        if(fieldValues === values)
+            return Object.values(temp).every(x=> x === "");
     }
     
     const handleInputChangeDatePicker = e => {
@@ -101,7 +101,7 @@ export default function ReservationForm() {
         workDayByDate(date).fetch()
         .then(res => {
             console.log('Fetching work day scheme');
-            if(res.data == undefined || res.data==''){
+            if(res.data === undefined || res.data === ''){
                 setValues({
                     ...values,
                     startHours:[],
@@ -167,22 +167,23 @@ export default function ReservationForm() {
         }
     }
 
+    //TODO: double click on submit shouldn't be allowed
     const handleSubmit = e => {
         e.preventDefault();
         //TODO: check penalties
-        if(validate() && values.game.name!='' && values.table.code!=''){
+        if(validate() && values.game.name !== '' && values.table.code !== ''){
             window.alert('Valid form');
             createAPIEndpoint(ENDPOINTS.RESERVATIONS).create(
                 {
                     account: {},
                     game: values.game,
                     table: values.table,
-                    firstAndLastName: values.firstAndLastName,
-                    startHour: values.startHour,
-                    endHour: values.endHour,
-                    hours: values.endHour - values.startHour,
+                    firstAndLastName: postBody.firstAndLastName,
+                    startHour: postBody.startHour,
+                    endHour: postBody.endHour,
+                    hours: postBody.endHour - postBody.startHour,
                     numberOfPeople: 0,
-                    workDayId: values.workDayId
+                    workDayId: postBody.workDayId
                   }
             ).then(res => {
                 console.log(res);

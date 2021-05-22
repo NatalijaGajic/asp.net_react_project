@@ -37,6 +37,11 @@ namespace ReservationSystem.Core.repositories
             return _reservations.Find(r => true).ToList();
         }
 
+        public List<Reservation> GetReservationsForAccount(string id)
+        {
+            return _reservations.Find(r => r.Account.Id == id).ToList();
+        }
+
         public bool UpdateReservation(Reservation reservation)
         {
             //TODO: Reservation can only be cancelled, remote procedure call

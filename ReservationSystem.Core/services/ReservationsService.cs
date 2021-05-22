@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using ReservationSystem.Core.Exceptions;
 using ReservationSystem.Core.models;
 using ReservationSystem.Core.repositories;
 using System;
@@ -12,9 +13,12 @@ namespace ReservationSystem.Core.services
     public class ReservationsService : IReservationsService
     {
         private readonly IReservationsRepository _reservationsRepository;
-        public ReservationsService(IReservationsRepository reservationsRepository)
+        private readonly IAccountsService _accountsService;
+
+        public ReservationsService(IReservationsRepository reservationsRepository, IAccountsService accountsService)
         {
             _reservationsRepository = reservationsRepository;
+            _accountsService = accountsService;
         }
         public Reservation AddReservation(Reservation reservation)
         {
@@ -48,6 +52,17 @@ namespace ReservationSystem.Core.services
         public List<Reservation> GetReservations()
         {
             return _reservationsRepository.GetReservations();
+        }
+
+        public List<Reservation> GetReservationsForAccount(string id)
+        {
+            //TODO: Worker can also make reservations
+            ClientAccount client = _accountsService.GetClientAccount(id);
+            if(client == null)
+            {
+                throw new InvalidForeignKeyException("Invalid account id");
+            }
+            return _reservationsRepository.GetReservationsForAccount(id);
         }
 
         public bool UpdateReservation(Reservation reservation)

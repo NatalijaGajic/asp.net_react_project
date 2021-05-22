@@ -14,5 +14,7 @@ namespace ReservationSystem.Core.repositories
         Reservation GetReservation(string id);
         int DeleteReservation(string id);
         bool UpdateReservation(Reservation reservation);
-    }
+
+        List<Reservation> GetReservationsForAccount(string id);
+     }
 }

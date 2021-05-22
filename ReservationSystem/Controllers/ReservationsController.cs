@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ReservationSystem.Core.dtos;
+using ReservationSystem.Core.Exceptions;
 using ReservationSystem.Core.models;
 using ReservationSystem.Core.services;
 using System;
@@ -59,6 +60,29 @@ namespace ReservationSystem.Controllers
             }
             catch (Exception ex)
             {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+
+        [HttpGet("account/{id}", Name = "GetReservationsForAccount")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetReservationsForAccount(string id)
+        {
+            try
+            {
+                return Ok(_mapper.Map<List<ReservationDto>>(_reservationService.GetReservationsForAccount(id)));
+
+            }
+            catch (Exception ex)
+            {
+                if (ex.GetType().IsAssignableFrom(typeof(InvalidForeignKeyException)))
+                {
+                    //TODO: Appropriate statuse code
+                    return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+                }
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }

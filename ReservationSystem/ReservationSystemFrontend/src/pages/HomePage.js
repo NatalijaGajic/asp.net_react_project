@@ -2,7 +2,7 @@ import GameList from '../components/GameList';
 import React, {useState, useEffect} from 'react';
 import Loader from '../components/Loader';
 
-const DUMMY_DATA = [
+/*const DUMMY_DATA = [
   {
     id: 2,
     name: 'Game 1',
@@ -19,7 +19,7 @@ const DUMMY_DATA = [
     valute: '$',
     numberOfPlayers: 4
   }
-];
+];*/
 
 const Home = () => {
   const [isLoading, setLoading] = useState(true);
@@ -29,6 +29,7 @@ const Home = () => {
       fetch('http://localhost:5000/Games'
     )
     .then((response) => {
+      console.log(response);
       return response.json();
     })
     .then((data) => {
