@@ -14,7 +14,14 @@ export default function Reservations() {
     useEffect(() => {
         reservationsForAccount(userId).fetch()
         .then((response) => {
-            setRecords(response.data);
+            let res = response.data.map((reservation) => ({
+                ...reservation,
+                game:reservation.game.name,
+                table:reservation.table.code,
+                numberOfPeople:reservation.table.numberOfPeople
+            }
+            ))
+            setRecords(res);
             setLoading(false);
 
         })
