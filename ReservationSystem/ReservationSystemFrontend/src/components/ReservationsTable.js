@@ -3,15 +3,27 @@ import useTable from './UseTable';
 import {TableRow, TableBody, TableCell} from '@material-ui/core';
 import PageHeader from '../components/PageHeader'
 import AlarmOnTwoToneIcon from '@material-ui/icons/AlarmOnTwoTone';
+import PaperForm from './PaperForm';
 
+
+const headCells = [
+    {id:'firstAndLastName', label:'Name'},
+    {id:'hours', label:'Time'},
+    {id:'game', label:'Game'},
+    {id:'table', label:'Table'},
+    {id:'numberOfPeople', label:'People'},
+    {id:'isCancelled', label:'Cancelled'}
+
+]
 
 export default function ReservationsTable(props) {
 
     const {records} = props;
 
     const {
-        TblContainer
-        } =useTable();
+        TblContainer,
+        TblHead
+        } =useTable(records, headCells);
   
     return (
         <div>
@@ -20,7 +32,9 @@ export default function ReservationsTable(props) {
             subtitle="All reservations"
             icon={<AlarmOnTwoToneIcon fontSize="large"/>}
             />
+            <PaperForm>
             <TblContainer>
+                <TblHead/>
                 <TableBody>
                     {
                         records.map(item => (
@@ -37,6 +51,7 @@ export default function ReservationsTable(props) {
                     }
                 </TableBody>
             </TblContainer>
+            </PaperForm>
         </div>
     )
 }
