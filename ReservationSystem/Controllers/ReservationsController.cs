@@ -6,6 +6,7 @@ using ReservationSystem.Core.Exceptions;
 using ReservationSystem.Core.models;
 using ReservationSystem.Core.services;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,11 +19,14 @@ namespace ReservationSystem.Controllers
     {
         private readonly IReservationsService _reservationService;
         private readonly IMapper _mapper;
+        private readonly IWorkDaysService _workDaysService;
 
-        public ReservationsController(IReservationsService reservationService, IMapper mapper)
+        public ReservationsController(IReservationsService reservationService, 
+            IMapper mapper, IWorkDaysService workDaysService)
         {
             _reservationService = reservationService;
             _mapper = mapper;
+            _workDaysService = workDaysService;
         }
 
         [HttpGet]
@@ -32,7 +36,19 @@ namespace ReservationSystem.Controllers
         {
             try
             {
-                return Ok(_mapper.Map<List<ReservationDto>>(_reservationService.GetReservations()));
+                List<Reservation> reservations = _reservationService.GetReservations();
+                List<ReservationDto> result = new List<ReservationDto>();
+                foreach(Reservation res in reservations)
+                {
+                    WorkDay workDay = _workDaysService.GetWorkDay(res.WorkDayId);
+                    ReservationDto dto = _mapper.Map<ReservationDto>(
+                    res, opt =>
+                    {
+                        opt.Items["workDay"] = workDay;
+                    });
+                    result.Add(dto);
+                }
+                return Ok(result);
 
             }
             catch (Exception ex)
@@ -55,7 +71,13 @@ namespace ReservationSystem.Controllers
                 {
                     return NotFound("Reservation with id not found");
                 }
-                return Ok(_mapper.Map<ReservationDto>(_reservationService.GetReservation(id)));
+                WorkDay workDay = _workDaysService.GetWorkDay(res.WorkDayId);
+                ReservationDto result = _mapper.Map<ReservationDto>(
+                res, opt =>
+                {
+                    opt.Items["workDay"] = workDay;
+                });
+                return Ok(result);
 
             }
             catch (Exception ex)
@@ -73,7 +95,19 @@ namespace ReservationSystem.Controllers
         {
             try
             {
-                return Ok(_mapper.Map<List<ReservationDto>>(_reservationService.GetReservationsForAccount(id)));
+                List<Reservation> reservations = _reservationService.GetReservationsForAccount(id);
+                List<ReservationDto> result = new List<ReservationDto>();
+                foreach (Reservation res in reservations)
+                {
+                    WorkDay workDay = _workDaysService.GetWorkDay(res.WorkDayId);
+                    ReservationDto dto = _mapper.Map<ReservationDto>(
+                    res, opt =>
+                    {
+                        opt.Items["workDay"] = workDay;
+                    });
+                    result.Add(dto);
+                }
+                return Ok(result);
 
             }
             catch (Exception ex)
@@ -137,7 +171,8 @@ namespace ReservationSystem.Controllers
             {
                 if (_reservationService.CancelReservation(id))
                 {
-                    return Ok();
+                    return StatusCode(StatusCodes.Status200OK, "Successfully cancelled");
+
                 }
                 return NotFound("Reservation with id not found");
             }

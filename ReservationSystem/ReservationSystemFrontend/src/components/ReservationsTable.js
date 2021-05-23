@@ -12,6 +12,11 @@ import Popup from '../components/Popup'
 import CloseIcon from '@material-ui/icons/Close';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import ReservationFormDisabled from '../components/ReservationFormDisabled';
+import Notification from '../components/Notification'
+import {cancelReservation, createAPIEndpoint, ENDPOINTS} from '../api/index'; 
+
+//const userId = "6072e15c7636626e81ac21fb"; //3 penalties
+const userId = "6072e13b7636626e81ac21fa";
 
 //TODO: add Date instead od workDayId for display purposes
 const headCells = [
@@ -19,9 +24,9 @@ const headCells = [
     {id:'firstAndLastName', label:'Name'},
     {id:'workDayId',label:'Date',disableSorting:true},
     {id:'hours', label:'Time', disableSorting:true},
-    {id:'game', label:'Game'},
-    {id:'table', label:'Table'},
-    {id:'numberOfPeople', label:'People'},
+    {id:'gameName', label:'Game'},
+    {id:'tableCode', label:'Table'},
+    {id:'people', label:'People'},
     {id:'isCancelled', label:'Cancelled'},
     {id:'details', label:'Details', disableSorting:true},
     {id:'cancel', label:'Cancel', disableSorting:true},
@@ -63,6 +68,7 @@ export default function ReservationsTable(props) {
     const [filterFn, setfilterFn] = useState({fn: items => {return items;}});
     const [openPopup, setOpenPopup] = useState(false);
     const [reservationForCancel, setReservationForCancel] = useState(reservationForCancelInitial);
+    const [notify, setNotify] = useState({isOpen:false, message:'', type:''});
 
     const {
         TblContainer,
@@ -94,9 +100,31 @@ export default function ReservationsTable(props) {
         setOpenPopup(true);
     }
 
-    const cancelReservation = e => {
-        e.preventDefault();
-        setOpenPopup(false);
+    const checkCancelDate = () => {
+        
+    };
+
+    const cancelReservation = item => {
+        createAPIEndpoint(ENDPOINTS.CLIENTS).fetchById(userId)
+        .then(res => {
+            console.log(res.data);
+            console.log(item);
+            let penalty = res.data.penalty;
+            let dateOfLastPenalty = res.data.dateOfLastPenalty;
+            let dateOfReservation = item.workDay.date;
+            checkCancelDate();
+        })
+        .then()
+        .catch(err => {
+            console.log(err);
+        })
+       /* cancelReservation(item.id).cancel()
+        .then(res => {
+            console.log("Updated")
+        })
+        .catch(err => {
+            console.log(err);
+        })*/
     }
   
     return (
@@ -134,9 +162,9 @@ export default function ReservationsTable(props) {
                                 <TableCell>{item.firstAndLastName}</TableCell>
                                 <TableCell> 2021-03-15 </TableCell>
                                 <TableCell>{item.startHour+'-'+item.endHour}</TableCell>
-                                <TableCell>{item.game}</TableCell>
-                                <TableCell>{item.table}</TableCell>
-                                <TableCell>{item.numberOfPeople}</TableCell>
+                                <TableCell>{item.gameName}</TableCell>
+                                <TableCell>{item.tableCode}</TableCell>
+                                <TableCell>{item.people}</TableCell>
                                 <TableCell>{item.isCancelled?'true':'false'}</TableCell>
                                 <TableCell>
                                     <Controls.ActionButton
@@ -149,7 +177,8 @@ export default function ReservationsTable(props) {
                                     <Controls.ActionButton
                                     disabled={item.isCancelled}
                                     color="secondary">
-                                        <CloseIcon fontSize="small"/>
+                                        <CloseIcon fontSize="small"
+                                        onClick={() => {{cancelReservation(item)}}}/>
                                     </Controls.ActionButton>
                                 </TableCell>
                             </TableRow>
@@ -165,9 +194,12 @@ export default function ReservationsTable(props) {
             >
                 <ReservationFormDisabled
                 values={reservationForCancel}
-                handleSubmit={cancelReservation}
                 showSubmit={false}/>
             </Popup>
+            <Notification
+            notify={notify}
+            setNotify={setNotify}
+            ></Notification>
         </div>
     )
 }

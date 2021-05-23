@@ -46,7 +46,7 @@ namespace ReservationSystem.Core.services
 
         public Reservation GetReservation(string id)
         {
-            return _reservationsRepository.GetReservation(id);
+           return _reservationsRepository.GetReservation(id);
         }
 
         public List<Reservation> GetReservations()

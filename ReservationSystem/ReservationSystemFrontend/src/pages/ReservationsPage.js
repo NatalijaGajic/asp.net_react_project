@@ -16,9 +16,9 @@ export default function Reservations() {
         .then((response) => {
             let res = response.data.map((reservation) => ({
                 ...reservation,
-                game:reservation.game.name,
-                table:reservation.table.code,
-                numberOfPeople:reservation.table.numberOfPeople
+                gameName:reservation.game.name,
+                tableCode:reservation.table.code,
+                people:reservation.table.numberOfPeople
             }
             ))
             setRecords(res);

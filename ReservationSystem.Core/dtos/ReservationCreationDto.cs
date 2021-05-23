@@ -19,6 +19,6 @@ namespace ReservationSystem.Core.dtos
         public Account Account { get; set; }
         public Game Game { get; set; }
         public Table Table { get; set; }
-        public string WorkDayId { get; set; }
+        public WorkDay WorkDay { get; set; }
     }
 }

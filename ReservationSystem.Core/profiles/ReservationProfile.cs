@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
 using ReservationSystem.Core.dtos;
 using ReservationSystem.Core.models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ReservationSystem.Core.profiles
 {
@@ -13,11 +9,16 @@ namespace ReservationSystem.Core.profiles
     {
         public ReservationProfile()
         {
-            CreateMap<Reservation, ReservationDto>();
+            CreateMap<Reservation, ReservationDto>()
+                .ForMember(x => x.workDay,
+                opt => opt.MapFrom((src, dst, _, context) => context.Options.Items["workDay"]));
             CreateMap<ReservationCreationDto, Reservation>();
             CreateMap<ReservationUpdateDto, Reservation>();
 
 
         }
+
+        
     }
+
 }
