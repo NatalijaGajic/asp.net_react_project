@@ -5,6 +5,7 @@ import {Table, makeStyles, TableCell, TableHead, TableRow, TablePagination, Tabl
 const useStyles = makeStyles((theme) => ({
     table: {
         marginTop: theme.spacing(3),
+        borderRadius: '5px',
         '& thead th':{
             fontWeight: '600',
             color: theme.palette.primary.main,
@@ -36,7 +37,8 @@ export default function UseTable(records, headCells, filterFn) {
     )
 
     const TblHead = props => {
-        return (<TableHead>
+        return (
+        <TableHead style={{borderRadius: '5px'}}>
             <TableRow>
                 {
                     headCells.map(headCell => (
@@ -57,7 +59,8 @@ export default function UseTable(records, headCells, filterFn) {
             setOrderBy(cellId);
         }
 
-        return (<TableHead>
+        return (
+        <TableHead style={{borderRadius: '5px'}}>
             <TableRow>
                 {
                     headCells.map(headCell => (
