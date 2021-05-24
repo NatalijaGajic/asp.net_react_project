@@ -3,6 +3,7 @@ import ReservationsTable from '../components/ReservationsTable'
 import {reservationsForAccount} from '../api/index';
 import Loader from '../components/Loader';
 
+//const userId = "6072e15c7636626e81ac21fb"; //3 penalties
 const userId = "6072e13b7636626e81ac21fa";
 
 

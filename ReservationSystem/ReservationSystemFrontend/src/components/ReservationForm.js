@@ -5,9 +5,10 @@ import Controls from '../components/controls/Controls'
 import { workDayByDate, createAPIEndpoint, ENDPOINTS} from '../api'
 import PaperForm from '../components/PaperForm';
 import GamesAndTablesForm from '../components/GamesAndTablesForm'
+import { ContactSupportOutlined } from '@material-ui/icons'
 
 //const userId = "6072e15c7636626e81ac21fb"; //3 penalties
-//const userId = "6072e13b7636626e81ac21fa";
+const userId = "6072e13b7636626e81ac21fa";
 
 const initialFieldValues = {
     firstAndLastName:'',
@@ -24,6 +25,7 @@ const initialFieldValues = {
 
 export default function ReservationForm() {
     //const [isSubmitted, setSubmitted] = useState(false);
+    const [user, setUser] = useState({})
     const [queryParams, setQueryParams] = useState({workDayId:'', startHour:0, endHour:0});
     const [postBody, setPostBody] = useState({
         firstAndLastName: '',
@@ -40,6 +42,19 @@ export default function ReservationForm() {
     const [date, setDate] = useState(new Date()); //because of useEffect, so it doesnt loop
     const [submitDate, setSubmitDate] = useState(new Date()); 
     //const [firstAndLastName, setFirstAndLastName] = useState('');
+
+    //TODO: Is not executed when the page is navigated to from make-reservation
+    useEffect(() => {
+        createAPIEndpoint(ENDPOINTS.CLIENTS).fetchById(userId)
+        .then(res => {
+            console.log('fetching user')
+            console.log(res.data);
+            setUser(res.data);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }, []);
 
     const validate = (fieldValues = values) => {
         console.log('in validate:');
@@ -175,7 +190,7 @@ export default function ReservationForm() {
             window.alert('Valid form');
             createAPIEndpoint(ENDPOINTS.RESERVATIONS).create(
                 {
-                    account: {},
+                    account: user,
                     game: values.game,
                     table: values.table,
                     firstAndLastName: postBody.firstAndLastName,
@@ -186,6 +201,7 @@ export default function ReservationForm() {
                     workDayId: postBody.workDayId
                   }
             ).then(res => {
+                console.log('POST-ing reservation');
                 console.log(res);
             })
             .catch(err => {

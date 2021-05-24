@@ -16,6 +16,7 @@ import Notification from '../components/Notification'
 import {cancelReservationWithId, createAPIEndpoint, ENDPOINTS} from '../api/index'; 
 import ConfirmDialog from '../components/ConfirmDialog'
 import {getStringDate} from '../utils/utils'
+import InformationDialog from './InformationDialog';
 
 //const userId = "6072e15c7636626e81ac21fb"; //3 penalties
 const userId = "6072e13b7636626e81ac21fa";
@@ -61,6 +62,7 @@ export default function ReservationsTable(props) {
 
     const records = props.records;
     const classes = useStyles();
+    const history = useHistory();
     const [reservationsArray, setReservationsArray] = useState(records);
     const [user, setUser] = useState({})
     const [filterFn, setfilterFn] = useState({fn: items => {return items;}});
@@ -68,6 +70,7 @@ export default function ReservationsTable(props) {
     const [reservationForCancel, setReservationForCancel] = useState(reservationForCancelInitial);
     const [notify, setNotify] = useState({isOpen:false, message:'', type:''});
     const [confirmDialog, setConfirmDialog] = useState({isOpen:false, title:'', subtitle:''})
+    const [ informationDialog, setInformationDialog] = useState({isOpen:false, title:'', subtitle:''})
 
     useEffect(() => {
         createAPIEndpoint(ENDPOINTS.CLIENTS).fetchById(userId)
@@ -102,8 +105,18 @@ export default function ReservationsTable(props) {
         })
     }
 
-    const history = useHistory();
-    const navigateTo = () => history.push('/make-reservation');
+    const navigateTo = () => {
+        if(user.penalty === 3){
+            setInformationDialog({
+                isOpen:true,
+                title:'You have 3 penalties, you can not make reservation',
+                subtitle:'Penalties are deleted after one month.'
+            });
+        }
+        else{
+            history.push('/make-reservation');
+        }
+    };
 
     const openInPopup = item => {
         console.log(item);
@@ -153,7 +166,8 @@ export default function ReservationsTable(props) {
        let dateOfLastPenalty = user.dateOfLastPenalty;
        //TODO: check if dateOfLastPenalty is > month, penalties should be deleted 
        let dateOfReservation = item.workDay.date;
-       let hours = checkCancelDate(new Date(dateOfReservation)) + item.startHour;
+       let hours = checkCancelDate(new Date(dateOfReservation)) - item.startHour;
+       console.log(hours);
        //hours = 23;
        if(hours < 24){
            setConfirmDialog({
@@ -249,6 +263,10 @@ export default function ReservationsTable(props) {
             setConfirmDialog={setConfirmDialog}
             confirmDialog={confirmDialog}>
             </ConfirmDialog>
+            <InformationDialog
+            informationDialog={informationDialog}
+            setInformationDialog={setInformationDialog}>
+            </InformationDialog>
         </div>
     )
 }

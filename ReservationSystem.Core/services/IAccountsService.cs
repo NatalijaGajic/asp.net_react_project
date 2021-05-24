@@ -23,5 +23,6 @@ namespace ReservationSystem.Core.services
         ClientAccount GetClientAccountByEmail(string email);
         WorkerAccount GetWorkerAccountByUsername(string username);
         WorkerAccount GetWorkerAccountByEmail(string email);
+        bool UpdateClientAccountPenalties(ClientAccount clientAccount);
     }
 }

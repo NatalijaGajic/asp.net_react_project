@@ -105,6 +105,16 @@ namespace ReservationSystem.Core.services
 
         }
 
+        public bool UpdateClientAccountPenalties(ClientAccount clientAccount)
+        {
+            ClientAccount client = _accountsRepository.GetClientAccount(clientAccount.Id);
+            if (client == null)
+            {
+                return false;
+            }
+            return _accountsRepository.UpdateClientAccount(clientAccount);
+        }
+
         public bool UpdateClientAccount(ClientAccount clientAccount)
         {
             ClientAccount client = _accountsRepository.GetClientAccount(clientAccount.Id);

@@ -14,11 +14,14 @@ namespace ReservationSystem.Core.services
     {
         private readonly IReservationsRepository _reservationsRepository;
         private readonly IAccountsService _accountsService;
+        private readonly IWorkDaysService _workDaysService;
 
-        public ReservationsService(IReservationsRepository reservationsRepository, IAccountsService accountsService)
+        public ReservationsService(IReservationsRepository reservationsRepository, IAccountsService accountsService,
+            IWorkDaysService workDaysService)
         {
             _reservationsRepository = reservationsRepository;
             _accountsService = accountsService;
+            _workDaysService = workDaysService;
         }
         public Reservation AddReservation(Reservation reservation)
         {
@@ -33,10 +36,31 @@ namespace ReservationSystem.Core.services
             {
                 return false;
             }
-            //TODO: Check penalties and date of reservation 
+            if (reservation.IsCancelled)
+            {  
+                //TODO: Better response
+                return false;
+            }
+            //TODO: Check penalties and date of reservation
+            DateTime timeNow = DateTime.Now;
+            WorkDay workDay = _workDaysService.GetWorkDay(reservation.WorkDayId);
+            DateTime dateOfReservation = workDay.Date;
+            if (CheckPenalties(timeNow, dateOfReservation) - reservation.StartHour < 24)
+            {
+                ClientAccount client = _accountsService.GetClientAccount(reservation.Account.Id);
+                client.Penalty += 1;
+                _accountsService.UpdateClientAccountPenalties(client);
+                reservation.Account = client;
+            }
             reservation.IsCancelled = true;
             return _reservationsRepository.UpdateReservation(reservation);
 
+        }
+
+        private double CheckPenalties(DateTime timeNow, DateTime dateOfReservation)
+        {
+            TimeSpan ts = timeNow - dateOfReservation;
+            return ts.TotalHours;
         }
 
         public bool DeleteReservation(string id)
