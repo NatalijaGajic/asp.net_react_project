@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import useTable from './UseTable';
 import {TableRow, TableBody, TableCell, Toolbar, InputAdornment, makeStyles} from '@material-ui/core';
 import PageHeader from '../components/PageHeader'
@@ -13,7 +13,9 @@ import CloseIcon from '@material-ui/icons/Close';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import ReservationFormDisabled from '../components/ReservationFormDisabled';
 import Notification from '../components/Notification'
-import {cancelReservation, createAPIEndpoint, ENDPOINTS} from '../api/index'; 
+import {cancelReservationWithId, createAPIEndpoint, ENDPOINTS} from '../api/index'; 
+import ConfirmDialog from '../components/ConfirmDialog'
+import {getStringDate} from '../utils/utils'
 
 //const userId = "6072e15c7636626e81ac21fb"; //3 penalties
 const userId = "6072e13b7636626e81ac21fa";
@@ -45,12 +47,10 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-/*  <Controls.Button
-    className={classes.newButton}
-    text="Make new"
-    variant="outlined"
-    startIcon={<AddIcon/>}
-    /> */
+/*<ConfirmDialog
+setConfirmDialog={setConfirmDialog}
+confirmDialog={confirmDialog}>
+</ConfirmDialog>*/
 
 const reservationForCancelInitial = {
     firstAndLastNameDisabled:'',
@@ -65,10 +65,16 @@ export default function ReservationsTable(props) {
 
     const records = props.records;
     const classes = useStyles();
+    const [reservationsArray, setReservationsArray] = useState(records);
     const [filterFn, setfilterFn] = useState({fn: items => {return items;}});
     const [openPopup, setOpenPopup] = useState(false);
     const [reservationForCancel, setReservationForCancel] = useState(reservationForCancelInitial);
     const [notify, setNotify] = useState({isOpen:false, message:'', type:''});
+    const [confirmDialog, setConfirmDialog] = useState({isOpen:false, title:'', subtitle:''})
+
+    useEffect(() => ({
+
+    }), []);
 
     const {
         TblContainer,
@@ -77,7 +83,7 @@ export default function ReservationsTable(props) {
         recordsAfterPaging,
         recordsAfterPagingAndSorting, 
         TblHeadSort
-        } =useTable(records, headCells, filterFn);
+        } =useTable(reservationsArray, headCells, filterFn);
 
     const handleSearch = e => {
         let target = e.target;
@@ -96,15 +102,49 @@ export default function ReservationsTable(props) {
     const navigateTo = () => history.push('/make-reservation');
 
     const openInPopup = item => {
+        console.log(item);
         setReservationForCancel(item);
         setOpenPopup(true);
     }
 
-    const checkCancelDate = () => {
-        
+    const checkCancelDate = reservationDate => {
+        const timeNow = new Date();
+        console.log(timeNow);
+        console.log(reservationDate);
+        const milliseconds = Math.abs(timeNow - reservationDate);
+        const hours = milliseconds / 36e5;
+        return hours;
+
     };
 
-    const cancelReservation = item => {
+    const sendCancelRequest  = item => {
+        console.log('sendCancelRequest');
+        cancelReservationWithId(item.id).cancel()
+        .then(res => {
+            console.log(res);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+        setNotify({isOpen:true, 'message':'Succesfully cancelled', type:'success'});
+        setConfirmDialog({
+            ...confirmDialog,
+            isOpen:false
+        });
+        let array = [...reservationsArray]
+        const index = array.findIndex(res => res.id === item.id);
+        array[index] = {
+            ...array[index],
+            isCancelled:true
+        }
+        setReservationsArray(
+            array
+        );
+
+    }
+
+   const cancelReservation = item => {
+       console.log(item);
         createAPIEndpoint(ENDPOINTS.CLIENTS).fetchById(userId)
         .then(res => {
             console.log(res.data);
@@ -112,19 +152,29 @@ export default function ReservationsTable(props) {
             let penalty = res.data.penalty;
             let dateOfLastPenalty = res.data.dateOfLastPenalty;
             let dateOfReservation = item.workDay.date;
-            checkCancelDate();
+            let hours = checkCancelDate(new Date(dateOfReservation)) + item.startHour;
+            //hours = 23;
+            if(hours < 24){
+                setConfirmDialog({
+                    isOpen:true,
+                    title:'Are you sure you want to cancel this reservation? This action will get you a penalty.',
+                    subtitle:'You can not undo cancellation later.'+ 
+                    'With 3 penalties you can not make new reservations.',
+                    onConfirmDialog: () => {sendCancelRequest(item)}
+                })
+            }else{
+                setConfirmDialog({
+                    isOpen:true,
+                    title:'Are you sure you want to cancel this reservation?',
+                    subtitle:'You can not undo cancellation later.',
+                    onConfirmDialog: () => {sendCancelRequest(item)}
+                })
+            }
         })
         .then()
         .catch(err => {
             console.log(err);
         })
-       /* cancelReservation(item.id).cancel()
-        .then(res => {
-            console.log("Updated")
-        })
-        .catch(err => {
-            console.log(err);
-        })*/
     }
   
     return (
@@ -160,7 +210,7 @@ export default function ReservationsTable(props) {
                         recordsAfterPagingAndSorting().map(item => (
                             <TableRow key={item.id}>
                                 <TableCell>{item.firstAndLastName}</TableCell>
-                                <TableCell> 2021-03-15 </TableCell>
+                                <TableCell> {item.workDay != null?getStringDate(item.workDay.date):''} </TableCell>
                                 <TableCell>{item.startHour+'-'+item.endHour}</TableCell>
                                 <TableCell>{item.gameName}</TableCell>
                                 <TableCell>{item.tableCode}</TableCell>
@@ -190,8 +240,7 @@ export default function ReservationsTable(props) {
             <Popup 
             openPopup={openPopup}
             setOpenPopup={setOpenPopup}
-            title='Reservation details'
-            >
+            title='Reservation details'>
                 <ReservationFormDisabled
                 values={reservationForCancel}
                 showSubmit={false}/>
@@ -200,6 +249,10 @@ export default function ReservationsTable(props) {
             notify={notify}
             setNotify={setNotify}
             ></Notification>
+            <ConfirmDialog
+            setConfirmDialog={setConfirmDialog}
+            confirmDialog={confirmDialog}>
+            </ConfirmDialog>
         </div>
     )
 }
