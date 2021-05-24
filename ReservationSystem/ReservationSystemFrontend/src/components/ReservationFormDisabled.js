@@ -41,7 +41,7 @@ export default function ReservationFormDisabled(props) {
                 <Controls.InputDisabled
                 name="gameDisabled"
                 label="Game"
-                value={values.game}
+                value={values.gameName}
                 />
             </Grid>
             <Grid item sm={6}>
@@ -49,7 +49,7 @@ export default function ReservationFormDisabled(props) {
                     <Controls.InputDisabled
                     name="tableDisabled"
                     label="Table"
-                    value={values.table}
+                    value={values.tableCode}
                     />
                 </Grid>
             </Grid>

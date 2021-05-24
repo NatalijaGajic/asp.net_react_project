@@ -47,10 +47,6 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-/*<ConfirmDialog
-setConfirmDialog={setConfirmDialog}
-confirmDialog={confirmDialog}>
-</ConfirmDialog>*/
 
 const reservationForCancelInitial = {
     firstAndLastNameDisabled:'',
@@ -66,15 +62,23 @@ export default function ReservationsTable(props) {
     const records = props.records;
     const classes = useStyles();
     const [reservationsArray, setReservationsArray] = useState(records);
+    const [user, setUser] = useState({})
     const [filterFn, setfilterFn] = useState({fn: items => {return items;}});
     const [openPopup, setOpenPopup] = useState(false);
     const [reservationForCancel, setReservationForCancel] = useState(reservationForCancelInitial);
     const [notify, setNotify] = useState({isOpen:false, message:'', type:''});
     const [confirmDialog, setConfirmDialog] = useState({isOpen:false, title:'', subtitle:''})
 
-    useEffect(() => ({
-
-    }), []);
+    useEffect(() => {
+        createAPIEndpoint(ENDPOINTS.CLIENTS).fetchById(userId)
+        .then(res => {
+            console.log(res.data);
+            setUser(res.data);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }, []);
 
     const {
         TblContainer,
@@ -145,36 +149,28 @@ export default function ReservationsTable(props) {
 
    const cancelReservation = item => {
        console.log(item);
-        createAPIEndpoint(ENDPOINTS.CLIENTS).fetchById(userId)
-        .then(res => {
-            console.log(res.data);
-            console.log(item);
-            let penalty = res.data.penalty;
-            let dateOfLastPenalty = res.data.dateOfLastPenalty;
-            let dateOfReservation = item.workDay.date;
-            let hours = checkCancelDate(new Date(dateOfReservation)) + item.startHour;
-            //hours = 23;
-            if(hours < 24){
-                setConfirmDialog({
-                    isOpen:true,
-                    title:'Are you sure you want to cancel this reservation? This action will get you a penalty.',
-                    subtitle:'You can not undo cancellation later.'+ 
-                    'With 3 penalties you can not make new reservations.',
-                    onConfirmDialog: () => {sendCancelRequest(item)}
-                })
-            }else{
-                setConfirmDialog({
-                    isOpen:true,
-                    title:'Are you sure you want to cancel this reservation?',
-                    subtitle:'You can not undo cancellation later.',
-                    onConfirmDialog: () => {sendCancelRequest(item)}
-                })
-            }
-        })
-        .then()
-        .catch(err => {
-            console.log(err);
-        })
+       let penalty = user.penalty;
+       let dateOfLastPenalty = user.dateOfLastPenalty;
+       //TODO: check if dateOfLastPenalty is > month, penalties should be deleted 
+       let dateOfReservation = item.workDay.date;
+       let hours = checkCancelDate(new Date(dateOfReservation)) + item.startHour;
+       //hours = 23;
+       if(hours < 24){
+           setConfirmDialog({
+               isOpen:true,
+               title:'Are you sure you want to cancel this reservation? This action will get you a penalty.',
+               subtitle:'You can not undo cancellation later.'+ 
+               'With 3 penalties you can not make new reservations.',
+               onConfirmDialog: () => {sendCancelRequest(item)}
+           })
+       }else{
+           setConfirmDialog({
+               isOpen:true,
+               title:'Are you sure you want to cancel this reservation?',
+               subtitle:'You can not undo cancellation later.',
+               onConfirmDialog: () => {sendCancelRequest(item)}
+           })
+       }
     }
   
     return (
