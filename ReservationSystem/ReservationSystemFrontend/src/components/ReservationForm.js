@@ -5,7 +5,9 @@ import Controls from '../components/controls/Controls'
 import { workDayByDate, createAPIEndpoint, ENDPOINTS} from '../api'
 import PaperForm from '../components/PaperForm';
 import GamesAndTablesForm from '../components/GamesAndTablesForm'
-import { ContactSupportOutlined } from '@material-ui/icons'
+import Notification from '../components/Notification'
+import { useHistory } from "react-router-dom";
+
 
 //const userId = "6072e15c7636626e81ac21fb"; //3 penalties
 const userId = "6072e13b7636626e81ac21fa";
@@ -25,6 +27,7 @@ const initialFieldValues = {
 
 export default function ReservationForm() {
     //const [isSubmitted, setSubmitted] = useState(false);
+    const history = useHistory();
     const [user, setUser] = useState({})
     const [queryParams, setQueryParams] = useState({workDayId:'', startHour:0, endHour:0});
     const [postBody, setPostBody] = useState({
@@ -41,6 +44,7 @@ export default function ReservationForm() {
     //const [workDayId, setWorkDayId] = useState(''); //can be changed but if its not clicked search shouldn't be changed
     const [date, setDate] = useState(new Date()); //because of useEffect, so it doesnt loop
     const [submitDate, setSubmitDate] = useState(new Date()); 
+    const [notify, setNotify] = useState({isOpen:false, message:'', type:''});
     //const [firstAndLastName, setFirstAndLastName] = useState('');
 
     //TODO: Is not executed when the page is navigated to from make-reservation
@@ -152,7 +156,7 @@ export default function ReservationForm() {
     const handleSearch = e => {
         e.preventDefault()
         if(validate()){
-            window.alert('Valid form');
+            //window.alert('Valid form');
             //setQueryParams, queryParams are props and triggers onEffect in ReservationGamesList component
             setQueryParams({
                 startHour:values.startHour,
@@ -187,7 +191,7 @@ export default function ReservationForm() {
         e.preventDefault();
         //TODO: check penalties
         if(validate() && values.game.name !== '' && values.table.code !== ''){
-            window.alert('Valid form');
+            //window.alert('Valid form');
             createAPIEndpoint(ENDPOINTS.RESERVATIONS).create(
                 {
                     account: user,
@@ -203,6 +207,13 @@ export default function ReservationForm() {
             ).then(res => {
                 console.log('POST-ing reservation');
                 console.log(res);
+                setNotify({isOpen:true, 'message':'Succesfully created', type:'success'});
+                //TODO: set submit button to be disabled
+                const timer = setTimeout(() => {
+                    history.push('/reservations');
+                  }, 3000);
+                
+
             })
             .catch(err => {
                 console.log(err);
@@ -353,6 +364,10 @@ export default function ReservationForm() {
             </Grid>
             </Form>
         </PaperForm>
+        <Notification
+        notify={notify}
+        setNotify={setNotify}
+        />
         </div>
     );
 }
