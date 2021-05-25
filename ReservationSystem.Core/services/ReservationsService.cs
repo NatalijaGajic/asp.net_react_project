@@ -25,6 +25,7 @@ namespace ReservationSystem.Core.services
         }
         public Reservation AddReservation(Reservation reservation)
         {
+            //TODO: should check for penalties
             _reservationsRepository.AddReservation(reservation);
             return reservation;
         }

@@ -11,12 +11,12 @@ namespace ReservationSystem.Core.contracts
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
 
-        public int MaximumSize = 5;
+        public int MaximumSize = 18;
 
         public PaginationQuery()
         {
             PageNumber = 1;
-            PageSize = MaximumSize;
+            PageSize = 6;
         }
 
         public PaginationQuery(int pageNumber, int pageSize)

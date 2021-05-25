@@ -19,7 +19,8 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
-  },
+    color: "#F0FFF0"
+  }
 }));
 
 
@@ -28,12 +29,11 @@ const useStyles = makeStyles((theme) => ({
     return(
     <AppBar position="static">
         <Toolbar>
-            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                <MenuIcon/>
-            </IconButton>
-            <Typography variant="h6" className={classes.title}>
-               <Link to="/"> Board Games </Link>
+        <Link to="/" className={classes.title}> 
+            <Typography variant="h6" >
+               Board Games 
             </Typography>
+          </Link>
             <Button color="inherit">Login</Button>
         </Toolbar>
     </AppBar> 

@@ -100,7 +100,7 @@ export default function ReservationsTable(props) {
                     return items;
                     else
                     return items.filter(x => x.firstAndLastName.toLowerCase().includes(target.value.toLowerCase())
-                || x.game.toLowerCase().includes(target.value.toLowerCase()))
+                || x.gameName.toLowerCase().includes(target.value.toLowerCase()))
             }
         })
     }
