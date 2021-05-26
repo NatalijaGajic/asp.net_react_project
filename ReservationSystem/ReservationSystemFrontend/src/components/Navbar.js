@@ -8,6 +8,8 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import {Link} from 'react-router-dom';
 import blue from '@material-ui/core/colors/blue';
+import { useHistory } from "react-router-dom";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,16 +27,22 @@ const useStyles = makeStyles((theme) => ({
 
 
  const Navbar = () => {
+
+  const history = useHistory();
   const classes = useStyles();
+  const navigateToLogin = () => {
+
+  }
+
     return(
     <AppBar position="static">
         <Toolbar>
-        <Link to="/" className={classes.title}> 
+        <Link to="/" className={classes.title} style={{ textDecoration: 'none' }}> 
             <Typography variant="h6" >
                Board Games 
             </Typography>
           </Link>
-            <Button color="inherit">Login</Button>
+            <Button color="inherit" onClick={navigateToLogin}>Login</Button>
         </Toolbar>
     </AppBar> 
     )

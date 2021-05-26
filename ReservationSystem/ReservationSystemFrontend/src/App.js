@@ -7,21 +7,25 @@ import SignUp from './pages/SignUpPage';
 import Layout from './components/Layout';
 import MakeReservation from './pages/MakeReservationPage';
 import Reservations from './pages/ReservationsPage';
+import {AuthProvider} from './contexts/AuthContext'
+import Login from './pages/LoginPage';
 
 function App() {
   return (
+    <AuthProvider>
      <Layout>
       <Switch>
         <Route path='/' exact component={Home} />
         <Route path='/about' component={About} />
         <Route path='/contact-us' component={Contact} />
-        <Route path='/sign-up' component={SignUp} />
+        <Route path='/log-in' component={Login} />
         <Route path='/sign-up' component={SignUp} />
         <Route path='/make-reservation' component={MakeReservation} />
         <Route path='/reservations' component={Reservations}/>
 
       </Switch>
     </Layout>
+    </AuthProvider>
   );
 }
 

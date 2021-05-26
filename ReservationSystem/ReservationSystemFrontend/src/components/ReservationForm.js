@@ -252,7 +252,7 @@ export default function ReservationForm() {
                         error={errors.firstAndLastName}/>
                 </Grid>
             </Grid>
-            <Grid container>
+            <Grid container justify="space-between">
                 <Grid item sm={6}>
                     <Controls.DatePicker
                     name="date"
@@ -281,18 +281,17 @@ export default function ReservationForm() {
                     error={errors.endHour}/>
                 </Grid>
             </Grid>
-            <Grid container>
-                <Grid item sm={9}></Grid>
-                <Grid item sm={3} >
-                    <Grid container alignItems="center" justify="center">
+            <Grid container alignItems="center" justify="flex-end">
+                <Grid item sm={3} container justify="flex-end"
+                style={{marginRight: "2em"}}
+                >
                         <Controls.Button
+                        style={{marginRight: "5em", marginTop: "2em", width: "100%"}}
                         variant="contained"
                         color="primary"
                         size="large"
                         text="search"
                         type="submit"/>
-
-                    </Grid>
                 </Grid>
             </Grid>
         </Form>
@@ -348,18 +347,17 @@ export default function ReservationForm() {
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid container>
-                <Grid item sm={9}></Grid>
-                <Grid item sm={3} >
-                    <Grid container alignItems="center" justify="center">
+            <Grid container alignItems="center" justify="flex-end">
+                <Grid item sm={3} container justify="flex-end"
+                style={{marginRight: "2em"}}
+                >
                         <Controls.Button
+                        style={{marginRight: "5em", marginTop: "2em", width: "100%"}}
                         variant="contained"
                         color="primary"
                         size="large"
-                        text="submit"
+                        text="search"
                         type="submit"/>
-
-                    </Grid>
                 </Grid>
             </Grid>
             </Form>

@@ -1,7 +1,8 @@
-import React from 'react'
-import {Grid} from "@material-ui/core"
+import React, {useState} from 'react'
+import {Grid, makeStyles} from "@material-ui/core"
 import {UseForm, Form} from './UseForm'
 import Controls from '../components/controls/Controls'
+import { Alert } from '@material-ui/lab'
 
 const items = [
     {id:'male', title:'Male'},
@@ -9,7 +10,20 @@ const items = [
     {id:'female', title:'Female'},
 ]
 
+const useStyles = makeStyles((theme) => ({
+    errorParagraph: {
+        color: "#DC143C"
+    }
+}))
 
+/*<Grid item xs={6}>
+<Controls.RadioGroup
+label="Gender"
+value={values.gender}
+onChange={handleInputChange}
+name="gender"
+items={items}/>
+</Grid>*/
 
 const initialFieldValues = {
     username: '',
@@ -22,14 +36,24 @@ const initialFieldValues = {
 
 export default function RegisterForm() {
     const {values, setValues, handleInputChange, errors, setErrors} = UseForm(initialFieldValues);
-    
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const classes = useStyles();
+
     const validate = () => {
+        console.log(values.email);
         let temp = {}
         temp.firstName = values.firstName?"":"This field is required"
         temp.lastName = values.lastName?"":"This field is required"
-        temp.email = (/$^|.+@.+..+/).test(values.email)?"":"Email is not valid"
+        temp.email = ((/$^|.+@.+..+/).test(values.email) && values.email.length!=0)?"":"Email is not valid"
         temp.username = values.username.length>3?"":"Minimum 4 characters required"
         temp.password = values.password.length !== 0?"":"This field is required"
+        if(temp.password === "" && values.password !== values.confirmPassword){
+            setError("Passwords do not match");
+            return false;
+        } else {
+            setError('');
+        }
         temp.telephone = values.telephone.length>8?"":"Minimum 9 characters required"
         setErrors({
             ...temp
@@ -45,61 +69,69 @@ export default function RegisterForm() {
     }
 
     return (
+        <>
        <Form onSubmit={handleSubmit}>
             <Grid container>
-                <Grid xs={3}>
+                <Grid xs={6}>
                     <Controls.Input
                     name="firstName"
                     value={values.firstName}
-                    label="Last Name"
+                    label="First Name"
                     onChange={handleInputChange}
-                    error={errors.firstName}/>
+                    error={errors.firstName}
+                    style={{width: "97%"}}/>
                 </Grid>
-                <Grid xs={3}>
+                <Grid xs={6}>
                     <Controls.Input
                     label="Last Name"
                     name="lastName"
                     value={values.lastName}
                     onChange={handleInputChange}
                     error={errors.lastName}
+                    style={{width: "97%"}}
                     />
                 </Grid>
-                <Grid xs={3}>
+                <Grid xs={6}>
                     <Controls.Input
                     label="Email"
                     name="email"
                     value={values.email}
                     onChange={handleInputChange}
                     error={errors.email}
+                    style={{width: "97%"}}
                     />
                 </Grid>
-                <Grid xs={3}>
-                    <Controls.Input
-                    label="Password"
-                    name="password"
-                    value={values.password}
-                    onChange={handleInputChange}
-                    error={errors.password}
-                    />
-                </Grid>
-            </Grid>
-            <Grid container>
-                <Grid xs={3}>
+                <Grid xs={6}>
                     <Controls.Input
                     label="Username"
                     name="username"
                     value={values.username}
                     onChange={handleInputChange}
                     error={errors.username}
+                    style={{width: "97%"}}
                     />
                 </Grid>
-                <Grid item xs={6}>
-                    <Controls.RadioGroup
-                    label="Gender"
-                    value={values.gender}
+                <Grid xs={6}>
+                    <Controls.Input
+                    label="Password"
+                    name="password"
+                    value={values.password}
                     onChange={handleInputChange}
-                    name="gender"
-                    items={items}/>
+                    error={errors.password}
+                    type="password"
+                    style={{width: "97%"}}
+                    />
+                </Grid>
+                <Grid xs={6}>
+                    <Controls.Input
+                    label="Confirm password"
+                    name="confirmPassword"
+                    value={values.confirmPassword}
+                    onChange={handleInputChange}
+                    error={errors.confirmPassword}
+                    type="password"
+                    style={{width: "97%"}}
+                    />
                 </Grid>
                 <Grid item xs={6}>
                 <Controls.Input
@@ -108,10 +140,14 @@ export default function RegisterForm() {
                     value={values.telephone}
                     onChange={handleInputChange}
                     error={errors.telephone}
+                    style={{width: "97%"}}
                     />
                 </Grid>
             </Grid>
-            <Grid container>
+            <Grid container justify="center">
+                {error && <p className={classes.errorParagraph}>{error}</p>}
+            </Grid>
+            {/*<Grid container>
                 <Grid item sm={9}></Grid>
                 <Grid container sm={3} alignItems="center" justify="center">
                     <Controls.Button
@@ -119,9 +155,24 @@ export default function RegisterForm() {
                     color="primary"
                     size="large"
                     text="submit"
-                    type="submit"/>
+                    type="submit"
+                    disabled={loading}/>
+                </Grid>
+            </Grid>*/}
+              <Grid container alignItems="center" justify="flex-end">
+                <Grid item sm={3} container justify="flex-end"
+                style={{marginRight: "0.5em"}}
+                >
+                        <Controls.Button
+                        style={{marginRight: "6em", marginTop: "2em", width: "100%"}}
+                        variant="contained"
+                        color="primary"
+                        size="large"
+                        text="search"
+                        type="submit"/>
                 </Grid>
             </Grid>
         </Form>
+        </>
     )
 }

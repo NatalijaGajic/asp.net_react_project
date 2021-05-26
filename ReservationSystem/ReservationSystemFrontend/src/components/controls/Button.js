@@ -15,7 +15,7 @@ export default function Button(props) {
         <div>
             <MuiButton
             variant={variant || "contained"} 
-            size={size || "large"}
+            //size={size || "large"}
             color={color || "primary"}
             onClick={onClick}
             {...other}
