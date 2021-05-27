@@ -1,11 +1,12 @@
 import React from 'react';
-import {Box, Card,  Hidden,  makeStyles} from '@material-ui/core';
+import { Card, makeStyles, Grid, IconButton} from '@material-ui/core';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import PeopleAltTwoToneIcon from '@material-ui/icons/PeopleAltTwoTone';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
-  button: {
+  button1: {
     flexGrow: 1,
   }
 }));  
@@ -73,9 +74,23 @@ export default function Game(props) {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Button size="small" color="primary" className={classes.button}>
-          Make reservation
-        </Button>
+        <Grid container>
+          <Grid item sm={7} container justify="center">
+              <Button size="small" color="primary" className={classes.button1}>
+              Make reservation
+              </Button>
+            </Grid>
+          <Grid item sm={2} container justify="center">
+            <Button size="small" color="primary" disabled={true} >
+            {props.valute}{props.price}/hour
+           </Button>
+           </Grid>
+          <Grid item sm={3} container justify="center">
+              <IconButton size="small" disabled={true}>
+                   {props.numberOfPlayers}+<PeopleAltTwoToneIcon/>
+                </IconButton>
+          </Grid>
+        </Grid>
       </CardActions>
     </Card>
   );
