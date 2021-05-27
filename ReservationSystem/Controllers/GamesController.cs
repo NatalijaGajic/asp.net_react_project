@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ using ReservationSystem.Core.exceptions;
 namespace ReservationSystem.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     //TODO: DTO mapping
     public class GamesController : ControllerBase
     {
@@ -31,7 +32,13 @@ namespace ReservationSystem.Controllers
         {
             try
             {
-                return Ok(_gamesServices.GetGames(paginationQuery, gamesQueryParams));
+                List<Game> games = _gamesServices.GetGames(paginationQuery, gamesQueryParams);
+                int numberOfGames = _gamesServices.GetNumberOfActiveGames();
+                if (paginationQuery != null)
+                {
+                    return Ok(new PagedResponse<Game>(games, paginationQuery, numberOfGames));
+                }
+                return Ok(new PagedResponse<Game>(games, numberOfGames));
             }
             catch (Exception e)
             {
@@ -48,11 +55,13 @@ namespace ReservationSystem.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult Get([FromQuery] PaginationQuery paginationQuery, [FromQuery] GamesQueryParams gamesQueryParams)
+        public IActionResult Get([FromQuery] PaginationQuery paginationQuery)
         {
             try
             {
-                return Ok(_gamesServices.GetAllGames(paginationQuery));
+                List<Game> games = _gamesServices.GetAllGames(paginationQuery);
+                int numberOfGames = _gamesServices.GetNumberOfActiveGames();
+                return Ok(new PagedResponse<Game>(games, paginationQuery, numberOfGames));
             }
             catch (Exception e)
             {

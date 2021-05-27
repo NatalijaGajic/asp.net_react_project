@@ -10,7 +10,7 @@ return(
     <>
     <Grid container spacing={2}>
       {props.games.map((game) => {
-        return <Grid item sm={4} flexShrink={0}>
+        return <Grid item sm={4} flexshrink={0}>
                     <Game
                   key = {game.id}
                   id = {game.id}
@@ -23,11 +23,7 @@ return(
                 </Grid> 
       })}
     </Grid>
-    <Grid container justify="flex-end" spacing={3}>
-      <Grid item>
-         <Pagination numOfPages={10}></Pagination>
-      </Grid>
-    </Grid>
+    
     </>
 );
     

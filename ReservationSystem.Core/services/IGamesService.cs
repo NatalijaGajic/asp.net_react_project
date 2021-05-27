@@ -15,6 +15,7 @@ namespace ReservationSystem.Core
         bool DeleteGame(string id);
         bool UpdateGame(Game game);
 
+        int GetNumberOfActiveGames();
         List<Game> GetAllGames(PaginationQuery paginationQuery);
     }
 }

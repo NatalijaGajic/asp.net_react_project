@@ -16,5 +16,6 @@ namespace ReservationSystem.Core.repositories
         int DeleteGame(string id);
         bool UpdateGame(Game game);
         IMongoCollection<Game> GetGamesCollection();
+        int GetNumberOfActiveGames();
     }
 }
