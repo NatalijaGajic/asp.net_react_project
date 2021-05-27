@@ -168,6 +168,7 @@ const setPage = (page) => {
       setOrderBy={setOrderBy}
       queryParams={queryParams}
       setQueryParams={setQueryParams}
+      numberOfPages={numberOfPages}
       changeNumberOfPages={changeNumberOfPages}
       setChangeNumberOfPages={setChangeNumberOfPages}/>
      </div>
@@ -175,7 +176,7 @@ const setPage = (page) => {
     <Grid container justify="flex-end" spacing={3}>
       <Grid item>
          <Pagination 
-          numOfPages={numberOfPages}
+          numberOfPages={numberOfPages}
           setPage={setPage}
           currentPage={currentPage} 
           setCurrentPage={setCurrentPage}
