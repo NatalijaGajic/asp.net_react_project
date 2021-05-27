@@ -2,9 +2,9 @@ import GameList from '../components/GameList';
 import React, {useState, useEffect} from 'react';
 import Loader from '../components/Loader';
 import {createAPIEndpoint, ENDPOINTS} from '../api/index'
-import { FormatListNumberedOutlined } from '@material-ui/icons';
 import {Grid} from '@material-ui/core'
 import Pagination from '../components/Pagination'
+import GameFilters from '../components/GameFilters';
  
 /*const DUMMY_DATA = [
   {
@@ -25,10 +25,12 @@ import Pagination from '../components/Pagination'
   }
 ];*/
 
+
 const Home = () => {
   const [isLoading, setLoading] = useState(true);
   const [loadedGames, setGames] = useState([]);
   const [numberOfPages, setNumberOfPages] = useState(1);
+  const [numberOfPeople, setNumberOfPeople] = useState(2);
 
   useEffect (() => {
       createAPIEndpoint(ENDPOINTS.GAMES)
@@ -44,6 +46,7 @@ const Home = () => {
     })
   }, []);
 
+
   if(isLoading){
     return (
       <Loader></Loader>
@@ -52,6 +55,13 @@ const Home = () => {
 
   return (
     <div>
+      <div style={{marginBottom:'8px'}}>
+     <GameFilters
+     setNumberOfPeople = {setNumberOfPeople}
+     numberOfPeople = {numberOfPeople}
+     games={loadedGames}
+     setGames={setGames}/>
+     </div>
     <GameList games={loadedGames}></GameList>
     <Grid container justify="flex-end" spacing={3}>
       <Grid item>

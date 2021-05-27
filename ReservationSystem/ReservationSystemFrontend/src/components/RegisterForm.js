@@ -4,26 +4,13 @@ import {UseForm, Form} from './UseForm'
 import Controls from '../components/controls/Controls'
 import { Alert } from '@material-ui/lab'
 
-const items = [
-    {id:'male', title:'Male'},
-    {id:'other', title:'Other'},
-    {id:'female', title:'Female'},
-]
-
 const useStyles = makeStyles((theme) => ({
     errorParagraph: {
         color: "#DC143C"
     }
 }))
 
-/*<Grid item xs={6}>
-<Controls.RadioGroup
-label="Gender"
-value={values.gender}
-onChange={handleInputChange}
-name="gender"
-items={items}/>
-</Grid>*/
+
 
 const initialFieldValues = {
     username: '',
