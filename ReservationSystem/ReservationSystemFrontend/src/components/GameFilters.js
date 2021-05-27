@@ -61,6 +61,20 @@ export default function GameFilters(props) {
         )
     }
 
+    const handleSearchClick = () => {
+        setOrderBy('Name Desc');
+        setNumberOfPeople(2);
+        console.log(searchKey);
+        setQueryParams({
+            SearchByName: searchKey,
+            NumberOfPeople: 2,
+            IsActive: true,
+            OrderBy: 'Name',
+            PageNumber : 1,
+            PageSize : 6
+        });
+    }
+
     return (
         <>
         <Grid container spacing={4}>
@@ -71,7 +85,7 @@ export default function GameFilters(props) {
                 className={classes.searchInput}
                 onChange={e => setSearchKey(e.target.value)}
                 value={searchKey}/>
-                <IconButton>
+                <IconButton onClick={handleSearchClick}>
                     <SearchTwoToneIcon/>
                 </IconButton>
             </Paper>
