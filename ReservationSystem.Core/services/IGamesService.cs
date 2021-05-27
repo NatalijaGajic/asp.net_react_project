@@ -1,4 +1,5 @@
 ﻿using ReservationSystem.Core.contracts;
+using ReservationSystem.Core.dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,13 @@ namespace ReservationSystem.Core
 {
     public interface IGamesService
     {
-        List<Game> GetGames(PaginationQuery paginationQuery, GamesQueryParams gamesQueryParams);
+        PagedResponse<Game> GetGames(PaginationQuery paginationQuery, GamesQueryParams gamesQueryParams);
         Game AddGame(Game game);
         Game GetGame(string id);
         bool DeleteGame(string id);
         bool UpdateGame(Game game);
 
         int GetNumberOfActiveGames();
-        List<Game> GetAllGames(PaginationQuery paginationQuery);
+        PagedResponse<Game> GetAllGames(PaginationQuery paginationQuery);
     }
 }

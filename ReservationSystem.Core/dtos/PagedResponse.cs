@@ -18,10 +18,14 @@ namespace ReservationSystem.Core.dtos
         
 
 
-        public PagedResponse(IEnumerable<T> data, int numberOfPages)
+        public PagedResponse(IEnumerable<T> data, int numberOfDocuments)
         {
             Data = data;
-            this.NumberOfPages = numberOfPages;
+            this.NumberOfPages = numberOfDocuments / PageSize;
+            if (NumberOfPages * PageSize < numberOfDocuments)
+            {
+                NumberOfPages++;
+            }
         }
 
         public PagedResponse(IEnumerable<T> data, PaginationQuery paginationQuery, int numberOfDocuments)
@@ -31,7 +35,7 @@ namespace ReservationSystem.Core.dtos
             this.PageSize = paginationQuery.PageSize;
             this.NextPage = paginationQuery.PageNumber + 1;
             this.PreviousPage = paginationQuery.PageNumber - 1;
-            //TODO: round to bigger value
+            //TODO: round to bigger value, calculation wrong when there is only 1 page
             this.NumberOfPages = numberOfDocuments / PageSize;
             if(NumberOfPages * PageSize < numberOfDocuments)
             {

@@ -1,5 +1,6 @@
 ﻿using MongoDB.Driver;
 using ReservationSystem.Core.contracts;
+using ReservationSystem.Core.dtos;
 using ReservationSystem.Core.exceptions;
 using ReservationSystem.Core.repositories;
 using System;
@@ -26,7 +27,7 @@ namespace ReservationSystem.Core
             return _gamesRepository.DeleteGame(id) > 0;
         }
 
-        public List<Game> GetAllGames(PaginationQuery paginationQuery)
+        public PagedResponse<Game> GetAllGames(PaginationQuery paginationQuery)
         {
             IMongoCollection<Game> _games = _gamesRepository.GetGamesCollection();
             SortDefinition<Game> sort = Builders<Game>.Sort.Ascending("Name");
@@ -38,7 +39,9 @@ namespace ReservationSystem.Core
             {
                 throw new InvalidGamesQueryParamsException("Query parameters PageSize and PageNumber should be a positive integer");
             }
-            return _games.Find(filter).Sort(sort).Skip(skip).Limit(take).ToList();
+            List<Game> games = _games.Find(filter).Sort(sort).Skip(skip).Limit(take).ToList();
+            int numberOfGames = GetNumberOfActiveGames();
+            return new PagedResponse<Game>(games, paginationQuery, numberOfGames);
         }
 
         public Game GetGame(string id)
@@ -46,7 +49,7 @@ namespace ReservationSystem.Core
             return _gamesRepository.GetGame(id);
         }
 
-        public List<Game> GetGames(PaginationQuery paginationQuery, GamesQueryParams gamesQueryParams)
+        public PagedResponse<Game> GetGames(PaginationQuery paginationQuery, GamesQueryParams gamesQueryParams)
         {
             IMongoCollection<Game> _games = _gamesRepository.GetGamesCollection();
             FilterDefinition<Game> filter = Builders<Game>.Filter.Where(game => true);
@@ -88,10 +91,13 @@ namespace ReservationSystem.Core
                 {
                     throw new InvalidGamesQueryParamsException("Query parameters PageSize and PageNumber should be a positive integer");
                 }
-                return _games.Find(filter).Sort(sort).Skip(skip).Limit(take).ToList();
+                int numOfGames = (int)_games.Find(filter).CountDocuments();
+                List<Game> gamesList = _games.Find(filter).Sort(sort).Skip(skip).Limit(take).ToList();
+                return new PagedResponse<Game>(gamesList, paginationQuery, numOfGames);
             }
-           
-            return _games.Find(filter).Sort(sort).ToList();
+            int numberOfGames = (int)_games.Find(filter).CountDocuments();
+            List<Game> games = _games.Find(filter).Sort(sort).ToList();
+            return new PagedResponse<Game>(games, numberOfGames);
         }
 
         public bool UpdateGame(Game game)

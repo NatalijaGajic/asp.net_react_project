@@ -31,21 +31,34 @@ const items = [
 }))
 
 export default function GameFilters(props) {
-    const {numberOfPeople, setNumberOfPeople, games, setGames} = props;
+    const {queryParams, setQueryParams, numberOfPeople, setNumberOfPeople, orderBy, setOrderBy} = props;
     const classes = useStyles();
     const [searchKey, setSearchKey] = useState('');
-    const [orderBy, setOrderBy] = useState('Name Asc');
+
+    
 
     const handleInputChange = e => {
         const {name, value} = e.target
         console.log(value);
         setNumberOfPeople(value);
+        setQueryParams(
+            {
+                ...queryParams,
+                NumberOfPeople: value
+            }
+        )
     }
 
     const handleOrderByInputChange = e => {
         const {name, value} = e.target
         console.log(value);
         setOrderBy(value);
+        setQueryParams(
+            {
+                ...queryParams,
+                OrderBy: value.split(' ')[0]
+            }
+        )
     }
 
     return (
@@ -54,7 +67,7 @@ export default function GameFilters(props) {
         <Grid item sm={5}>
             <Paper className={classes.searchPaper}>
                 <InputBase
-                placeholder="Search for game"
+                placeholder="Search for games"
                 className={classes.searchInput}
                 onChange={e => setSearchKey(e.target.value)}
                 value={searchKey}/>

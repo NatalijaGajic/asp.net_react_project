@@ -25,20 +25,14 @@ namespace ReservationSystem.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("/filtered")]
+        [HttpGet("filtered/games")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetFiltered([FromQuery] PaginationQuery paginationQuery, [FromQuery] GamesQueryParams gamesQueryParams)
         {
             try
             {
-                List<Game> games = _gamesServices.GetGames(paginationQuery, gamesQueryParams);
-                int numberOfGames = _gamesServices.GetNumberOfActiveGames();
-                if (paginationQuery != null)
-                {
-                    return Ok(new PagedResponse<Game>(games, paginationQuery, numberOfGames));
-                }
-                return Ok(new PagedResponse<Game>(games, numberOfGames));
+                return Ok(_gamesServices.GetGames(paginationQuery, gamesQueryParams));
             }
             catch (Exception e)
             {
@@ -59,9 +53,7 @@ namespace ReservationSystem.Controllers
         {
             try
             {
-                List<Game> games = _gamesServices.GetAllGames(paginationQuery);
-                int numberOfGames = _gamesServices.GetNumberOfActiveGames();
-                return Ok(new PagedResponse<Game>(games, paginationQuery, numberOfGames));
+                return Ok(_gamesServices.GetAllGames(paginationQuery));
             }
             catch (Exception e)
             {

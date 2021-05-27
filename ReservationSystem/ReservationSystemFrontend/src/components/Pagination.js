@@ -3,84 +3,39 @@ import './PaginationStyles.css'
 import {getGamesForPageQuery} from '../api/index'
 
 export default function Pagination(props) {
-    const {numOfPages, setGames} = props;
-    const pages = Array.from({length: numOfPages}, (_, i) => i + 1)
-    const [currentPage, setCurrentPage] = useState(1);
+    const {numOfPages, setPage, currentPage, setCurrentPage, changeNumberOfPages, setChangeNumberOfPages} = props;
+    const [pages, setPages] = useState( Array.from({length: numOfPages}, (_, i) => i + 1));
     const [displayPages, setDisplayPages] = useState(pages);
     
+    useEffect(() => {
+        //TODO: after useEffect in HomePage before setting numberOfPages this method is called
+        //while loading component, so numberOfPageds has the previous value
+       setPages(
+        Array.from({length: numOfPages}, (_, i) => i + 1)
+       )
+       if(changeNumberOfPages){
+            console.log('Setting page to 1');
+            setCurrentPage(1);
+       }
+    }, [numOfPages])
+
     useEffect(() => {
         let array = [];
         if(currentPage + 3 <= numOfPages){
             array = [currentPage, currentPage+1, '...', numOfPages];
         } else {
             let dif = numOfPages - currentPage;
-            array = Array.from({length: dif}, (_, i) => i + 1 + currentPage)
+            console.log(dif);
+            array = Array.from({length: dif}, (_, i) => i + 1 + currentPage);
+            console.log('Array is:');
+            console.log(array);
             array = [currentPage, ...array];
+            console.log('Array is:')
+            console.log(array);
         }
         setDisplayPages(array);
     }, [currentPage])
 
-    const fetchGamesForNewPage = (queryParams) => {
-        getGamesForPageQuery(queryParams).fetch()
-        .then((response) => {
-            console.log('fetchGamesForNewPage');
-            console.log(response.data);
-            setGames(response.data.data);
-        })
-        .catch(err => {
-            console.log(err);
-        })
-    }
-
-    const setPage = (page) => {
-        if (page === '...'){
-            if(currentPage + 2 < numOfPages){
-                let queryParams = {
-                    PageNumber : currentPage + 2,
-                    PageSize : 6
-                }
-                fetchGamesForNewPage(queryParams);
-                setCurrentPage((prev) => prev + 2);
-
-            }else {
-                let queryParams = {
-                    PageNumber : numOfPages,
-                    PageSize : 6
-                }
-                fetchGamesForNewPage(queryParams);
-                setCurrentPage(numOfPages);
-            }
-            return;
-        }
-        if(page === 'next'){
-            if(currentPage < numOfPages){
-                let queryParams = {
-                    PageNumber : currentPage + 1,
-                    PageSize : 6
-                }
-                fetchGamesForNewPage(queryParams);
-                setCurrentPage((prev) => prev + 1);
-            }
-            return;
-        }
-        if(page === 'prev'){
-            if(currentPage  > 1){
-                let queryParams = {
-                    PageNumber : currentPage - 1,
-                    PageSize : 6
-                }
-                fetchGamesForNewPage(queryParams);
-                setCurrentPage((prev) => prev - 1);
-            }
-            return;
-        }
-        let queryParams = {
-            PageNumber : page,
-            PageSize : 6
-        }
-        fetchGamesForNewPage(queryParams);
-        setCurrentPage(page);
-    }
     return (
         <div className="pagination-container">
             <a className={currentPage === 1?'disabled':undefined}
