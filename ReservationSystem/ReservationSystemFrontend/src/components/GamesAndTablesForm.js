@@ -7,7 +7,7 @@ import PaperForm from '../components/PaperForm';
 import {intervalsForWorkDay} from '../api/index'
 
 export default function GamesAndTablesForm(props) {
-    const {queryParams, setQueryParams, chooseGame, chooseTable} = props;
+    const {queryParams, setQueryParams, chooseGame, chooseTable, displayReservationGamesList} = props;
     const [gamesArray, setGamesArray] = useState([]);
     const [searchList, setSearchList] = useState([]);
     const [tablesArray, setTablesArray] = useState([]);
@@ -30,10 +30,11 @@ export default function GamesAndTablesForm(props) {
         <PaperForm>
         <Form>
             <Grid container>
-                <Grid item sm={6}>
+                {displayReservationGamesList && (<Grid item sm={6}>
                     <ReservationGamesList 
                     {...{searchList, setSearchList, gamesArray, setGamesArray, chooseGame}}/>
-                </Grid>
+                    </Grid>)
+                }
                 <Grid item sm={6}>
                     <ReservationTablesList
                      {...{tablesArray, setTablesArray, chooseTable}}/>
