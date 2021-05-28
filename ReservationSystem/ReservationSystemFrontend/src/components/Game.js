@@ -50,11 +50,15 @@ const images = {
   "60708f45853fefd25c84cdc3":"/images/codenames.jpg"
   }
 
+const handleCardClick = () => {
+  console.log('click');
+}
+
 export default function Game(props) {
   const classes = useStyles();
   return (
     <Card className={classes.root}>
-      <CardActionArea>
+      <CardActionArea onClick={handleCardClick}>
         <CardMedia
           className={classes.media}
           component="img"

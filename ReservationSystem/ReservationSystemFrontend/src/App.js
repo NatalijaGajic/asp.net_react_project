@@ -9,6 +9,8 @@ import MakeReservation from './pages/MakeReservationPage';
 import Reservations from './pages/ReservationsPage';
 import {AuthProvider} from './contexts/AuthContext'
 import Login from './pages/LoginPage';
+import GameDetails from './pages/GameDetailsPage';
+import MakeGameReservation from './pages/MakeGameReservationPage';
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
         <Route path='/sign-up' component={SignUp} />
         <Route path='/make-reservation' component={MakeReservation} />
         <Route path='/reservations' component={Reservations}/>
+        <Route path='/games/:id' component={GameDetails}/>
+        <Route path='/make-game-reservation/:id' component={MakeGameReservation}/>
 
       </Switch>
     </Layout>

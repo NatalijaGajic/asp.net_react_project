@@ -72,7 +72,8 @@ const Home = () => {
       console.log(response.data);
       setLoading(false);
       setGames(response.data.data);
-      //TODO: this triggers useEffect in pagination so it sets the curr page to 1
+      //this triggers useEffect in pagination so it sets the curr page to 1
+      //when queryParams are set in setPage changeNumberOfPages is set to false
       if(changeNumberOfPages){
         console.log('Changing number of pages');
         setNumberOfPages(response.data.numberOfPages);

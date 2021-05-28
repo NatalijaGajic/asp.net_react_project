@@ -7,7 +7,7 @@ import PaperForm from '../components/PaperForm';
 import GamesAndTablesForm from '../components/GamesAndTablesForm'
 import Notification from '../components/Notification'
 import { useHistory } from "react-router-dom";
-
+import {range, getStringDate} from '../utils/utils';
 
 //const userId = "6072e15c7636626e81ac21fb"; //3 penalties
 const userId = "6072e13b7636626e81ac21fa";
@@ -48,17 +48,6 @@ export default function ReservationForm() {
     //const [firstAndLastName, setFirstAndLastName] = useState('');
 
     //TODO: Is not executed when the page is navigated to from make-reservation
-    useEffect(() => {
-        createAPIEndpoint(ENDPOINTS.CLIENTS).fetchById(userId)
-        .then(res => {
-            console.log('fetching user')
-            console.log(res.data);
-            setUser(res.data);
-        })
-        .catch(err => {
-            console.log(err);
-        })
-    }, []);
 
     const validate = (fieldValues = values) => {
         console.log('in validate:');
@@ -80,6 +69,21 @@ export default function ReservationForm() {
         if(fieldValues === values)
             return Object.values(temp).every(x=> x === "");
     }
+    const {values, setValues, handleInputChange,  errors, setErrors} = UseForm(initialFieldValues, 
+        true, validate);   
+
+
+    useEffect(() => {
+        createAPIEndpoint(ENDPOINTS.CLIENTS).fetchById(userId)
+        .then(res => {
+            console.log('fetching user')
+            console.log(res.data);
+            setUser(res.data);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }, []);
     
     const handleInputChangeDatePicker = e => {
         console.log('handleInputChangeDatePicker');
@@ -87,30 +91,6 @@ export default function ReservationForm() {
         let date = getStringDate(values.date);
         console.log(date);
         setDate(date);
-    }
-
-    const {values, setValues, handleInputChange,  errors, setErrors} = UseForm(initialFieldValues, true, validate);   
-
-    function range(size, startAt) {
-        let array = [...Array(size).keys()].map(i => {
-            let item = {
-                id: (i + startAt),
-                title:(i + startAt)
-            }
-            return item;
-        });
-        console.log(array);
-        return array;
-    }
-
-    const getStringDate = datePickerDate => {
-        //The value returned by getMonth is an integer between 0 and 11 corresponding to the month
-        var localDate = new Date(datePickerDate);
-        let year = localDate.getFullYear().toString();
-        let month = (localDate.getMonth()+1).toString();
-        let day = localDate.getDate().toString();
-        let date = year+'-'+month+'-'+day;
-        return date;
     }
 
     useEffect(() => {

@@ -7,3 +7,15 @@ export const getStringDate = datePickerDate => {
     let date = year+'-'+month+'-'+day;
     return date;
 }
+
+export function range(size, startAt) {
+    let array = [...Array(size).keys()].map(i => {
+        let item = {
+            id: (i + startAt),
+            title:(i + startAt)
+        }
+        return item;
+    });
+    console.log(array);
+    return array;
+}
