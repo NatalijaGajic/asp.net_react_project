@@ -106,6 +106,14 @@ export default function GameReservationForm(props) {
        <Form onSubmit={handleSearch}>
             <Grid container direction="column">
                 <Grid item sm={12}>
+                    <Controls.InputDisabled
+                    name="gameDisabled"
+                    label="Game"
+                    value={values.game.name}
+                    style={{width: "100%", marginTop: "0.5em"}}
+                    />
+                </Grid>
+                <Grid item sm={12}>
                     <Controls.Input
                         name="firstAndLastName"
                         value={values.firstAndLastName}

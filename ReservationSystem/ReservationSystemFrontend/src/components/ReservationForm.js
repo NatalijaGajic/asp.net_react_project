@@ -223,6 +223,13 @@ export default function ReservationForm() {
         <PaperForm>
        <Form onSubmit={handleSearch}>
             <Grid container>
+                 <Grid item sm={6}>
+                    <Controls.InputDisabled
+                    name="gameDisabled"
+                    label="Game"
+                    value={values.game.name}
+                    />
+                </Grid>
                 <Grid item sm={6}>
                     <Controls.Input
                         name="firstAndLastName"
