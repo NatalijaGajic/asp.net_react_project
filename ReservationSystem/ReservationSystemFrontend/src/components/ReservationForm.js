@@ -296,13 +296,13 @@ export default function ReservationForm() {
                     value={submitDate.length>8?submitDate:''}
                     />
                 </Grid>     
-                <Grid item sm={3}>
+                <Grid item sm={3} container justify="flex-end">
                     <Controls.InputDisabled
                     name="startHourDisabled"
                     label="Start Hour"
                     value={postBody.startHour}/>
                 </Grid>
-                <Grid item sm={3}>
+                <Grid item sm={3} container justify="flex-start">
                     <Controls.InputDisabled
                     name="endHourDisabled"
                     label="End Hour"

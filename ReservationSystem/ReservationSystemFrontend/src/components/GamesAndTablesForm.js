@@ -30,15 +30,25 @@ export default function GamesAndTablesForm(props) {
         <PaperForm>
         <Form>
             <Grid container>
-                {displayReservationGamesList && (<Grid item sm={6}>
+                {displayReservationGamesList && 
+                (<>
+                <Grid item sm={6}>
                     <ReservationGamesList 
                     {...{searchList, setSearchList, gamesArray, setGamesArray, chooseGame}}/>
-                    </Grid>)
+                    </Grid>
+                    <Grid item sm={6}>
+                        <ReservationTablesList
+                        {...{tablesArray, setTablesArray, chooseTable}}/>
+                    </Grid>
+                    </>)
                 }
-                <Grid item sm={6}>
-                    <ReservationTablesList
-                     {...{tablesArray, setTablesArray, chooseTable}}/>
-                </Grid>
+                {!displayReservationGamesList && 
+                    <Grid item sm={12}>
+                        <ReservationTablesList
+                        {...{tablesArray, setTablesArray, chooseTable}}/>
+                    </Grid>
+                }
+                
             </Grid>
         </Form>
         </PaperForm>

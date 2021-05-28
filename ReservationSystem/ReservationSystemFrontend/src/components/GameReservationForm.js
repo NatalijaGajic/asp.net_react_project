@@ -100,64 +100,71 @@ export default function GameReservationForm(props) {
     
     return (
         <div>
+        <Grid container>
+        <Grid container direction="column" item sm={6}>
         <PaperForm>
        <Form onSubmit={handleSearch}>
-            <Grid container>
-                <Grid item sm={6}>
+            <Grid container direction="column">
+                <Grid item sm={12}>
                     <Controls.Input
                         name="firstAndLastName"
                         value={values.firstAndLastName}
                         label="First and Last Name"
                         onChange={handleInputChange}
-                        error={errors.firstAndLastName}/>
+                        error={errors.firstAndLastName}
+                        style={{width: "100%", marginTop: "0.5em"}}/>
                 </Grid>
-            </Grid>
-            <Grid container justify="space-between">
-                <Grid item sm={6}>
+                <Grid item sm={12}>
                     <Controls.DatePicker
                     name="date"
                     label="Date"
                     value={values.date}
                     onChange={handleInputChangeDatePicker}
                     error={errors.date}
+                    style={{width: "100%", marginTop: "0.5em"}}
                     />
-                </Grid>     
-                <Grid item sm={3}>
-                    <Controls.Select
-                    name="startHour"
-                    label="Start Hour"
-                    value={values.startHour}
-                    onChange={handleInputChange}
-                    options={values.startHours}
-                    error={errors.startHour}/>
+                </Grid>  
+                <Grid item sm={12} container justify="space-between" spacing={2}>
+                    <Grid item sm={6}>
+                        <Controls.Select
+                        name="startHour"
+                        label="Start Hour"
+                        value={values.startHour}
+                        onChange={handleInputChange}
+                        options={values.startHours}
+                        error={errors.startHour}
+                        style={{width: "100%", marginTop: "0.5em"}}/>
+                    </Grid>
+                    <Grid item sm={6} item justify="flex-end">
+                        <Controls.Select
+                        name="endHour"
+                        label="End Hour"
+                        value={values.endHour}
+                        onChange={handleInputChange}
+                        options={values.endHours}
+                        error={errors.endHour}
+                        style={{width: "100%", marginTop: "0.5em"}}/>
+                    </Grid>
                 </Grid>
-                <Grid item sm={3}>
-                    <Controls.Select
-                    name="endHour"
-                    label="End Hour"
-                    value={values.endHour}
-                    onChange={handleInputChange}
-                    options={values.endHours}
-                    error={errors.endHour}/>
-                </Grid>
-            </Grid>
-            <Grid container alignItems="center" justify="flex-end">
-                <Grid item sm={3} container justify="flex-end"
-                style={{marginRight: "2em"}}
-                >
-                        <Controls.Button
-                        style={{marginRight: "5em", marginTop: "2em", width: "100%"}}
-                        variant="contained"
-                        color="primary"
-                        size="large"
-                        text="search"
-                        type="submit"/>
+                <Grid item={12} container justify="flex-end">
+                            <Controls.Button
+                            style={{marginRight: "5em", marginTop: "2em", width: "100%"}}
+                            variant="contained"
+                            color="primary"
+                            size="large"
+                            text="search"
+                            type="submit"/>
                 </Grid>
             </Grid>
         </Form>
         </PaperForm>
-        <GamesAndTablesForm
-        {... {queryParams, setQueryParams, chooseGame, chooseTable, displayReservationGamesList}}/>
+        </Grid>
+        <Grid direction="column" item sm={6}>
+            <GamesAndTablesForm
+            {... {queryParams, setQueryParams, chooseGame, chooseTable, displayReservationGamesList}}/>
+        </Grid>
+        </Grid>
+       
         <PaperForm >
             <Form onSubmit={handleSubmit}>
             <Grid container>
@@ -175,19 +182,22 @@ export default function GameReservationForm(props) {
                     label="Date"
                     value={submitDate.length>8?submitDate:''}
                     />
+                </Grid>
+                <Grid item sm={6} container justify="center">
+                    <Grid item sm={6} container justify="flex-end">
+                        <Controls.InputDisabled
+                        name="startHourDisabled"
+                        label="Start Hour"
+                        value={postBody.startHour}/>
+                    </Grid>
+                    <Grid item sm={6} container justify="flex-start">
+                        <Controls.InputDisabled
+                        name="endHourDisabled"
+                        label="End Hour"
+                        value={postBody.endHour}/>
+                    </Grid>
                 </Grid>     
-                <Grid item sm={3}>
-                    <Controls.InputDisabled
-                    name="startHourDisabled"
-                    label="Start Hour"
-                    value={postBody.startHour}/>
-                </Grid>
-                <Grid item sm={3}>
-                    <Controls.InputDisabled
-                    name="endHourDisabled"
-                    label="End Hour"
-                    value={postBody.endHour}/>
-                </Grid>
+                
             </Grid>
             <Grid container>
                 <Grid item sm={6}>
