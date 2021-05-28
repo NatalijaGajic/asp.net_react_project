@@ -1,11 +1,30 @@
 import { Grid } from '@material-ui/core';
-import React from 'react';
+import React, {useEffect, useState} from 'react'
 import Game from '../components/Game';
 import Pagination from './Pagination';
+import { useHistory } from "react-router-dom";
+import InformationDialog from './InformationDialog';
 
-
+const user = {penalty: 2};
 
 export default function GameList(props) {
+  const history = useHistory();
+  const [ informationDialog, setInformationDialog] = useState({isOpen:false, title:'', subtitle:''})
+
+
+  const directToMakeReservation = (game) => {
+    if(user.penalty === 3){
+      setInformationDialog({
+          isOpen:true,
+          title:'You have 3 penalties, you can not make reservation',
+          subtitle:'Penalties are deleted after one month.'
+      });
+  }
+  else{
+      history.push('/make-game-reservation/'+game.id);
+  }
+  }
+
 return(
     <>
     <Grid container spacing={2}>
@@ -19,10 +38,15 @@ return(
                   price = {game.price}
                   valute = {game.valute}
                   numberOfPlayers = {game.numberOfPlayers}
+                  onMakeReservationClick = {() => directToMakeReservation(game)}
                   />
                 </Grid> 
       })}
     </Grid>
+    <InformationDialog
+            informationDialog={informationDialog}
+            setInformationDialog={setInformationDialog}>
+    </InformationDialog>
     
     </>
 );

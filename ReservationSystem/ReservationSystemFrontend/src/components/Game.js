@@ -10,7 +10,7 @@ import PeopleAltTwoToneIcon from '@material-ui/icons/PeopleAltTwoTone';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 345
+    maxWidth: 350
   },
   media: {
     height: 150
@@ -80,17 +80,21 @@ export default function Game(props) {
       <CardActions>
         <Grid container>
           <Grid item sm={7} container justify="center">
-              <Button size="small" color="primary" className={classes.button1}>
+              <Button size="small" color="primary" className={classes.button1}
+            style={{fontSize:"12px", marginRight:"2px"}} 
+            onClick={props.onMakeReservationClick}>
               Make reservation
               </Button>
             </Grid>
-          <Grid item sm={2} container justify="center">
-            <Button size="small" color="primary" disabled={true} >
+          <Grid item sm={3} container justify="center">
+            <Button size="small" color="primary" disabled={true}
+             style={{fontSize:"12px", marginRight:"4px"}}>
             {props.valute}{props.price}/hour
            </Button>
            </Grid>
-          <Grid item sm={3} container justify="center">
-              <IconButton size="small" disabled={true}>
+          <Grid item sm={2} container justify="center">
+              <IconButton size="small" disabled={true}
+               style={{fontSize:"16px", marginRight:"4px"}}>
                    {props.numberOfPlayers}+<PeopleAltTwoToneIcon/>
                 </IconButton>
           </Grid>

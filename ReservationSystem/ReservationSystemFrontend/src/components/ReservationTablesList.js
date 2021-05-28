@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function ReservationTablesList(props) {
-    const {tablesArray, setTablesArray, chooseTable} = props;
+    const {tablesArray, setTablesArray, chooseTable, displayReservationGamesList} = props;
     const classes = useStyles();
     return (
         <div>

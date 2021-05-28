@@ -1,12 +1,14 @@
 import React, {useState, useEffect} from 'react'
 import {Grid} from '@material-ui/core'
 import Controls from '../components/controls/Controls'
-import { workDayByDate, createAPIEndpoint, ENDPOINTS} from '../api'
 import PaperForm from '../components/PaperForm';
 import GamesAndTablesForm from '../components/GamesAndTablesForm'
 import Notification from '../components/Notification'
 import {UseForm, Form} from '../components/UseForm'
 import {range, getStringDate} from '../utils/utils';
+import { workDayByDate, createAPIEndpoint, ENDPOINTS} from '../api'
+import { useHistory } from "react-router-dom";
+
 
 
 const initialFieldValues = {
@@ -14,6 +16,7 @@ const initialFieldValues = {
     startHour:0,
     endHour:0,
     date: new Date(),
+    //warning sovled by passing {id:0, title:0} in startHours and endHours
     startHours:[],
     endHours:[],
     game: {name:''},
@@ -23,7 +26,9 @@ const initialFieldValues = {
 }
 
 export default function GameReservationForm(props) {
-    const {gameId} = props; 
+    const {gameId} = props;
+
+    const history = useHistory();
     const [queryParams, setQueryParams] = useState({workDayId:'', startHour:0, endHour:0, gameId:''});
     const [notify, setNotify] = useState({isOpen:false, message:'', type:''});
     const [date, setDate] = useState(new Date()); //because of useEffect, so it doesnt loop
@@ -66,6 +71,60 @@ export default function GameReservationForm(props) {
         gameId:{gameId}
     }, true, validate);  
 
+    useEffect(() => {
+        createAPIEndpoint(ENDPOINTS.GAMES).fetchById(gameId)
+        .then((response) => {
+            console.log(response.data);
+            setValues({
+                ...values,
+                game:response.data
+            });
+        })
+        .catch((err) =>{
+            console.log(err);
+        });
+    }, [])
+
+    useEffect(() => {
+        //Thu May 20 2021 14:46:31 GMT+0200 (Central European Summer Time) POST should get local time
+        let date = getStringDate(values.date);
+        console.log(date);
+        workDayByDate(date).fetch()
+        .then(res => {
+            console.log('Fetching work day scheme');
+            if(res.data === undefined || res.data === ''){
+                setValues({
+                    ...values,
+                    startHours:[],
+                    endHours:[]
+                });
+            } else {
+                let start = res.data.workDayScheme.startHour;
+                let end = res.data.workDayScheme.endHour;
+                let size = end - start;
+                let array = range(size, start)
+                setValues({
+                    ...values,
+                    startHours:array,
+                    endHours:array,
+                    workDayId: res.data.id,
+                    date:date
+                });
+                //setWorkDayId(res.data.id);
+            }
+            
+        })
+        .catch(err => {
+            //Gets a bad request if there is no work day with a date 
+            console.log(err);
+            setValues({
+                ...values,
+                startHours:[],
+                endHours:[]
+            });
+        });
+    }, [date]); //when date is changed fetch new work day scheme, it its values.date loop
+
     const chooseGame = game => {
         console.log(game);
         setValues({
@@ -83,11 +142,67 @@ export default function GameReservationForm(props) {
     }
 
     const handleSearch = e => {
-
+        e.preventDefault();
+        if(validate()){
+            //window.alert('Valid form');
+            //setQueryParams, queryParams are props and triggers onEffect in ReservationGamesList component
+            setQueryParams({
+                StartHour:values.startHour,
+                EndHour:values.endHour,
+                WorkDayId:values.workDayId,
+                GameId:values.game.id
+            });
+            setValues({
+                ...values,
+                table:{code:''}
+            })
+            /*let date = getStringDate(values.date);
+            console.log(date);
+            setDate(date);*/
+            setPostBody({
+                firstAndLastName: values.firstAndLastName,
+                startHour: values.startHour,
+                endHour: values.endHour,
+                hours: values.endHour - values.startHour,
+                numberOfPeople: 0,
+                account: {},
+                game: values.game,
+                table: values.table,
+                workDayId: values.workDayId
+            })
+            setSubmitDate(values.date);
+        }
     }
 
     const handleSubmit = e => {
-
+        e.preventDefault();
+        if(validate() && values.game.name !== '' && values.table.code !== ''){
+            createAPIEndpoint(ENDPOINTS.RESERVATIONS).create(
+                {
+                    account: {},
+                    game: values.game,
+                    table: values.table,
+                    firstAndLastName: postBody.firstAndLastName,
+                    startHour: postBody.startHour,
+                    endHour: postBody.endHour,
+                    hours: postBody.endHour - postBody.startHour,
+                    numberOfPeople: 0,
+                    workDayId: postBody.workDayId
+                  }
+            ).then(res => {
+                console.log('POST-ing reservation');
+                console.log(res);
+                setNotify({isOpen:true, 'message':'Succesfully created', type:'success'});
+                //TODO: set submit button to be disabled
+                const timer = setTimeout(() => {
+                    history.push('/reservations');
+                  }, 3000);
+                
+            })
+            .catch(err => {
+                console.log(err);
+            });
+        }
     }
     
     const handleInputChangeDatePicker = e => {
@@ -143,7 +258,7 @@ export default function GameReservationForm(props) {
                         error={errors.startHour}
                         style={{width: "100%", marginTop: "0.5em"}}/>
                     </Grid>
-                    <Grid item sm={6} item justify="flex-end">
+                    <Grid item sm={6} container justify="flex-end">
                         <Controls.Select
                         name="endHour"
                         label="End Hour"
@@ -154,7 +269,7 @@ export default function GameReservationForm(props) {
                         style={{width: "100%", marginTop: "0.5em"}}/>
                     </Grid>
                 </Grid>
-                <Grid item={12} container justify="flex-end">
+                <Grid item sm={12} container justify="flex-end">
                             <Controls.Button
                             style={{marginRight: "5em", marginTop: "2em", width: "100%"}}
                             variant="contained"
@@ -167,13 +282,16 @@ export default function GameReservationForm(props) {
         </Form>
         </PaperForm>
         </Grid>
-        <Grid direction="column" item sm={6}>
-            <GamesAndTablesForm
-            {... {queryParams, setQueryParams, chooseGame, chooseTable, displayReservationGamesList}}/>
-        </Grid>
+        <Grid container direction="column" item sm={6}>
+            <PaperForm  style={{marginLeft:"0em"}}>
+                <GamesAndTablesForm
+                {... {queryParams, setQueryParams, chooseGame, chooseTable, displayReservationGamesList}}/>
+            </PaperForm>
+        </Grid> 
+        
         </Grid>
        
-        <PaperForm >
+        <PaperForm style={{marginTop:"0em"}}>
             <Form onSubmit={handleSubmit}>
             <Grid container>
                 <Grid item sm={6}>
@@ -234,7 +352,7 @@ export default function GameReservationForm(props) {
                         variant="contained"
                         color="primary"
                         size="large"
-                        text="search"
+                        text="create"
                         type="submit"/>
                 </Grid>
             </Grid>
@@ -247,3 +365,4 @@ export default function GameReservationForm(props) {
         </div>
     )
 }
+

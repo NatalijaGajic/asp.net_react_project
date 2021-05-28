@@ -13,7 +13,7 @@ export default function GamesAndTablesForm(props) {
     const [tablesArray, setTablesArray] = useState([]);
 
     useEffect(() => {
-        intervalsForWorkDay(queryParams.workDayId, queryParams.startHour, queryParams.endHour)
+        intervalsForWorkDay(queryParams)
         .fetch()
         .then(res => {
             console.log(res.data);
@@ -27,30 +27,32 @@ export default function GamesAndTablesForm(props) {
     }, [queryParams]);
 
     return (
-        <PaperForm>
-        <Form>
-            <Grid container>
-                {displayReservationGamesList && 
-                (<>
-                <Grid item sm={6}>
-                    <ReservationGamesList 
-                    {...{searchList, setSearchList, gamesArray, setGamesArray, chooseGame}}/>
-                    </Grid>
+        <>
+        <div></div>
+        {   displayReservationGamesList &&
+           (
+            <Form>
+                <Grid container>
                     <Grid item sm={6}>
-                        <ReservationTablesList
-                        {...{tablesArray, setTablesArray, chooseTable}}/>
-                    </Grid>
-                    </>)
-                }
-                {!displayReservationGamesList && 
-                    <Grid item sm={12}>
-                        <ReservationTablesList
-                        {...{tablesArray, setTablesArray, chooseTable}}/>
-                    </Grid>
-                }
-                
-            </Grid>
-        </Form>
-        </PaperForm>
+                        <ReservationGamesList 
+                        {...{searchList, setSearchList, gamesArray, setGamesArray, chooseGame}}/>
+                        </Grid>
+                        <Grid item sm={6}>
+                            <ReservationTablesList
+                            {...{tablesArray, setTablesArray, chooseTable}}/>
+                        </Grid>
+                </Grid>
+            </Form>)
+           
+        }
+        {!displayReservationGamesList && 
+           (
+           <Form>
+                   <ReservationTablesList
+                   {...{tablesArray, setTablesArray, chooseTable}}/>
+           </Form>)       
+        }
+        </>
+       
     )
 }

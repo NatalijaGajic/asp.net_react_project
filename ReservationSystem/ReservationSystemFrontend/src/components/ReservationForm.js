@@ -45,6 +45,7 @@ export default function ReservationForm() {
     const [date, setDate] = useState(new Date()); //because of useEffect, so it doesnt loop
     const [submitDate, setSubmitDate] = useState(new Date()); 
     const [notify, setNotify] = useState({isOpen:false, message:'', type:''});
+    const [displayReservationGamesList, setDisplayReservationGamesList] = useState(true);
     //const [firstAndLastName, setFirstAndLastName] = useState('');
 
     //TODO: Is not executed when the page is navigated to from make-reservation
@@ -223,13 +224,7 @@ export default function ReservationForm() {
         <PaperForm>
        <Form onSubmit={handleSearch}>
             <Grid container>
-                 <Grid item sm={6}>
-                    <Controls.InputDisabled
-                    name="gameDisabled"
-                    label="Game"
-                    value={values.game.name}
-                    />
-                </Grid>
+                
                 <Grid item sm={6}>
                     <Controls.Input
                         name="firstAndLastName"
@@ -283,8 +278,10 @@ export default function ReservationForm() {
             </Grid>
         </Form>
         </PaperForm>
-        <GamesAndTablesForm
-        {... {queryParams, setQueryParams, chooseGame, chooseTable}}/>
+        <PaperForm>
+            <GamesAndTablesForm
+            {... {queryParams, setQueryParams, chooseGame, chooseTable, displayReservationGamesList}}/>
+        </PaperForm>
         <PaperForm >
             <Form onSubmit={handleSubmit}>
             <Grid container>
@@ -343,7 +340,7 @@ export default function ReservationForm() {
                         variant="contained"
                         color="primary"
                         size="large"
-                        text="search"
+                        text="create"
                         type="submit"/>
                 </Grid>
             </Grid>

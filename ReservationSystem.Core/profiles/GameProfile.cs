@@ -13,7 +13,7 @@ namespace ReservationSystem.Core.profiles
         public GameProfile()
         {
             CreateMap<GameCreationDto, Game>();
-            CreateMap<Game, GameCreationDto>();
+            CreateMap<Game, GameDto>();
             CreateMap<GameUpdateDto, Game>();
         }
 
