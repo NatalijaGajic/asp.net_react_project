@@ -26,8 +26,7 @@ const initialFieldValues = {
 }
 
 export default function GameReservationForm(props) {
-    const {gameId} = props;
-
+    const gameId = props.gameId;
     const history = useHistory();
     const [queryParams, setQueryParams] = useState({workDayId:'', startHour:0, endHour:0, gameId:''});
     const [notify, setNotify] = useState({isOpen:false, message:'', type:''});
@@ -68,10 +67,11 @@ export default function GameReservationForm(props) {
     }
     const {values, setValues, handleInputChange,  errors, setErrors} = UseForm({
         ...initialFieldValues,
-        gameId:{gameId}
+        gameId:gameId
     }, true, validate);  
 
     useEffect(() => {
+        console.log(gameId);
         createAPIEndpoint(ENDPOINTS.GAMES).fetchById(gameId)
         .then((response) => {
             console.log(response.data);
@@ -83,7 +83,7 @@ export default function GameReservationForm(props) {
         .catch((err) =>{
             console.log(err);
         });
-    }, [])
+    }, [gameId])
 
     useEffect(() => {
         //Thu May 20 2021 14:46:31 GMT+0200 (Central European Summer Time) POST should get local time

@@ -25,6 +25,10 @@ export default function GameList(props) {
   }
   }
 
+  const handleCardClick = (game) => {
+    history.push('/games/'+game.id);
+  }
+
 return(
     <>
     <Grid container spacing={2}>
@@ -39,6 +43,7 @@ return(
                   valute = {game.valute}
                   numberOfPlayers = {game.numberOfPlayers}
                   onMakeReservationClick = {() => directToMakeReservation(game)}
+                  handleCardClick={() => handleCardClick(game)}
                   />
                 </Grid> 
       })}

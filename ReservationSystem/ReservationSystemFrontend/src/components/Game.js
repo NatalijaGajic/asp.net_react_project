@@ -7,6 +7,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import PeopleAltTwoToneIcon from '@material-ui/icons/PeopleAltTwoTone';
+import {images} from '../utils/utils';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,25 +41,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }));  
 
-const images = { 
-  "6072281d5be9df9eb32c6515":"/images/gloomhaven.jpg",
-  "60722a995be9df9eb32c6519":"/images/7-wonders-duel.jpg",
-  "60722b7a5be9df9eb32c651b":"/images/agricola.jpg",
-  "607229bf5be9df9eb32c6517":"/images/gaia.png",
-  "60722b2d5be9df9eb32c651a":"/images/nemesis.jpg",
-  "60722a435be9df9eb32c6518":"/images/spirit-island.png",
-  "60708f45853fefd25c84cdc3":"/images/codenames.jpg"
-  }
-
-const handleCardClick = () => {
-  console.log('click');
-}
-
 export default function Game(props) {
   const classes = useStyles();
   return (
     <Card className={classes.root}>
-      <CardActionArea onClick={handleCardClick}>
+      <CardActionArea onClick={props.handleCardClick}>
         <CardMedia
           className={classes.media}
           component="img"
