@@ -4,12 +4,12 @@ import PageHeader from '../components/PageHeader';
 import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 
 export default function MakeGameReservation(props) {
-    const [gameId, setGameId] = useState({});
+    const [gameID, setGameID] = useState({});
 
     useEffect(() => {
         let id = props.match.params['id'];
         console.log(id);
-        setGameId(id);
+        setGameID(id);
     }, []);
 
     return (
@@ -19,7 +19,7 @@ export default function MakeGameReservation(props) {
             subtitle="Make a table reservation"
             icon={<AddCircleOutlineOutlinedIcon fontSize="large"/>}
             />
-            <GameReservationForm gameId={gameId}></GameReservationForm>
+            <GameReservationForm gameID={gameID}></GameReservationForm>
         </div>
     )
 }
