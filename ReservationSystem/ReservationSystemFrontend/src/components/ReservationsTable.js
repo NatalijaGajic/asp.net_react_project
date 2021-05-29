@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import useTable from './UseTable';
 import {TableRow, TableBody, TableCell, Toolbar, InputAdornment, makeStyles} from '@material-ui/core';
-import PageHeader from '../components/PageHeader'
-import AlarmOnTwoToneIcon from '@material-ui/icons/AlarmOnTwoTone';
 import PaperForm from './PaperForm';
 import Controls from '../components/controls/Controls'
 import {Close, Search} from '@material-ui/icons'
@@ -189,11 +187,7 @@ export default function ReservationsTable(props) {
   
     return (
         <div>
-            <PageHeader
-            title="Reservations"
-            subtitle="All reservations"
-            icon={<AlarmOnTwoToneIcon fontSize="large"/>}
-            />
+           
             <Toolbar>
                 <Controls.Input
                 label="Search reservation"

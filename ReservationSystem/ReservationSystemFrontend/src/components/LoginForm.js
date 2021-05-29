@@ -74,7 +74,7 @@ export default function LoginForm() {
                         variant="contained"
                         color="primary"
                         size="large"
-                        text="submit"
+                        text="Log in"
                         type="submit"
                         disabled={loading}/>
                     </Grid>

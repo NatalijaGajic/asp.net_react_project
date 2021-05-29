@@ -11,6 +11,7 @@ import {AuthProvider} from './contexts/AuthContext'
 import Login from './pages/LoginPage';
 import GameDetails from './pages/GameDetailsPage';
 import MakeGameReservation from './pages/MakeGameReservationPage';
+import AdminHome from './pages/AdminHomePage';
 
 //TODO: better handling when making reservation, on fe and be shouldnt make reservation for 
 //older days
@@ -29,6 +30,7 @@ function App() {
         <Route path='/reservations' component={Reservations}/>
         <Route path='/games/:id' component={GameDetails}/>
         <Route path='/make-game-reservation/:id' component={MakeGameReservation}/>
+        <Route path='/home-page' component={AdminHome}/>
 
       </Switch>
     </Layout>
