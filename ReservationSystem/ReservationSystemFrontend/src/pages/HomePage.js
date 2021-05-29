@@ -2,7 +2,7 @@ import GameList from '../components/GameList';
 import React, {useState, useEffect} from 'react';
 import Loader from '../components/Loader';
 import {createAPIEndpoint, ENDPOINTS, getGamesFiltered} from '../api/index'
-import {Grid} from '@material-ui/core'
+import {Grid, CircularProgress} from '@material-ui/core'
 import Pagination from '../components/Pagination'
 import GameFilters from '../components/GameFilters';
  
@@ -155,7 +155,7 @@ const setPage = (page) => {
 
   if(isLoading){
     return (
-      <Loader></Loader>
+      <CircularProgress />
     );
   }
 

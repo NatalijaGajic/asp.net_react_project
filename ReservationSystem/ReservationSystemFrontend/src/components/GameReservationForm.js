@@ -77,6 +77,7 @@ export default function GameReservationForm(props) {
                 ...values,
                 game:response.data
             });
+            console.log(values);
         })
         .catch((err) =>{
             console.log(err);
