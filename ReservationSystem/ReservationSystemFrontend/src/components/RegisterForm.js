@@ -155,7 +155,7 @@ export default function RegisterForm() {
                         variant="contained"
                         color="primary"
                         size="large"
-                        text="search"
+                        text="sign up"
                         type="submit"/>
                 </Grid>
             </Grid>

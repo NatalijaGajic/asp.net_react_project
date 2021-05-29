@@ -9,7 +9,7 @@ const SignUp = () => {
   return (
     <div>
         <PageHeader
-        title="Register"
+        title="Sign up"
         subtitle="Insert account information"
         icon={<AccountCircleOutlinedIcon fontSize="large"/>}
         />

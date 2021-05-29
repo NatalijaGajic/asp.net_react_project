@@ -2,6 +2,8 @@ import React, {useState} from 'react'
 import {Grid, makeStyles} from "@material-ui/core"
 import {UseForm, Form} from './UseForm'
 import Controls from '../components/controls/Controls'
+import {Link} from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 
 const initialFieldValues = {
     email: '',
@@ -19,6 +21,7 @@ export default function LoginForm() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const classes = useStyles();
+    const history = useHistory();
 
     const validate = () => {
         return true;
@@ -29,6 +32,11 @@ export default function LoginForm() {
         if(validate()){
             window.alert('Testing');
         }
+    }
+
+    const navigateToSignUp = (event) => {
+        event.preventDefault();
+        history.push('/sign-up');
     }
 
     return (
@@ -71,6 +79,13 @@ export default function LoginForm() {
                         disabled={loading}/>
                     </Grid>
                 </Grid>
+                <Grid item xs={12} container justify="center" alignItems="flex-end"
+                style={{paddingTop: '1em'}}>
+                <Link href="#" onClick={navigateToSignUp}>
+                    Sign up if you don't have an account
+                </Link>
+                </Grid>
+                
             </Form>
         </Grid>
 

@@ -12,6 +12,9 @@ import Login from './pages/LoginPage';
 import GameDetails from './pages/GameDetailsPage';
 import MakeGameReservation from './pages/MakeGameReservationPage';
 
+//TODO: better handling when making reservation, on fe and be shouldnt make reservation for 
+//older days
+
 function App() {
   return (
     <AuthProvider>

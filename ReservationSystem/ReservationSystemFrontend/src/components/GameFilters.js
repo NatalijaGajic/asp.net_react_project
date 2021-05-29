@@ -61,6 +61,7 @@ export default function GameFilters(props) {
         )
     }
 
+    //TODO: Asc and Desc on be 
     const handleSearchClick = () => {
         setOrderBy('Name Desc');
         setNumberOfPeople(2);
