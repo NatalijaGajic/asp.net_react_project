@@ -14,6 +14,7 @@ using ReservationSystem.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ReservationSystem.Core.Services;
 
 namespace ReservationSystem
 {
@@ -52,6 +53,7 @@ namespace ReservationSystem
             services.AddTransient<IReservationsRepository, ReservationsRepository>();
             services.AddTransient<IIntervalsForWorkDaysRepository, IntervalsForWorkDaysRepository>();
             services.AddTransient<ISystemRolesRepository, SystemRolesRepository>();
+            services.AddTransient<IAuthService, AuthService>();
             services.AddControllers();
          
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -107,6 +109,7 @@ namespace ReservationSystem
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
