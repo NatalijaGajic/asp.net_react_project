@@ -85,7 +85,7 @@ export default function DisabledTabs() {
     }
     {
         (value === 1) &&  ( isLoading?  <CircularProgress />:
-        <div style={{marginTop:'2em'}}><ReservationsTable records={reservations}/></div>)
+        <div style={{marginTop:'2em'}}><ReservationsTable records={reservations} displayDelete={true}/></div>)
     }
     {
         (value === 2) && ( isLoading?  <CircularProgress />:

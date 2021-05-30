@@ -20,7 +20,7 @@ import InformationDialog from './InformationDialog';
 const userId = "6072e13b7636626e81ac21fa";
 
 //TODO: add Date instead od workDayId for display purposes
-const headCells = [
+const headCellsUser = [
     //for sorting purposes id has the same value as object fields (response mapping in ReservationPage)
     {id:'firstAndLastName', label:'Name'},
     {id:'workDayId',label:'Date',disableSorting:true},
@@ -30,7 +30,20 @@ const headCells = [
     {id:'people', label:'People'},
     {id:'isCancelled', label:'Cancelled'},
     {id:'details', label:'Details', disableSorting:true},
-    {id:'cancel', label:'Cancel', disableSorting:true},
+    {id:'cancel', label:'Cancel', disableSorting:true}
+]
+
+const headCellsAdmin = [
+    //for sorting purposes id has the same value as object fields (response mapping in ReservationPage)
+    {id:'firstAndLastName', label:'Name'},
+    {id:'workDayId',label:'Date',disableSorting:true},
+    {id:'hours', label:'Time', disableSorting:true},
+    {id:'gameName', label:'Game'},
+    {id:'tableCode', label:'Table'},
+    {id:'people', label:'People'},
+    {id:'isCancelled', label:'Cancelled'},
+    {id:'details', label:'Details', disableSorting:true},
+    {id:'delete', label:'Delete', disableSorting:true}
 ]
 
 const useStyles = makeStyles(theme => ({
@@ -59,8 +72,10 @@ const reservationForCancelInitial = {
 export default function ReservationsTable(props) {
 
     const records = props.records;
+    const displayDelete = props.displayDelete;
     const classes = useStyles();
     const history = useHistory();
+    const [headCells, setHeadCells] = useState(headCellsUser);
     const [reservationsArray, setReservationsArray] = useState(records);
     const [user, setUser] = useState({})
     const [filterFn, setfilterFn] = useState({fn: items => {return items;}});
@@ -82,8 +97,13 @@ export default function ReservationsTable(props) {
     }, []);
 
     useEffect(() => {
+        if(displayDelete){
+            setHeadCells(headCellsAdmin);
+        }else{
+            setHeadCells(headCellsUser);
+        }
         setReservationsArray(records);
-    }, [records]);
+    }, [records, displayDelete]);
 
     const {
         TblContainer,

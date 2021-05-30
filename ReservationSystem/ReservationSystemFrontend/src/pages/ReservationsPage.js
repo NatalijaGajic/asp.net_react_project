@@ -46,7 +46,7 @@ export default function Reservations() {
                 subtitle="All reservations"
                 icon={<AlarmOnTwoToneIcon fontSize="large"/>}
                 />
-                <ReservationsTable records={records}></ReservationsTable>
+                <ReservationsTable records={records} displayDelete={false}></ReservationsTable>
           </div>
         )
     }
