@@ -81,6 +81,10 @@ export default function ReservationsTable(props) {
         })
     }, []);
 
+    useEffect(() => {
+        setReservationsArray(records);
+    }, [records]);
+
     const {
         TblContainer,
         TblHead, 
