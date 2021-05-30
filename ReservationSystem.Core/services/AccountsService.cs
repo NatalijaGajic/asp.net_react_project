@@ -29,6 +29,7 @@ namespace ReservationSystem.Core.services
             SystemRole role = _systemRolesRepository.GetSystemRoleByName(roleName);
             clientAccount.Role = role;
             clientAccount.AccountType = "Client";
+            clientAccount.Password = BCrypt.Net.BCrypt.HashPassword(clientAccount.Password);
             ClientAccount c = _accountsRepository.AddClientAccount(clientAccount);
             return c;
         }
@@ -39,6 +40,7 @@ namespace ReservationSystem.Core.services
             SystemRole role = _systemRolesRepository.GetSystemRoleByName(roleName);
             workerAccount.Role = role;
             workerAccount.AccountType = "Worker";
+            workerAccount.Password = BCrypt.Net.BCrypt.HashPassword(workerAccount.Password);
             WorkerAccount w =_accountsRepository.AddWorkerAccount(workerAccount);
             return w;
         }

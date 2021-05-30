@@ -94,6 +94,7 @@ export default function ReservationsTable(props) {
         .catch(err => {
             console.log(err);
         })
+
     }, []);
 
     useEffect(() => {

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Home from './pages/HomePage';
-import About from './pages/AboutPage';
 import Contact from './pages/ContactPage';
 import SignUp from './pages/SignUpPage';
 import Layout from './components/Layout';
@@ -22,7 +21,6 @@ function App() {
      <Layout>
       <Switch>
         <Route path='/' exact component={Home} />
-        <Route path='/about' component={About} />
         <Route path='/contact-us' component={Contact} />
         <Route path='/log-in' component={Login} />
         <Route path='/sign-up' component={SignUp} />

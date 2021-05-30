@@ -41,8 +41,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-//const user = true;
-const user = false;
+const user = true;
+//const user = false;
  const Navbar = () => {
 
   const history = useHistory();
