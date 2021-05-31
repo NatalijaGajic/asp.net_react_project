@@ -14,7 +14,6 @@ export function AuthProvider({children}) {
     const [loginError, setLoginError] = useState('')
     const history = useHistory();
 
-    //TODO: use effect fetchuje iznova usera
     useEffect(() => {
         getUserFromToken()
         .fetch()
@@ -34,16 +33,21 @@ export function AuthProvider({children}) {
             console.log(response.data);
             //TODO: add jwt token validation
             if(response.data.token !== null){
-                //redirect to home page
                 localStorage.setItem('token', response.data.token);
                 setLoginError('');
                 //TODO: cant go back to login
-                history.push('/');
                 getUserFromToken()
                 .fetch()
                 .then((res) => {
                     console.log(res.data);
                     setCurrentUser(res.data);
+                    if(res.data.role.name === "Client"){
+                        history.push('/');
+                    }
+                    else if(res.data.role.name === "Worker"){
+                        history.push('/home-page')
+                    }
+
                 })
                 .catch(err => {
                     console.log(err);
