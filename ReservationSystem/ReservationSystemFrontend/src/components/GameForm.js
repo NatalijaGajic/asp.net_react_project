@@ -15,7 +15,8 @@ const initialFieldValues = {
     valute: 'USD', //get label for value
     isActive: false,
     description: '',
-    imagePath: defaultImageSource
+    imagePath: defaultImageSource,
+    imageFile: null
 }
 
 const currencyDictionary = {'USD':'$', 'EUR':'€', 'BTC':'฿', 'JPY':'¥'}
@@ -89,16 +90,32 @@ export default function GameForm() {
         setLoading(false);
     }
     
+    const showPreview = e => {
+        if(e.target.files && e.target.files[0]){
+            let imageFile = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = x => {
+                setValues({
+                    ...values,
+                    imagePath: imageFile,
+                    imagePath: x.target.result
+                })
+            }
+            reader.readAsDataURL(imageFile)
+        }
+    }
+    
     return (
     <Form onSubmit={handleSubmit}>
             <Grid container>
-                <Grid item sm={6} container direction="column">
-                    <Grid>
+                <Grid item sm={6} container>
+                    <Grid sm={12} >
                     <img src={values.imagePath} className={classes.img}></img>
                     </Grid>
-                    <Grid container justify="center">
+                    <Grid item sm={12} container justify="center">
                     <input type="file" accept="image/*"
-                    style={{marginTop:'2em'}}></input>
+                    style={{marginTop:'2em'}}
+                    onChange={showPreview}></input>
                     </Grid>
                 </Grid> 
                 <Grid item sm={6} container direction="column" spacing={2}>
