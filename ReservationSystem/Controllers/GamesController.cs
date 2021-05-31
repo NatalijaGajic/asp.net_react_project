@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ReservationSystem.Core;
@@ -18,12 +21,13 @@ namespace ReservationSystem.Controllers
     {
         private readonly IGamesService _gamesServices;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-
-        public GamesController(IGamesService gamesServices, IMapper mapper)
+        public GamesController(IGamesService gamesServices, IMapper mapper, IWebHostEnvironment hostEnvironment)
         {
             _gamesServices = gamesServices;
             _mapper = mapper;
+            _hostEnvironment = hostEnvironment;
         }
 
         [HttpGet("all-games")]
@@ -113,6 +117,7 @@ namespace ReservationSystem.Controllers
         {
             try
             {
+                //game.ImageName = await SaveImage(game.ImageName);
                 Game g = _mapper.Map<Game>(game);
                 g = _gamesServices.AddGame(g);
                 return CreatedAtRoute("GetGame", new { id = g.Id }, g);
@@ -122,6 +127,19 @@ namespace ReservationSystem.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
 
+        }
+
+        [NonAction]
+        public async Task<string> SaveImage(IFormFile imageFile)
+        {
+            string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName)).Replace(' ','-');
+            imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);
+            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
+            using (var fileStream = new FileStream(imagePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(fileStream);
+            }
+            return imageName; 
         }
 
         [HttpDelete("{id}")]

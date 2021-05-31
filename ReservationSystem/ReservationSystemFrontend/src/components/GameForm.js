@@ -60,8 +60,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function GameForm() {
-
+export default function GameForm(props) {
+    const {addOrEdit} = props.addOrEdit;
     const classes = useStyles();
     const [loading, setLoading] = useState(false);
     
@@ -81,11 +81,25 @@ export default function GameForm() {
 
     const {values, setValues, handleInputChange, errors, setErrors} = UseForm(initialFieldValues, false, validate);
 
+    const resetForm = () => {
+        setValues(initialFieldValues)
+        document.getElementById('image-uploader').value = null;
+        setErrors({})
+    }
+
     const handleSubmit = e => {
         e.preventDefault()
         setLoading(true);
         if(validate()){
-            window.alert('Testing');
+            const formData = new FormData()
+            formData.append('title', values.title)
+            formData.append('numberOfPlayers', values.numberOfPlayers)
+            formData.append('price', values.price)
+            formData.append('valute', values.valute)
+            formData.append('isActive', values.isActive)
+            formData.append('imageName', values.imageName)
+            formData.append('imageFile', values.imageFile)
+            addOrEdit(formData, resetForm)
         }
         setLoading(false);
     }
@@ -102,6 +116,12 @@ export default function GameForm() {
                 })
             }
             reader.readAsDataURL(imageFile)
+        }else{
+            setValues({
+                ...values,
+                imagePath: null,
+                imagePath: defaultImageSource
+            })
         }
     }
     
@@ -114,6 +134,7 @@ export default function GameForm() {
                     </Grid>
                     <Grid item sm={12} container justify="center">
                     <input type="file" accept="image/*"
+                    id="image-uploader"
                     style={{marginTop:'2em'}}
                     onChange={showPreview}></input>
                     </Grid>
