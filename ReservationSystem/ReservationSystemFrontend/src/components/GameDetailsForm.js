@@ -9,6 +9,7 @@ import Controls from '../components/controls/Controls'
 import { createAPIEndpoint, ENDPOINTS} from '../api'
 import { useHistory } from "react-router-dom";
 import InformationDialog from './InformationDialog';
+import {useAuth} from '../contexts/AuthContext';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -30,14 +31,21 @@ const useStyles = makeStyles((theme) => ({
       }
   }));  
   
-  const user = {penalty: 2};
+//const user = {penalty: 2};
 
 export default function GameDetailsForm(props) {
+    const {currentUser} = useAuth();
     const {gameId} = props;
     const [game, setGame] = useState({});
+    const [user, setUser] = useState();
     const classes = useStyles();
       const history = useHistory();
     const [ informationDialog, setInformationDialog] = useState({isOpen:false, title:'', subtitle:''})
+
+
+    useEffect(() => {
+        setUser(currentUser);
+    }, [currentUser]);
 
     useEffect(() => {
         createAPIEndpoint(ENDPOINTS.GAMES).fetchById(gameId)
@@ -52,9 +60,9 @@ export default function GameDetailsForm(props) {
 
     const onMakeReservationClick = () => {
         if(user == null){
-
+            history.push('/log-in/');
         }
-        if(user.penalty === 3){
+        else if(user.penalty === 3){
             setInformationDialog({
                 isOpen:true,
                 title:'You have 3 penalties, you can not make reservation',
