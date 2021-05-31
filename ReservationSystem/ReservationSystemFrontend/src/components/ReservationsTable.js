@@ -150,6 +150,7 @@ export default function ReservationsTable(props) {
         console.log(reservationDate);
         const milliseconds = Math.abs(timeNow - reservationDate);
         const hours = milliseconds / 36e5;
+        console.log(hours);
         return hours;
 
     };
@@ -186,7 +187,7 @@ export default function ReservationsTable(props) {
        let dateOfLastPenalty = user.dateOfLastPenalty;
        //TODO: check if dateOfLastPenalty is > month, penalties should be deleted 
        let dateOfReservation = item.workDay.date;
-       let hours = checkCancelDate(new Date(dateOfReservation)) - item.startHour;
+       let hours = checkCancelDate(new Date(dateOfReservation)) + item.startHour;
        console.log(hours);
        //hours = 23;
        if(hours < 24){

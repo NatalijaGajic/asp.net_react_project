@@ -56,10 +56,17 @@ export function AuthProvider({children}) {
         })
     }
     
+    function logout(){
+        localStorage.removeItem('token');
+        setCurrentUser(null);
+        history.push('/');
+    }
+
     const value = {
         currentUser, 
         login,
-        loginError
+        loginError,
+        logout
     }
 
     return (

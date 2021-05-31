@@ -293,7 +293,7 @@ export default function ReservationForm() {
                     <Controls.InputDisabled
                     name="dateDisabled"
                     label="Date"
-                    value={submitDate.length>8?submitDate:''}
+                    value={submitDate.length>7?submitDate:''}
                     />
                 </Grid>     
                 <Grid item sm={3} container justify="flex-end">

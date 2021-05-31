@@ -31,7 +31,7 @@ const items = [
 }))
 
 export default function GameFilters(props) {
-    const {queryParams, setQueryParams, numberOfPeople, setNumberOfPeople, orderBy, setOrderBy} = props;
+    const {queryParams, setQueryParams, numberOfPeople, setNumberOfPeople, orderBy, setOrderBy, setChangeNumberOfPages} = props;
     const classes = useStyles();
     const [searchKey, setSearchKey] = useState('');
 
@@ -44,6 +44,9 @@ export default function GameFilters(props) {
         setQueryParams(
             {
                 ...queryParams,
+                SearchByName: '',
+                PageNumber : 1,
+                PageSize : 6,
                 NumberOfPeople: value
             }
         )
@@ -56,6 +59,7 @@ export default function GameFilters(props) {
         setQueryParams(
             {
                 ...queryParams,
+                SearchByName: '',
                 OrderBy: value.split(' ')[0]
             }
         )
@@ -74,6 +78,7 @@ export default function GameFilters(props) {
             PageNumber : 1,
             PageSize : 6
         });
+        setChangeNumberOfPages(true);
     }
 
     return (

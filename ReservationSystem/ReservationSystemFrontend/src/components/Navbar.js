@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -18,7 +18,7 @@ import DraftsIcon from '@material-ui/icons/Drafts';
 import MoreTwoToneIcon from '@material-ui/icons/MoreTwoTone';
 import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 import AlarmOnTwoToneIcon from '@material-ui/icons/AlarmOnTwoTone';
-
+import {useAuth} from '../contexts/AuthContext';
 
 const options = [
   'Reservations',
@@ -41,17 +41,22 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const user = true;
-//const user = false;
  const Navbar = () => {
 
+  const {currentUser, logout} = useAuth();
   const history = useHistory();
+  const [user, setUser] = useState(false);
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [anchorElem, setAnchorElem] = React.useState(null);
 
   const open = Boolean(anchorEl);
   const openProfile = Boolean(anchorElem);
+
+
+  useEffect(() => {
+    setUser(currentUser);
+  }, [currentUser])
 
   const navigateToLogin = () => {
     history.push('/log-in');
@@ -71,6 +76,12 @@ const user = true;
     setAnchorEl(event.currentTarget);
   };
 
+  const handleLogout = () => {
+    setAnchorEl(null);
+    setAnchorElem(null);
+    logout();
+
+  }
 
   const handleMenuItemClick = (option) => {
     console.log(option);
@@ -156,7 +167,7 @@ const user = true;
                 open={openProfile}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Log out</MenuItem>
+                <MenuItem onClick={handleLogout}>Log out</MenuItem>
               </Menu>
             </div>
           )}

@@ -46,7 +46,7 @@ namespace ReservationSystem.Core.services
             DateTime timeNow = DateTime.Now;
             WorkDay workDay = _workDaysService.GetWorkDay(reservation.WorkDayId);
             DateTime dateOfReservation = workDay.Date;
-            if (CheckPenalties(timeNow, dateOfReservation) - reservation.StartHour < 24)
+            if (CheckPenalties(timeNow, dateOfReservation) + reservation.StartHour < 24)
             {
                 ClientAccount client = _accountsService.GetClientAccount(reservation.Account.Id);
                 client.Penalty += 1;
