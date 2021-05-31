@@ -15,5 +15,7 @@ namespace ReservationSystem.Core.dtos
         public string Valute { get; set; }
         public int NumberOfPlayers { get; set; }
         public bool IsActive { get; set; }
+        public string ImageName { get; set; }
+
     }
 }
