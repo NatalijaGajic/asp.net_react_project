@@ -8,7 +8,7 @@ import {UseForm, Form} from '../components/UseForm'
 import {range, getStringDate} from '../utils/utils';
 import { workDayByDate, createAPIEndpoint, ENDPOINTS} from '../api'
 import { useHistory } from "react-router-dom";
-
+import {useAuth} from '../contexts/AuthContext';
 
 
 const initialFieldValues = {
@@ -26,6 +26,7 @@ const initialFieldValues = {
 
 export default function GameReservationForm(props) {
     const gameID = props.gameID;
+    const {currentUser} = useAuth();
     const history = useHistory();
     const [queryParams, setQueryParams] = useState({workDayId:'', startHour:0, endHour:0, gameId:''});
     const [notify, setNotify] = useState({isOpen:false, message:'', type:''});
@@ -64,11 +65,16 @@ export default function GameReservationForm(props) {
         if(fieldValues === values)
             return Object.values(temp).every(x=> x === "");
     }
-    const {values, setValues, handleInputChange,  errors, setErrors} = UseForm({
+    const {values,
+        setValues, 
+        handleInputChange,
+        errors,
+        setErrors} = UseForm({
         ...initialFieldValues
     }, true, validate);  
 
     useEffect(() => {
+        //TODO: i have no idea whats going on
         console.log(gameID);
         createAPIEndpoint(ENDPOINTS.GAMES).fetchById(gameID.toString())
         .then((response) => {
@@ -178,7 +184,7 @@ export default function GameReservationForm(props) {
         if(validate() && values.game.name !== '' && values.table.code !== ''){
             createAPIEndpoint(ENDPOINTS.RESERVATIONS).create(
                 {
-                    account: {},
+                    account: currentUser,
                     game: values.game,
                     table: values.table,
                     firstAndLastName: postBody.firstAndLastName,
@@ -305,7 +311,7 @@ export default function GameReservationForm(props) {
                     <Controls.InputDisabled
                     name="dateDisabled"
                     label="Date"
-                    value={submitDate.length>8?submitDate:''}
+                    value={submitDate.length>7?submitDate:''}
                     />
                 </Grid>
                 <Grid item sm={6} container justify="center">

@@ -89,8 +89,9 @@ namespace ReservationSystem.Core.services
                             {
                                 InitializeTablesAndGamesDict(tablesDict, freeTables, gamesDict, freeGames, gameId);
                             }
-                            catch (Exception)
+                            catch (Exception exc)
                             {
+                                Console.WriteLine(exc.Message);
                                 return new IntervalsForWorkDayReservationQueryParamsResponse();
                             }
                         }

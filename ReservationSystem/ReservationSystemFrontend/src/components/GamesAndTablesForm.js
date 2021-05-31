@@ -17,9 +17,10 @@ export default function GamesAndTablesForm(props) {
         .fetch()
         .then(res => {
             console.log(res.data);
-            setGamesArray(res.data.games);
-            setSearchList(res.data.games);
-            setTablesArray(res.data.tables);
+            //null when game is not available
+            res.data.games != null ? setGamesArray(res.data.games): setGamesArray([]);
+            res.data.games != null? setSearchList(res.data.games): setSearchList([]);
+            res.data.tables != null? setTablesArray(res.data.tables): setTablesArray([]);
         })
         .catch(err => {
             console.log(err);

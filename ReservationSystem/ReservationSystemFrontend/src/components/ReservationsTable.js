@@ -15,6 +15,7 @@ import {cancelReservationWithId, createAPIEndpoint, ENDPOINTS} from '../api/inde
 import ConfirmDialog from '../components/ConfirmDialog'
 import {getStringDate} from '../utils/utils'
 import InformationDialog from './InformationDialog';
+import {useAuth} from '../contexts/AuthContext';
 
 //const userId = "6072e15c7636626e81ac21fb"; //3 penalties
 const userId = "6072e13b7636626e81ac21fa";
@@ -71,6 +72,7 @@ const reservationForCancelInitial = {
 
 export default function ReservationsTable(props) {
 
+    const {currentUser} = useAuth();
     const records = props.records;
     const displayDelete = props.displayDelete;
     const classes = useStyles();
@@ -86,16 +88,11 @@ export default function ReservationsTable(props) {
     const [ informationDialog, setInformationDialog] = useState({isOpen:false, title:'', subtitle:''})
 
     useEffect(() => {
-        createAPIEndpoint(ENDPOINTS.CLIENTS).fetchById(userId)
-        .then(res => {
-            console.log(res.data);
-            setUser(res.data);
-        })
-        .catch(err => {
-            console.log(err);
-        })
+        if(currentUser != undefined){
+            setUser(currentUser);
+        }
 
-    }, []);
+    }, [currentUser]);
 
     useEffect(() => {
         if(displayDelete){

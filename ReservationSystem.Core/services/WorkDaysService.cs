@@ -42,7 +42,7 @@ namespace ReservationSystem.Core.services
         public WorkDay GetWorkDayByDate(WorkDaysQueryParams queryParams) 
         {
             string date = queryParams.Date.Trim();
-            if (date.Length > 8)
+            if (date.Length > 7)
             {
                 string[] dateSplits;
                 dateSplits = date.Split("-");

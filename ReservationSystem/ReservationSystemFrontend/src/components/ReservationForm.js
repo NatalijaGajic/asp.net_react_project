@@ -8,6 +8,7 @@ import GamesAndTablesForm from '../components/GamesAndTablesForm'
 import Notification from '../components/Notification'
 import { useHistory } from "react-router-dom";
 import {range, getStringDate} from '../utils/utils';
+import {useAuth} from '../contexts/AuthContext';
 
 //const userId = "6072e15c7636626e81ac21fb"; //3 penalties
 const userId = "6072e13b7636626e81ac21fa";
@@ -27,6 +28,7 @@ const initialFieldValues = {
 
 export default function ReservationForm() {
     //const [isSubmitted, setSubmitted] = useState(false);
+    const {currentUser} = useAuth();
     const history = useHistory();
     const [user, setUser] = useState({})
     const [queryParams, setQueryParams] = useState({workDayId:'', startHour:0, endHour:0});
@@ -75,16 +77,10 @@ export default function ReservationForm() {
 
 
     useEffect(() => {
-        createAPIEndpoint(ENDPOINTS.CLIENTS).fetchById(userId)
-        .then(res => {
-            console.log('fetching user')
-            console.log(res.data);
-            setUser(res.data);
-        })
-        .catch(err => {
-            console.log(err);
-        })
-    }, []);
+        if(currentUser != undefined){
+            setUser(currentUser);
+        }
+    }, [currentUser]);
     
     const handleInputChangeDatePicker = e => {
         console.log('handleInputChangeDatePicker');
@@ -158,7 +154,7 @@ export default function ReservationForm() {
                 endHour: values.endHour,
                 hours: values.endHour - values.startHour,
                 numberOfPeople: 0,
-                account: {},
+                account: currentUser,
                 game: values.game,
                 table: values.table,
                 workDayId: values.workDayId

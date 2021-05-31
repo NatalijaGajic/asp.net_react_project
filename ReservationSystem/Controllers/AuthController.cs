@@ -1,6 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using ReservationSystem.Core.Contracts;
+using ReservationSystem.Core.dtos;
+using ReservationSystem.Core.models;
+using ReservationSystem.Core.services;
 using ReservationSystem.Core.Services;
+using ReservationSystem.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,26 +20,73 @@ namespace ReservationSystem.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-        public AuthController(IAuthService authService)
+        private readonly IAccountsService _accountsService;
+        private readonly IMapper _mapper;
+
+        public AuthController(IAuthService authService, IAccountsService accountsService, IMapper mapper)
         {
             _authService = authService;
+            _accountsService = accountsService;
+            _mapper = mapper;
         }
 
         [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult Login([FromBody] UserLoginRequest request)
         {
-            var authResponse = _authService.Login(request.Email, request.Password);
-            if (authResponse.Success)
+            try
             {
-                return Ok(new LoginSuccessResponse
+                var authResponse = _authService.Login(request.Email, request.Password);
+                if (authResponse.Success)
                 {
-                    Token = authResponse.Token
+                    return Ok(new LoginSuccessResponse
+                    {
+                        Token = authResponse.Token
+                    });
+                }
+                return BadRequest(new LoginFailedResponse
+                {
+                    Error = authResponse.Error
                 });
             }
-            return BadRequest(new LoginFailedResponse
+            catch(Exception ex)
             {
-                Error = authResponse.Error
-            });
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+
+            }
+
+
+        }
+
+        [HttpGet("getUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize]
+        public IActionResult GetUserFromToken()
+        {
+            try
+            {
+                string id = HttpContext.GetUserId();
+                ClientAccount client = _accountsService.GetClientAccount(id);
+                if (client != null)
+                {
+                    return Ok(_mapper.Map<ClientAccountDto>(client));
+                }
+                WorkerAccount worker = _accountsService.GetWorkerAccount(id);
+                if (worker != null)
+                {
+                    return Ok(_mapper.Map<WorkerAccountDto>(worker));
+                }
+                return BadRequest("Id from token not mapped to user");
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+
+            }
 
         }
     }
