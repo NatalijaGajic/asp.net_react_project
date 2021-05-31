@@ -9,7 +9,7 @@ namespace ReservationSystem.Core.models
     public class WorkerAccount: Account
     {
         public DateTime StartContractDate { get; set;}
-        public DateTime EndContractDate { get; set;}
+        public DateTime? EndContractDate { get; set;}
 
     }
 }

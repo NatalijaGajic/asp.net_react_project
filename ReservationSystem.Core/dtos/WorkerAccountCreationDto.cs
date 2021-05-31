@@ -15,6 +15,6 @@ namespace ReservationSystem.Core.dtos
         public string LastName { get; set; }
         public string Telephone { get; set; }
         public DateTime StartContractDate { get; set; }
-        public DateTime EndContractDate { get; set; }
+        public DateTime? EndContractDate { get; set; }
     }
 }

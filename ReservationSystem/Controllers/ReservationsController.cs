@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace ReservationSystem.Controllers
 {
+    //TODO: authorixation
     [Route("api/[controller]")]
     [ApiController]
     public class ReservationsController : ControllerBase

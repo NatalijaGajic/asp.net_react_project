@@ -10,9 +10,7 @@ namespace ReservationSystem.Core.profiles
         {
             CreateMap<WorkerAccountCreationDto, WorkerAccount>();
             CreateMap<WorkerAccountUpdateDto, WorkerAccount>();
-            CreateMap<WorkerAccount, WorkerAccountDto>().ForMember(
-                dest => dest.Role,
-                opt => opt.MapFrom(src => $"{src.Role.Name}"));
+            CreateMap<WorkerAccount, WorkerAccountDto>();
         }
         
     }

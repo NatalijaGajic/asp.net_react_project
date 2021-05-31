@@ -45,7 +45,7 @@ export function AuthProvider({children}) {
                         history.push('/');
                     }
                     else if(res.data.role.name === "Worker"){
-                        history.push('/home-page')
+                        history.push('/home-page/')
                     }
 
                 })

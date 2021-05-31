@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReservationSystem.Core.models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,9 +15,9 @@ namespace ReservationSystem.Core.dtos
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Telephone { get; set; }
-        public String Role { get; set; }
+        public SystemRole Role { get; set; }
         public string AccountType { get; set; }
         public DateTime StartContractDate { get; set; }
-        public DateTime EndContractDate { get; set; }
+        public DateTime? EndContractDate { get; set; }
     }
 }

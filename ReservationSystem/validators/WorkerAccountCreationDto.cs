@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ReservationSystem.validators
 {
-    public class WorkerAccountCreationDto: AbstractValidator<GameCreationDto>
+    public class WorkerAccountCreationDto: AbstractValidator<WorkerAccountCreationDto>
     {
     }
 }
