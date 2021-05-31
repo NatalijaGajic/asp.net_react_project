@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import {createAPIEndpoint, ENDPOINTS} from '../api/index';
+import {createAPIEndpoint, ENDPOINTS, getAllGames} from '../api/index';
 import ReservationsTable from '../components/ReservationsTable'
 import {CircularProgress} from '@material-ui/core'
 import GamesTable from '../components/GamesTable';
@@ -18,10 +18,10 @@ export default function DisabledTabs() {
   useEffect(() => {
     if(value === 0){
         //TODO: Fetch all returns paged reponse
-        createAPIEndpoint(ENDPOINTS.GAMES).fetchAll()
+        getAllGames().fetch()
         .then((response) => {
-            console.log(response.data.data);
-            setGames(response.data.data);
+            console.log(response.data);
+            setGames(response.data);
         })
         .catch((err) => {
             console.log(err);
@@ -80,15 +80,15 @@ export default function DisabledTabs() {
       </Tabs>
     </Paper>
     {
-        (value === 0) && ( isLoading?  <CircularProgress />:
+        (value === 0) && ( isLoading?  <CircularProgress style={{marginTop:'2em'}}/>:
             <div style={{marginTop:'2em'}}><GamesTable records={games}/></div>)
     }
     {
-        (value === 1) &&  ( isLoading?  <CircularProgress />:
+        (value === 1) &&  ( isLoading?  <CircularProgress style={{marginTop:'2em'}}/>:
         <div style={{marginTop:'2em'}}><ReservationsTable records={reservations} displayDelete={true}/></div>)
     }
     {
-        (value === 2) && ( isLoading?  <CircularProgress />:
+        (value === 2) && ( isLoading?  <CircularProgress style={{marginTop:'2em'}}/>:
             <div style={{marginTop:'2em'}}><TablesTable records={tables}/></div>)
     }
     </>

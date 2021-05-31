@@ -62,7 +62,7 @@ export default function GameDetailsForm(props) {
         if(user == null){
             history.push('/log-in/');
         }
-        else if(user.penalty === 3){
+        else if(user.penalty === 3){ //TODO: shouldnt check if user.role.name is worker
             setInformationDialog({
                 isOpen:true,
                 title:'You have 3 penalties, you can not make reservation',

@@ -183,29 +183,39 @@ export default function ReservationsTable(props) {
 
    const cancelReservation = item => {
        console.log(item);
-       let penalty = user.penalty;
-       let dateOfLastPenalty = user.dateOfLastPenalty;
-       //TODO: check if dateOfLastPenalty is > month, penalties should be deleted 
-       let dateOfReservation = item.workDay.date;
-       let hours = checkCancelDate(new Date(dateOfReservation)) + item.startHour;
-       console.log(hours);
-       //hours = 23;
-       if(hours < 24){
-           setConfirmDialog({
-               isOpen:true,
-               title:'Are you sure you want to cancel this reservation? This action will get you a penalty.',
-               subtitle:'You can not undo cancellation later.'+ 
-               'With 3 penalties you can not make new reservations.',
-               onConfirmDialog: () => {sendCancelRequest(item)}
-           })
-       }else{
-           setConfirmDialog({
-               isOpen:true,
-               title:'Are you sure you want to cancel this reservation?',
-               subtitle:'You can not undo cancellation later.',
-               onConfirmDialog: () => {sendCancelRequest(item)}
-           })
+       if(user.role.name === "Client"){
+        let penalty = user.penalty;
+        let dateOfLastPenalty = user.dateOfLastPenalty;
+        //TODO: check if dateOfLastPenalty is > month, penalties should be deleted 
+        let dateOfReservation = item.workDay.date;
+        let hours = checkCancelDate(new Date(dateOfReservation)) + item.startHour;
+        console.log(hours);
+        //hours = 23;
+        if(hours < 24){
+            setConfirmDialog({
+                isOpen:true,
+                title:'Are you sure you want to cancel this reservation? This action will get you a penalty.',
+                subtitle:'You can not undo cancellation later.'+ 
+                'With 3 penalties you can not make new reservations.',
+                onConfirmDialog: () => {sendCancelRequest(item)}
+            })
+        }else{
+            setConfirmDialog({
+                isOpen:true,
+                title:'Are you sure you want to cancel this reservation?',
+                subtitle:'You can not undo cancellation later.',
+                onConfirmDialog: () => {sendCancelRequest(item)}
+            })
+        }
+       }else {
+            setConfirmDialog({
+                isOpen:true,
+                title:'Are you sure you want to cancel this reservation?',
+                subtitle:'You can not undo cancellation later.',
+                onConfirmDialog: () => {sendCancelRequest(item)}
+            })
        }
+      
     }
   
     return (

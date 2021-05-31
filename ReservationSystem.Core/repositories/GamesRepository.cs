@@ -50,5 +50,10 @@ namespace ReservationSystem.Core.repositories
         {
             return (int)_games.Find(w => w.IsActive == true).CountDocuments();
         }
+
+        public List<Game> GetAllGames()
+        {
+            return _games.Find(x => true).ToList();
+        }
     }
 }

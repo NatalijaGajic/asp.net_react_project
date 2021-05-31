@@ -26,6 +26,22 @@ namespace ReservationSystem.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("all-games")]
+        [Authorize(Roles ="Worker")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetAllGames()
+        {
+            try
+            {
+                return Ok(_gamesServices.GetAllGames());
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
         [HttpGet("filtered/games")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

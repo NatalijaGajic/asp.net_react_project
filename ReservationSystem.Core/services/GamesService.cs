@@ -115,5 +115,9 @@ namespace ReservationSystem.Core
             return _gamesRepository.GetNumberOfActiveGames();
         }
 
+        public List<Game> GetAllGames()
+        {
+            return _gamesRepository.GetAllGames();
+        }
     }
 }

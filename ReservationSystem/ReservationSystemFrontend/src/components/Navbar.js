@@ -19,11 +19,8 @@ import MoreTwoToneIcon from '@material-ui/icons/MoreTwoTone';
 import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 import AlarmOnTwoToneIcon from '@material-ui/icons/AlarmOnTwoTone';
 import {useAuth} from '../contexts/AuthContext';
+import ListTwoToneIcon from '@material-ui/icons/ListTwoTone';
 
-const options = [
-  'Reservations',
-  'New reservation'
-];
 
 const ITEM_HEIGHT = 48;
 
@@ -42,7 +39,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
  const Navbar = () => {
-
+  const [options, setOptions] = useState([
+    'Reservations',
+    'New reservation'
+  ]);
   const {currentUser, logout} = useAuth();
   const history = useHistory();
   const [user, setUser] = useState(false);
@@ -56,6 +56,23 @@ const useStyles = makeStyles((theme) => ({
 
   useEffect(() => {
     setUser(currentUser);
+    if(currentUser != undefined && currentUser != null){
+      if(currentUser.role.name === "Worker"){
+         setOptions(
+           [
+             'Home Page',
+             'Reservations',
+             'New reservation'
+           ]
+         )
+      }else {
+        setOptions(
+          [
+            'Reservations',
+            'New reservation'
+          ])
+      }
+    }
   }, [currentUser])
 
   const navigateToLogin = () => {
@@ -92,6 +109,9 @@ const useStyles = makeStyles((theme) => ({
     if(option === 'Reservations'){
       history.push('/reservations');
 
+    }
+    if(option === 'Home Page'){
+      history.push('/home-page');
     }
   }
 
@@ -133,6 +153,10 @@ const useStyles = makeStyles((theme) => ({
                 <MenuItem key={option}  onClick={() => handleMenuItemClick(option)}>
                   <ListItemIcon>
                   {
+                    (option === "Home Page")  &&
+                    <ListTwoToneIcon/>
+                  }
+                  {
                     (option === "Reservations") && 
                     <AlarmOnTwoToneIcon/>
                   }
@@ -140,6 +164,8 @@ const useStyles = makeStyles((theme) => ({
                     (option === "New reservation") && 
                     <AddCircleOutlineOutlinedIcon/>
                   }
+
+
                  </ListItemIcon>
                  <Typography variant="inherit" noWrap>
                  {option}

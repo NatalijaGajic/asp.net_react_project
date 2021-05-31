@@ -85,7 +85,12 @@ namespace ReservationSystem.Core.services
             ClientAccount client = _accountsService.GetClientAccount(id);
             if(client == null)
             {
-                throw new InvalidForeignKeyException("Invalid account id");
+                WorkerAccount worker = _accountsService.GetWorkerAccount(id);
+                if(worker == null)
+                {
+                    throw new InvalidForeignKeyException("Invalid account id");
+                }
+                return _reservationsRepository.GetReservationsForAccount(id);
             }
             return _reservationsRepository.GetReservationsForAccount(id);
         }

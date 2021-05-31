@@ -18,5 +18,6 @@ namespace ReservationSystem.Core
 
         int GetNumberOfActiveGames();
         PagedResponse<Game> GetAllGames(PaginationQuery paginationQuery);
+        List<Game> GetAllGames();
     }
 }
