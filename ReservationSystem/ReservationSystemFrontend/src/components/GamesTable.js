@@ -89,7 +89,7 @@ export default function GamesTable(props) {
     }
 
     const navigateTo = () => {
-       
+       history.push('/make-game');
     };
 
     return (

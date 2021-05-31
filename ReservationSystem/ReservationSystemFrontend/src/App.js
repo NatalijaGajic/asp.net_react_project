@@ -11,10 +11,12 @@ import Login from './pages/LoginPage';
 import GameDetails from './pages/GameDetailsPage';
 import MakeGameReservation from './pages/MakeGameReservationPage';
 import AdminHome from './pages/AdminHomePage';
+import MakeGame from './pages/MakeGamePage';
 
 //TODO: better handling when making reservation, on fe and be shouldnt make reservation for 
 //older days
 
+//TODO: Custom route component, protected paths
 function App() {
   return (
     <AuthProvider>
@@ -29,7 +31,7 @@ function App() {
         <Route path='/games/:id' component={GameDetails}/>
         <Route path='/make-game-reservation/:id' component={MakeGameReservation}/>
         <Route path='/home-page' component={AdminHome}/>
-
+        <Route path='/make-game' component={MakeGame}></Route>
       </Switch>
     </Layout>
     </AuthProvider>
