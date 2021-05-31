@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function GameForm(props) {
-    const {addOrEdit} = props.addOrEdit;
+    const {addOrEdit} = props;
     const classes = useStyles();
     const [loading, setLoading] = useState(false);
     
@@ -92,10 +92,11 @@ export default function GameForm(props) {
         setLoading(true);
         if(validate()){
             const formData = new FormData()
-            formData.append('title', values.title)
+            formData.append('name', values.title)
+            formData.append('description', values.description)
             formData.append('numberOfPlayers', values.numberOfPlayers)
             formData.append('price', values.price)
-            formData.append('valute', values.valute)
+            formData.append('valute', currencyDictionary[values.valute])
             formData.append('isActive', values.isActive)
             formData.append('imageName', values.imageName)
             formData.append('imageFile', values.imageFile)
@@ -111,7 +112,7 @@ export default function GameForm(props) {
             reader.onload = x => {
                 setValues({
                     ...values,
-                    imagePath: imageFile,
+                    imageFile,
                     imagePath: x.target.result
                 })
             }
@@ -119,7 +120,7 @@ export default function GameForm(props) {
         }else{
             setValues({
                 ...values,
-                imagePath: null,
+                imageFile: null,
                 imagePath: defaultImageSource
             })
         }
@@ -129,7 +130,7 @@ export default function GameForm(props) {
     <Form onSubmit={handleSubmit}>
             <Grid container>
                 <Grid item sm={6} container>
-                    <Grid sm={12} >
+                    <Grid item sm={12} >
                     <img src={values.imagePath} className={classes.img}></img>
                     </Grid>
                     <Grid item sm={12} container justify="center">
@@ -140,7 +141,7 @@ export default function GameForm(props) {
                     </Grid>
                 </Grid> 
                 <Grid item sm={6} container direction="column" spacing={2}>
-                    <Grid item sm="12"> 
+                    <Grid item sm={12}> 
                     <Controls.Input
                     label="Title"
                     name="title"
@@ -150,7 +151,7 @@ export default function GameForm(props) {
                     style={{width: "100%"}}
                     />
                     </Grid>
-                    <Grid item sm="12" container justify="space-between"> 
+                    <Grid item sm={12} container justify="space-between"> 
                     <Grid item sm={3}>
                         <FormControl className={classes.margin}>
                             <InputLabel htmlFor="number-of-players">Players</InputLabel>
@@ -164,7 +165,6 @@ export default function GameForm(props) {
                             }
                             type="number"
                             value={values.numberOfPlayers}
-                            error={errors.numberOfPlayers}
                             onChange={handleInputChange}
                             />
                             {errors.numberOfPlayers && <FormHelperText>{errors.numberOfPlayers}</FormHelperText>}
@@ -183,7 +183,6 @@ export default function GameForm(props) {
                             }
                             type="number"
                             value={values.price}
-                            error={errors.price}
                             onChange={handleInputChange}
                             />
                             {errors.price && <FormHelperText>{errors.price}</FormHelperText>}
@@ -196,7 +195,6 @@ export default function GameForm(props) {
                         label="Currency"
                         name="valute"
                         value={values.valute}
-                        error={errors.valute}
                         onChange={handleInputChange}
                         >
                         {currencies.map((option) => (

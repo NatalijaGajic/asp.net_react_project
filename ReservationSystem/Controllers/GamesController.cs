@@ -113,11 +113,11 @@ namespace ReservationSystem.Controllers
         [Authorize(Roles = "Worker")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult AddGame([FromBody] GameCreationDto game)
+        public async Task<IActionResult> AddGame([FromForm] GameCreationDto game)
         {
             try
             {
-                //game.ImageName = await SaveImage(game.ImageName);
+                game.ImageName = await SaveImage(game.ImageFile);
                 Game g = _mapper.Map<Game>(game);
                 g = _gamesServices.AddGame(g);
                 return CreatedAtRoute("GetGame", new { id = g.Id }, g);

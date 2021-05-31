@@ -14,6 +14,8 @@ namespace ReservationSystem.Core
         public string Valute { get; set; }
         public byte NumberOfPlayers { get; set; }
         public bool IsActive { get; set; }
+        public string ImageName { get; set; }
+
 
         public override bool Equals(Object obj)
         {
