@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ReservationSystem.Core.dtos;
 using ReservationSystem.Core.models;
 using ReservationSystem.Core.services;
+using ReservationSystem.Extensions;
 using ReservationSystem.filters;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ReservationSystem.Controllers
 {
@@ -26,6 +26,7 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles ="Worker")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetClientAccounts()
@@ -42,6 +43,8 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpGet("{id}", Name = "GetClient")]
+        [Authorize(Roles = "Worker")]
+        //TODO: Client can get his own account
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -85,6 +88,7 @@ namespace ReservationSystem.Controllers
 
         //TODO: should delete all reservations, authorization
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Worker")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -92,6 +96,7 @@ namespace ReservationSystem.Controllers
         {
             try
             {
+                
                 if (_accountsServices.DeleteClientAccount(id))
                 {
                     return NoContent();
@@ -107,13 +112,20 @@ namespace ReservationSystem.Controllers
 
         [ServiceFilter(typeof(UniqueClientAccountValidationFilter))]
         [HttpPut("{id}")]
+        [Authorize(Roles = "Worker, Client")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult UpdateClient(string id, ClientAccountUpdateDto clientAccount)
         {
             try
             {
+                string userId = HttpContext.GetUserId();
+                if(userId != id)
+                {
+                    return BadRequest("You can't update an account you don't own");
+                }
                 ClientAccount client = _mapper.Map<ClientAccount>(clientAccount);
                 client.Id = id;
                 //TODO: asign role, Email, Password, AccountType from client or do partial update with Attach

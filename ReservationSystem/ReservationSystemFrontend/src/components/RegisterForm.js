@@ -50,9 +50,11 @@ export default function RegisterForm() {
     
     const handleSubmit = e => {
         e.preventDefault()
+        setLoading(true);
         if(validate()){
             window.alert('Testing');
         }
+        setLoading(false);
     }
 
     return (
@@ -152,6 +154,7 @@ export default function RegisterForm() {
                 >
                         <Controls.Button
                         style={{marginRight: "6em", marginTop: "2em", width: "100%"}}
+                        disabled={loading}
                         variant="contained"
                         color="primary"
                         size="large"

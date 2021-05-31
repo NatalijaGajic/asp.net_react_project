@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ReservationSystem.Core.dtos;
@@ -24,6 +25,7 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Worker")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult Get()
@@ -38,6 +40,7 @@ namespace ReservationSystem.Controllers
             }
         }
 
+        //TODO: authorize so users can only see payments they made, workers can see all
         [HttpGet("{id}", Name = "GetPayment")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -63,6 +66,7 @@ namespace ReservationSystem.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Worker")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -87,6 +91,7 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Worker")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

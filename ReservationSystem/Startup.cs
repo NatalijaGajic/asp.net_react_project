@@ -83,6 +83,8 @@ namespace ReservationSystem
                     };
                 });
 
+            services.AddAuthorization();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ReservationSystem", Version = "v1" });

@@ -4,6 +4,8 @@ import {UseForm, Form} from './UseForm'
 import Controls from '../components/controls/Controls'
 import {Link} from 'react-router-dom';
 import { useHistory } from "react-router-dom";
+import {useAuth} from '../contexts/AuthContext';
+
 
 const initialFieldValues = {
     email: '',
@@ -22,6 +24,8 @@ export default function LoginForm() {
     const [loading, setLoading] = useState(false);
     const classes = useStyles();
     const history = useHistory();
+    const {login} = useAuth();
+    const {loginError} = useAuth();
 
     const validate = () => {
         return true;
@@ -30,7 +34,7 @@ export default function LoginForm() {
     const handleSubmit = e => {
         e.preventDefault()
         if(validate()){
-            window.alert('Testing');
+            login(values.email, values.password);
         }
     }
 
@@ -64,8 +68,8 @@ export default function LoginForm() {
                         type="password"
                         />
                     </Grid>
-                    <Grid item xs={12}>
-                    {error && <p className={classes.errorParagraph}>{error}</p>}
+                    <Grid item xs={12} container justify="center">
+                    {loginError!=='' && <p className={classes.errorParagraph}>{loginError}</p>}
                     </Grid>
                     <Grid item xs={12}>
                         <Controls.Button

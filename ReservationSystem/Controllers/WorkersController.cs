@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ReservationSystem.Core.dtos;
@@ -24,6 +25,7 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Worker")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult Get()
@@ -40,6 +42,7 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpGet("{id}", Name = "GetWorker")]
+        [Authorize(Roles = "Worker")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -62,6 +65,7 @@ namespace ReservationSystem.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Worker")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult AddWorker(WorkerAccountCreationDto workerAccount)
@@ -80,6 +84,7 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Worker")]
         public IActionResult DeleteWorker(string id)
         {
             try
@@ -98,6 +103,7 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Worker")]
         public IActionResult UpdateWorker(string id, WorkerAccount workerAccount)
         {
             workerAccount.Id = id;

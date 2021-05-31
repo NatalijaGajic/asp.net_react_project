@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ReservationSystem.Core.dtos;
@@ -59,6 +60,7 @@ namespace ReservationSystem.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Worker")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult AddTable([FromBody] TableCreationDto table)
@@ -77,6 +79,7 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Worker")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -99,6 +102,7 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Worker")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

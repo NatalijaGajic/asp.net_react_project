@@ -47,7 +47,7 @@ namespace ReservationSystem.Core.Services
                         Subject = new ClaimsIdentity(new[]
                         {
                             new Claim("id", worker.Id),
-                            new Claim("role", worker.Role.Name)
+                            new Claim(ClaimTypes.Role, worker.Role.Name)
                         }),
                         Expires = DateTime.UtcNow.AddHours(2),
                         SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -61,7 +61,7 @@ namespace ReservationSystem.Core.Services
                 }
                 return new AuthenticationResult
                 {
-                    Error = "Wrong password",
+                    Error = "User/password combination is wrong",
                     Success = false
                 };
             }
@@ -72,7 +72,7 @@ namespace ReservationSystem.Core.Services
                     Subject = new ClaimsIdentity(new[]
                         {
                             new Claim("id", client.Id),
-                            new Claim("role", client.Role.Name)
+                            new Claim(ClaimTypes.Role, client.Role.Name)
                         }),
                     Expires = DateTime.UtcNow.AddHours(2),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -85,9 +85,10 @@ namespace ReservationSystem.Core.Services
             }
             return new AuthenticationResult
             {
-                Error = "Wrong password",
+                Error = "User/password combination is wrong",
                 Success = false
             };
         }
+
     }
 }
