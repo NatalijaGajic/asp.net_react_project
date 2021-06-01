@@ -194,13 +194,15 @@ namespace ReservationSystem.Controllers
         {
             try
             {
-                //TODO: check id format
-                if (_gamesServices.DeleteGame(id))
+                Game game = _gamesServices.GetGame(id);
+                if(game == null)
                 {
-                    return NoContent();
+                    return NotFound("Game with id not found");
 
                 }
-                return NotFound("Game with id not found");
+                DeleteImage(game.ImageName);
+                _gamesServices.DeleteGame(id);
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -213,10 +215,15 @@ namespace ReservationSystem.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult UpdateGame(string id, GameUpdateDto game)
+        public IActionResult UpdateGame(string id, [FromForm]GameUpdateDto game)
         {
             try
             {
+                if(game.ImageFile != null)
+                {
+                    DeleteImage(game.ImageName);
+                    game.ImageName = SaveImage(game.ImageFile);
+                }
                 Game g = _mapper.Map<Game>(game);
                 g.Id = id;
                 //TODO: check id format
@@ -229,6 +236,16 @@ namespace ReservationSystem.Controllers
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [NonAction]
+        public void DeleteImage(string imageName)
+        {
+            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
+            if (System.IO.File.Exists(imagePath))
+            {
+                System.IO.File.Delete(imagePath);
             }
         }
     }
