@@ -9,16 +9,23 @@ namespace ReservationSystem.Core.dtos
 {
     public class PagedResponse<T>
     {
-        public IEnumerable<T> Data { get; set; }
+        public List<T> Data { get; set; }
         public int? PageNumber { get; set; }
         public int? PageSize { get; set; }
         public int? NextPage { get; set; }
         public int? PreviousPage { get; set; }
         public int? NumberOfPages { get; set; }
         
-
-
-        public PagedResponse(IEnumerable<T> data, int numberOfDocuments)
+        public PagedResponse(int? pageNumber, int? pageSize, int? nextPage, int? previousPage, int? numberOfPages)
+        {
+            this.PageNumber = pageNumber;
+            this.PageSize = pageSize;
+            this.NextPage = nextPage;
+            this.PreviousPage = previousPage;
+            this.NumberOfPages = numberOfPages;
+        }
+    
+        public PagedResponse(List<T> data, int numberOfDocuments)
         {
             Data = data;
             this.NumberOfPages = numberOfDocuments / PageSize;
@@ -28,7 +35,7 @@ namespace ReservationSystem.Core.dtos
             }
         }
 
-        public PagedResponse(IEnumerable<T> data, PaginationQuery paginationQuery, int numberOfDocuments)
+        public PagedResponse(List<T> data, PaginationQuery paginationQuery, int numberOfDocuments)
         {
             this.Data = data;
             this.PageNumber = paginationQuery.PageNumber;

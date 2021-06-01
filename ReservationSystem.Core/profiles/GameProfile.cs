@@ -13,7 +13,9 @@ namespace ReservationSystem.Core.profiles
         public GameProfile()
         {
             CreateMap<GameCreationDto, Game>();
-            CreateMap<Game, GameDto>();
+            CreateMap<Game, GameDto>()
+                .ForMember(dest => dest.ImagePath,
+                opt => opt.MapFrom((src, dst, _, context) => context.Options.Items["ImagePath"]));
             CreateMap<GameUpdateDto, Game>();
         }
 

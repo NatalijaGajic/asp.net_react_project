@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ReservationSystem.Core.Services;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace ReservationSystem
 {
@@ -108,6 +110,12 @@ namespace ReservationSystem
                 builder.AllowAnyHeader();
                 builder.AllowAnyMethod();
             });
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Images")),
+                RequestPath = "/Images"
+            }); 
 
             app.UseRouting();
 

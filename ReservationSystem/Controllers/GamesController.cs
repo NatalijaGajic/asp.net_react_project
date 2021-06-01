@@ -37,8 +37,19 @@ namespace ReservationSystem.Controllers
         public IActionResult GetAllGames()
         {
             try
-            {
-                return Ok(_gamesServices.GetAllGames());
+            { 
+                List<Game> games = _gamesServices.GetAllGames();
+                List<GameDto> result = new List<GameDto>();
+                foreach (Game game in games)
+                {
+                    string imagePath = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, game.ImageName);
+                    GameDto dto = _mapper.Map<GameDto>(game, opt =>
+                    {
+                        opt.Items["ImagePath"] = imagePath;
+                    });
+                    result.Add(dto);
+                }
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -52,8 +63,21 @@ namespace ReservationSystem.Controllers
         public IActionResult GetFiltered([FromQuery] PaginationQuery paginationQuery, [FromQuery] GamesQueryParams gamesQueryParams)
         {
             try
-            {
-                return Ok(_gamesServices.GetGames(paginationQuery, gamesQueryParams));
+            { 
+                PagedResponse<Game> response = _gamesServices.GetGames(paginationQuery, gamesQueryParams);
+                List<Game> games = (List<Game>)response.Data;
+                List<GameDto> result = new List<GameDto>();
+                foreach (Game game in games)
+                {
+                    string imagePath = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, game.ImageName);
+                    GameDto dto = _mapper.Map<GameDto>(game, opt =>
+                    {
+                        opt.Items["ImagePath"] = imagePath;
+                    });
+                    result.Add(dto);
+                }
+                PagedResponse<GameDto> res = new PagedResponse<GameDto>(response.PageNumber, response.PageSize, response.NextPage, response.PreviousPage, response.NumberOfPages);res.Data = result;
+                return Ok(res);
             }
             catch (Exception e)
             {
@@ -74,7 +98,21 @@ namespace ReservationSystem.Controllers
         {
             try
             {
-                return Ok(_gamesServices.GetAllGames(paginationQuery));
+                PagedResponse<Game> response = _gamesServices.GetAllGames(paginationQuery);
+                List<Game> games = response.Data;
+                List<GameDto> result = new List<GameDto>();
+                foreach (Game game in games)
+                {
+                    string imagePath = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, game.ImageName);
+                    GameDto dto = _mapper.Map<GameDto>(game, opt =>
+                    {
+                        opt.Items["ImagePath"] = imagePath;
+                    });
+                    result.Add(dto);
+                }
+                PagedResponse<GameDto> res = new PagedResponse<GameDto>(response.PageNumber, response.PageSize, response.NextPage, response.PreviousPage, response.NumberOfPages);
+                res.Data = result;
+                return Ok(res);
             }
             catch (Exception e)
             {
@@ -100,7 +138,12 @@ namespace ReservationSystem.Controllers
                 {
                     return NotFound("Game with id not found");
                 }
-                return Ok(_mapper.Map<GameDto>(game));
+                string imagePath = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, game.ImageName);
+                GameDto dto = _mapper.Map<GameDto>(game, opt =>
+                {
+                    opt.Items["ImagePath"] = imagePath;
+                });
+                return Ok(dto);
             }
             catch (Exception ex)
             {
