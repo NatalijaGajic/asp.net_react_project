@@ -9,19 +9,18 @@ using ReservationSystem.Core.models;
 using Microsoft.Extensions.DependencyInjection;
 using ReservationSystem.Core.Utils;
 
-namespace ReservationSystem.filters
+namespace ReservationSystem.Filters
 {
-    //TODO: same for worker account
-    public class UniqueClientAccountValidationFilter : IAsyncActionFilter
+    public class UniqueWorkerAccountValidationFIlter: IAsyncActionFilter
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            AccountsService _accountsService = (AccountsService) context.HttpContext.RequestServices.GetService<IAccountsService>();
+            AccountsService _accountsService = (AccountsService)context.HttpContext.RequestServices.GetService<IAccountsService>();
 
             try
             {
-                var postRequest = context.ActionArguments["clientAccount"] as ClientAccountCreationDto;
-                var putRequest = context.ActionArguments["clientAccount"] as ClientAccountUpdateDto;
+                var postRequest = context.ActionArguments["workerAccount"] as WorkerAccountCreationDto;
+                var putRequest = context.ActionArguments["workerAccount"] as WorkerAccountUpdateDto;
                 if (postRequest != null)
                 {
                     //TODO: If properties are null
@@ -52,12 +51,12 @@ namespace ReservationSystem.filters
                     ClientAccount clientWithId = _accountsService.GetClientAccount(id);
                     if (clientWithId == null)
                     {
-                        context.Result = new NotFoundObjectResult("Client account with id not found");
+                        context.Result = new NotFoundObjectResult("Worker account with id not found");
                         return;
                     }
                     ClientAccount clientWithUsername = _accountsService.GetClientAccountByUsername(username);
                     WorkerAccount workerWithUsername = _accountsService.GetWorkerAccountByUsername(username);
-                    if ((clientWithUsername != null && clientWithUsername.Id != id) || workerWithUsername != null)
+                    if ((workerWithUsername != null && workerWithUsername.Id != id) || clientWithUsername != null)
                     {
                         throw new Exception("Username and email should be unique");
                     }
@@ -66,9 +65,9 @@ namespace ReservationSystem.filters
                 {
                     throw new Exception("Wrong request format");
                 }
-                
+
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 context.Result = new BadRequestObjectResult(e.Message);
                 return;

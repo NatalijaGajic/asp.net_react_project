@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using ReservationSystem.Core.dtos;
 using ReservationSystem.Core.models;
 using ReservationSystem.Core.services;
+using ReservationSystem.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,7 +64,7 @@ namespace ReservationSystem.Controllers
             }
         }
 
-
+        [ServiceFilter(typeof(UniqueWorkerAccountValidationFIlter))]
         [HttpPost]
         [Authorize(Roles = "Worker")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -102,6 +103,7 @@ namespace ReservationSystem.Controllers
             }
         }
 
+        [ServiceFilter(typeof(UniqueWorkerAccountValidationFIlter))]
         [HttpPut("{id}")]
         [Authorize(Roles = "Worker")]
         public IActionResult UpdateWorker(string id, WorkerAccount workerAccount)
