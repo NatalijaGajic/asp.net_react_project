@@ -1,8 +1,11 @@
 import React, {useState} from 'react'
-import {Grid, makeStyles} from "@material-ui/core"
+import {Grid, makeStyles, Link} from "@material-ui/core"
 import {UseForm, Form} from './UseForm'
 import Controls from '../components/controls/Controls'
-import { Alert } from '@material-ui/lab'
+import {useAuth} from '../contexts/AuthContext'
+import Notification from '../components/Notification'
+import { useHistory } from "react-router-dom";
+
 
 const useStyles = makeStyles((theme) => ({
     errorParagraph: {
@@ -19,15 +22,20 @@ const initialFieldValues = {
     firstName: '',
     lastName: '',
     telephone: '',
+    confirmPassword:''
 }
 
 export default function RegisterForm() {
+    const {signup, signupError, setSignupError} = useAuth();
     const {values, setValues, handleInputChange, errors, setErrors} = UseForm(initialFieldValues);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const classes = useStyles();
+    const [notify, setNotify] = useState({isOpen:false, message:'', type:''});
+    const history = useHistory();
 
     const validate = () => {
+        setSignupError('')
         console.log(values.email);
         let temp = {}
         temp.firstName = values.firstName?"":"This field is required"
@@ -47,14 +55,32 @@ export default function RegisterForm() {
         })
         return Object.values(temp).every(x=> x === "");
     }
+
+    const onSuccess = () => {
+        setNotify({isOpen:true, 'message':'Succesfully created', type:'success'});
+        setValues(initialFieldValues)
+        setErrors({})
+    }
     
     const handleSubmit = e => {
         e.preventDefault()
         setLoading(true);
         if(validate()){
-            window.alert('Testing');
+            let body = {
+                username: values.username,
+                email: values.email,
+                password: values.password,
+                firstName: values.firstName,
+                lastName: values.lastName,
+                telephone: values.telephone
+            }
+            signup(values, onSuccess)
         }
         setLoading(false);
+    }
+
+    const navigateToLogin = () => {
+        history.push('/log-in')
     }
 
     return (
@@ -135,6 +161,7 @@ export default function RegisterForm() {
             </Grid>
             <Grid container justify="center">
                 {error && <p className={classes.errorParagraph}>{error}</p>}
+                {signupError && <p className={classes.errorParagraph}>{signupError}</p>}
             </Grid>
             {/*<Grid container>
                 <Grid item sm={9}></Grid>
@@ -162,7 +189,17 @@ export default function RegisterForm() {
                         type="submit"/>
                 </Grid>
             </Grid>
+            <Grid item xs={12} container justify="center" alignItems="flex-end"
+                style={{paddingTop: '1em'}}>
+                <Link href="#" onClick={navigateToLogin} style={{textDecoration: 'underline'}}>
+                    Log in with email
+                </Link>
+            </Grid>
         </Form>
+        <Notification
+        notify={notify}
+        setNotify={setNotify}
+        />
         </>
     )
 }

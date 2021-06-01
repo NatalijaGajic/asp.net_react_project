@@ -32,8 +32,8 @@ export default function MakeTable(props) {
         .then(res => {
             onSuccess();
         })
-        .catch(err => {
-            console.log(err);
+        .catch(res => {
+            console.log(res.error);
         })
         else
         createAPIEndpoint(ENDPOINTS.TABLES).update(table.id, body)

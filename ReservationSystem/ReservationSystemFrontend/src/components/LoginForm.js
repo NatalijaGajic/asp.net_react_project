@@ -85,7 +85,7 @@ export default function LoginForm() {
                 </Grid>
                 <Grid item xs={12} container justify="center" alignItems="flex-end"
                 style={{paddingTop: '1em'}}>
-                <Link href="#" onClick={navigateToSignUp}>
+                <Link href="#" onClick={navigateToSignUp} style={{textDecoration: 'underline'}}>
                     Sign up if you don't have an account
                 </Link>
                 </Grid>

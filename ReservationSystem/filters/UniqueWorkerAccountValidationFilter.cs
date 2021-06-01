@@ -30,10 +30,13 @@ namespace ReservationSystem.Filters
                     ClientAccount clientWithEmail = _accountsService.GetClientAccountByEmail(email);
                     WorkerAccount workerWithUsername = _accountsService.GetWorkerAccountByEmail(email);
                     WorkerAccount workerWithEmail = _accountsService.GetWorkerAccountByUsername(username);
-                    if (clientWithUsername != null || clientWithEmail != null || workerWithUsername
-                        != null || workerWithEmail != null)
+                    if (clientWithUsername != null || workerWithUsername != null)
                     {
-                        throw new Exception("Username and email should be unique");
+                        throw new Exception("Username is already taken");
+                    }
+                    if (clientWithEmail != null || workerWithEmail != null)
+                    {
+                        throw new Exception("Email already in use");
                     }
                 }
                 else if (putRequest != null)
@@ -58,7 +61,7 @@ namespace ReservationSystem.Filters
                     WorkerAccount workerWithUsername = _accountsService.GetWorkerAccountByUsername(username);
                     if ((workerWithUsername != null && workerWithUsername.Id != id) || clientWithUsername != null)
                     {
-                        throw new Exception("Username and email should be unique");
+                        throw new Exception("Username is already taken");
                     }
                 }
                 else
