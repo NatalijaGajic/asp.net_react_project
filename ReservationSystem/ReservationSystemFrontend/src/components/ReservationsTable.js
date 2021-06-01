@@ -181,6 +181,34 @@ export default function ReservationsTable(props) {
 
     }
 
+    const sendDeleteRequest = (item) => {
+        //TODO: deleting restrictions based on date
+        createAPIEndpoint(ENDPOINTS.RESERVATIONS).delete(item.id)
+        .then(res => {
+            let array = [...reservationsArray]
+            const index = array.findIndex(res => res.id === item.id);
+            array.splice(index, 1);
+            setConfirmDialog({
+                ...confirmDialog,
+                isOpen:false
+            });
+            setReservationsArray(array);
+            setNotify({isOpen:true, 'message':'Succesfully deleted', type:'success'});
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+
+    const deleteReservation = item => {
+        setConfirmDialog({
+            isOpen:true,
+            title:'Are you sure you want delete this reservation?',
+            subtitle:'You can not undo deletion later.',
+            onConfirmDialog: () => {sendDeleteRequest(item)}
+        })
+    }
+
    const cancelReservation = item => {
        console.log(item);
        if(user.role.name === "Client"){
@@ -262,10 +290,10 @@ export default function ReservationsTable(props) {
                                 </TableCell>
                                 <TableCell>
                                     <Controls.ActionButton
-                                    disabled={item.isCancelled}
+                                    disabled={displayDelete?false:item.isCancelled}
                                     color="secondary">
                                         <CloseIcon fontSize="small"
-                                        onClick={() => {{cancelReservation(item)}}}/>
+                                        onClick={() => {{displayDelete?deleteReservation(item):cancelReservation(item)}}}/>
                                     </Controls.ActionButton>
                                 </TableCell>
                             </TableRow>

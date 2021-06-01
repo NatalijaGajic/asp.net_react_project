@@ -1,20 +1,26 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ReservationSystem.Core;
+using ReservationSystem.Core.contracts;
 using ReservationSystem.Core.dtos;
+using ReservationSystem.Core.exceptions;
 using ReservationSystem.Core.Exceptions;
 using ReservationSystem.Core.models;
 using ReservationSystem.Core.services;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using ReservationSystem.Extensions;
 
 namespace ReservationSystem.Controllers
 {
     //TODO: authorixation
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class ReservationsController : ControllerBase
     {
@@ -31,6 +37,7 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Worker")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult Get()
@@ -62,6 +69,7 @@ namespace ReservationSystem.Controllers
         [HttpGet("{id}", Name = "GetReservation")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetReservationById(string id)
         {
@@ -71,6 +79,13 @@ namespace ReservationSystem.Controllers
                 if (res == null)
                 {
                     return NotFound("Reservation with id not found");
+                }
+                Account acc = res.Account;
+                // Regular user can get only his resrvations
+                if(acc.Id != HttpContext.GetUserId() && HttpContext.GetUserRole() != "Worker")
+                {
+                    return BadRequest("You don't own reservation you are trying to get.");
+
                 }
                 WorkDay workDay = _workDaysService.GetWorkDay(res.WorkDayId);
                 ReservationDto result = _mapper.Map<ReservationDto>(
@@ -96,6 +111,11 @@ namespace ReservationSystem.Controllers
         {
             try
             {
+                if (id != HttpContext.GetUserId() && HttpContext.GetUserRole() != "Worker")
+                {
+                    return BadRequest("You don't own reservations you are trying to get.");
+
+                }
                 List<Reservation> reservations = _reservationService.GetReservationsForAccount(id);
                 List<ReservationDto> result = new List<ReservationDto>();
                 foreach (Reservation res in reservations)
@@ -142,6 +162,7 @@ namespace ReservationSystem.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Worker")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -170,14 +191,27 @@ namespace ReservationSystem.Controllers
         {
             try
             {
-                if (_reservationService.CancelReservation(id))
+                Reservation reservation = _reservationService.GetReservation(id);
+                if (reservation == null) {
+
+                    return NotFound("Reservation with id not found");
+                }
+                Account acc = reservation.Account;
+                // User can cancel only his resrvations
+                if (acc.Id != HttpContext.GetUserId())
+                {
+                    return BadRequest("You don't own reservation you are trying to cancel");
+
+                }
+                if (_reservationService.CancelReservation(id, reservation.Account.Role.Name))
                 {
                     return StatusCode(StatusCodes.Status200OK, "Successfully cancelled");
 
                 }
                 return NotFound("Reservation with id not found");
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
 

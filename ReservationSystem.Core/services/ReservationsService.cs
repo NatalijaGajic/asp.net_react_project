@@ -30,7 +30,7 @@ namespace ReservationSystem.Core.services
             return reservation;
         }
 
-        public bool CancelReservation(string id)
+        public bool CancelReservation(string id, string roleName)
         {
             Reservation reservation = _reservationsRepository.GetReservation(id);
             if (reservation == null)
@@ -42,17 +42,20 @@ namespace ReservationSystem.Core.services
                 //TODO: Better response
                 return false;
             }
-            //TODO: Check penalties and date of reservation
-            DateTime timeNow = DateTime.Now;
-            WorkDay workDay = _workDaysService.GetWorkDay(reservation.WorkDayId);
-            DateTime dateOfReservation = workDay.Date;
-            if (CheckPenalties(timeNow, dateOfReservation) + reservation.StartHour < 24)
+            //TODO: Check penalties and date of reservation if user is client
+            if (roleName == "Client")
             {
-                ClientAccount client = _accountsService.GetClientAccount(reservation.Account.Id);
-                client.Penalty += 1;
-                _accountsService.UpdateClientAccountPenalties(client);
-                reservation.Account = client;
-            }
+                DateTime timeNow = DateTime.Now;
+                WorkDay workDay = _workDaysService.GetWorkDay(reservation.WorkDayId);
+                DateTime dateOfReservation = workDay.Date;
+                if (CheckPenalties(timeNow, dateOfReservation) + reservation.StartHour < 24)
+                {
+                    ClientAccount client = _accountsService.GetClientAccount(reservation.Account.Id);
+                    client.Penalty += 1;
+                    _accountsService.UpdateClientAccountPenalties(client);
+                    reservation.Account = client;
+                }
+            }            
             reservation.IsCancelled = true;
             return _reservationsRepository.UpdateReservation(reservation);
 
