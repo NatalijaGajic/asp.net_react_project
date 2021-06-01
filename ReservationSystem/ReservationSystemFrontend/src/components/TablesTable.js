@@ -12,6 +12,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Popup from '../components/Popup'
 import { useHistory } from "react-router-dom";
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import { createAPIEndpoint, ENDPOINTS } from '../api';
 
 
 const headCells = [
@@ -87,8 +88,42 @@ export default function GamesTable(props) {
     }
 
     const navigateTo = () => {
-       
+       history.push('make-table')
     };
+
+    const deleteTable = (item) => {
+        createAPIEndpoint(ENDPOINTS.TABLES).delete(item.id)
+        .then(res => {
+            let array = [...tablesArray]
+            const index = array.findIndex(res => res.id === item.id);
+            array.splice(index, 1);
+            setConfirmDialog({
+                ...confirmDialog,
+                isOpen:false
+            });
+            setTablesArray(array);
+            setNotify({isOpen:true, 'message':'Succesfully deleted', type:'success'});
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+
+    const handleDelete = (e, item) => {
+        e.stopPropagation();
+        console.log(item);
+        setConfirmDialog({
+            isOpen:true,
+            title:'Are you sure you want delete this table?',
+            subtitle:'You can not undo deletion later.',
+            onConfirmDialog: () => {deleteTable(item)}
+        })
+    }
+
+    const handleUpdate = (item) => {
+       history.push('update-table/'+item.id);
+
+    }
 
     return (
         <div>
@@ -125,7 +160,7 @@ export default function GamesTable(props) {
                                     <Controls.ActionButton
                                     color="primary">
                                         <EditOutlinedIcon fontSize="small"
-                                        onClick={() => {{openInPopup(item)}}}/>
+                                        onClick={() => {{handleUpdate(item)}}}/>
                                     </Controls.ActionButton>
                                 </TableCell>
                                 <TableCell>
@@ -133,7 +168,7 @@ export default function GamesTable(props) {
                                     disabled={item.isCancelled}
                                     color="secondary">
                                         <CloseIcon fontSize="small"
-                                        onClick={() => {{changeActive(item)}}}/>
+                                        onClick={(e) => {{handleDelete(e, item)}}}/>
                                     </Controls.ActionButton>
                                 </TableCell>
                             </TableRow>

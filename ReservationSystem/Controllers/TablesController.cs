@@ -9,6 +9,7 @@ using System;
 
 namespace ReservationSystem.Controllers
 {
+    [Authorize(Roles ="Worker")]
     [Route("api/[controller]")]
     [ApiController]
     public class TablesController : ControllerBase

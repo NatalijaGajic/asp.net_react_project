@@ -12,6 +12,7 @@ import GameDetails from './pages/GameDetailsPage';
 import MakeGameReservation from './pages/MakeGameReservationPage';
 import AdminHome from './pages/AdminHomePage';
 import MakeGame from './pages/MakeGamePage';
+import MakeTable from './pages/MakeTablePage';
 
 //TODO: better handling when making reservation, on fe and be shouldnt make reservation for 
 //older days
@@ -33,6 +34,8 @@ function App() {
         <Route path='/home-page' component={AdminHome}/>
         <Route path='/make-game' component={MakeGame}></Route>
         <Route path='/update-game/:id' component={MakeGame}></Route>
+        <Route path='/update-table/:id' component={MakeTable}></Route>
+        <Route path='/make-table' component={MakeTable}></Route>
       </Switch>
     </Layout>
     </AuthProvider>
