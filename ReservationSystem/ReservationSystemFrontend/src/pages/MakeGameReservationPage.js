@@ -7,6 +7,8 @@ import {createAPIEndpoint, ENDPOINTS} from '../api/index';
 export default function MakeGameReservation(props) {
     const [gameID, setGameID] = useState({});
     const [game, setGame] = useState({name: ''});
+
+    //TODO: fetching used to be in GameReservationForm; when navigated from game details not working
     useEffect(() => {
         let id = props.match.params['id'];
         console.log(id);
