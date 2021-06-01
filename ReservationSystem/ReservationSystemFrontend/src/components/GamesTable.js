@@ -12,6 +12,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Popup from '../components/Popup'
 import { useHistory } from "react-router-dom";
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import { createAPIEndpoint, ENDPOINTS } from '../api';
 
 
 const headCells = [
@@ -71,9 +72,38 @@ export default function GamesTable(props) {
         setOpenPopup(true);
     }
 
-    const changeActive = item => {
-        console.log(item);
+    const deleteGame = (item) => {
+        createAPIEndpoint(ENDPOINTS.GAMES).delete(item.id)
+        .then(res => {
+            let array = [...gamesArray]
+            const index = array.findIndex(res => res.id === item.id);
+            array.splice(index, 1);
+            setConfirmDialog({
+                ...confirmDialog,
+                isOpen:false
+            });
+            setGamesArray(array);
+            setNotify({isOpen:true, 'message':'Succesfully deleted', type:'success'});
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
 
+    const handleDelete = (e, item) => {
+        e.stopPropagation();
+        console.log(item);
+        setConfirmDialog({
+            isOpen:true,
+            title:'Are you sure you want delete this game?',
+            subtitle:'You can not undo deletion later.',
+            onConfirmDialog: () => {deleteGame(item)}
+        })
+    }
+
+    const handleUpdate = (e, item) => {
+        e.stopPropagation();
+        history.push('/update-game/'+item.id);
     }
 
     const handleSearch = e => {
@@ -88,13 +118,18 @@ export default function GamesTable(props) {
         })
     }
 
+
+    const onRowClickHandler = (rowData) => {
+        history.push('/games/'+rowData.id);
+    }
+
     const navigateTo = () => {
        history.push('/make-game');
     };
 
     return (
-        <div>
-           
+        <>
+        <div> 
             <Toolbar>
                 <Controls.Input
                 label="Search games"
@@ -119,7 +154,8 @@ export default function GamesTable(props) {
                 <TableBody>
                     {
                         recordsAfterPagingAndSorting().map(item => (
-                            <TableRow key={item.id}>
+                            <TableRow key={item.id}
+                            onClick={() => {onRowClickHandler(item)}}>
                                 <TableCell>{item.name}</TableCell>
                                 <TableCell>{item.valute}</TableCell>
                                 <TableCell>{item.price}</TableCell>
@@ -129,15 +165,14 @@ export default function GamesTable(props) {
                                     <Controls.ActionButton
                                     color="primary">
                                         <EditOutlinedIcon fontSize="small"
-                                        onClick={() => {{openInPopup(item)}}}/>
+                                        onClick={(e) => {{handleUpdate(e, item)}}}/>
                                     </Controls.ActionButton>
                                 </TableCell>
                                 <TableCell>
                                     <Controls.ActionButton
-                                    disabled={item.isCancelled}
                                     color="secondary">
                                         <CloseIcon fontSize="small"
-                                        onClick={() => {{changeActive(item)}}}/>
+                                        onClick={(e) => {{handleDelete(e, item)}}}/>
                                     </Controls.ActionButton>
                                 </TableCell>
                             </TableRow>
@@ -166,5 +201,6 @@ export default function GamesTable(props) {
             setInformationDialog={setInformationDialog}>
             </InformationDialog>
         </div>
+        </>
     )
 }

@@ -1,25 +1,29 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Grid, makeStyles, MenuItem, Input, FormControl, FormHelperText, InputLabel, TextField, FormControlLabel, TextareaAutosize, Checkbox} from '@material-ui/core';
 import {Form, UseForm} from '../components/UseForm';
 import Controls from '../components/controls/Controls'
 import InputAdornment from '@material-ui/core/InputAdornment';
 import PeopleAltTwoToneIcon from '@material-ui/icons/PeopleAltTwoTone';
 import LocalOfferTwoToneIcon from '@material-ui/icons/LocalOfferTwoTone';
+import Notification from '../components/Notification'
+
 
 const defaultImageSource = "/images/preview.png";
 
 const initialFieldValues = {
+    id: 0,
     title: '',
     numberOfPlayers: 0,
-    price: 0,
+    price: 0.0,
     valute: 'USD', //get label for value
     isActive: false,
     description: '',
     imagePath: defaultImageSource,
-    imageFile: null
+    imageFile: null,
 }
 
 const currencyDictionary = {'USD':'$', 'EUR':'€', 'BTC':'฿', 'JPY':'¥'}
+const currencyDictionaryGetSimbol = {'$':'USD', '€':'EUR', '฿':'BTC', '¥':'JPY'}
 
 const currencies = [
     {
@@ -61,9 +65,10 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function GameForm(props) {
-    const {addOrEdit} = props;
+    const {addOrEdit, game} = props;
     const classes = useStyles();
     const [loading, setLoading] = useState(false);
+    const [notify, setNotify] = useState({isOpen:false, message:'', type:''});
     
     const validate = () => {
         let temp = {}
@@ -81,10 +86,36 @@ export default function GameForm(props) {
 
     const {values, setValues, handleInputChange, errors, setErrors} = UseForm(initialFieldValues, false, validate);
 
+    useEffect(() => {
+        if(game != undefined && game){
+            setValues( 
+            {
+                id: game.id,
+                title: game.name,
+                numberOfPlayers: game.numberOfPlayers,
+                price: game.price,
+                valute: currencyDictionaryGetSimbol[game.valute],
+                isActive: game.isActive,
+                description: game.description,
+                imagePath: game.imagePath,
+                imageFile: null,
+                imageName: game.imageName
+            });
+        }
+    }, [game])
+
     const resetForm = () => {
-        setValues(initialFieldValues)
-        document.getElementById('image-uploader').value = null;
-        setErrors({})
+        let id = values.id
+        if(id === 0){
+            setNotify({isOpen:true, 'message':'Succesfully created', type:'success'});
+            setValues(initialFieldValues)
+            document.getElementById('image-uploader').value = null;
+            setErrors({})
+        }
+        else{
+            setErrors({})
+            setNotify({isOpen:true, 'message':'Succesfully updated', type:'success'});
+        }
     }
 
     const handleSubmit = e => {
@@ -92,15 +123,21 @@ export default function GameForm(props) {
         setLoading(true);
         if(validate()){
             const formData = new FormData()
+            //console.log(values.price)
+            //TODO: price decimals are ignored in from data
+            console.log(typeof(values.price))
             formData.append('name', values.title)
             formData.append('description', values.description)
             formData.append('numberOfPlayers', values.numberOfPlayers)
-            formData.append('price', values.price)
+            formData.append('price', parseFloat(values.price))
             formData.append('valute', currencyDictionary[values.valute])
             formData.append('isActive', values.isActive)
             formData.append('imageName', values.imageName)
             formData.append('imageFile', values.imageFile)
-            addOrEdit(formData, resetForm)
+            if(values.id === 0)
+            addOrEdit(formData, resetForm, false)
+            else
+            addOrEdit(formData, resetForm, true)
         }
         setLoading(false);
     }
@@ -125,8 +162,15 @@ export default function GameForm(props) {
             })
         }
     }
+    const handleCheckbox = (event) => {
+        setValues({
+            ...values,
+            isActive: event.target.checked
+        })
+    }
     
     return (
+        <>
     <Form onSubmit={handleSubmit}>
             <Grid container>
                 <Grid item sm={6} container>
@@ -167,25 +211,21 @@ export default function GameForm(props) {
                             value={values.numberOfPlayers}
                             onChange={handleInputChange}
                             />
-                            {errors.numberOfPlayers && <FormHelperText>{errors.numberOfPlayers}</FormHelperText>}
+                            {errors.numberOfPlayers && <FormHelperText color="#DC143C">{errors.numberOfPlayers}</FormHelperText>}
                         </FormControl>   
                     </Grid>
-                    <Grid item sm={3}>
-                         <FormControl className={classes.margin}>
-                            <InputLabel htmlFor="price">Price</InputLabel>
-                            <Input
-                            id="price"
-                            name="price"
-                            startAdornment={
-                                <InputAdornment position="start">
-                                <LocalOfferTwoToneIcon />
-                                </InputAdornment>
-                            }
-                            type="number"
+                    <Grid item sm={4}>
+                        <FormControl fullWidth className={classes.margin}>
+                        <InputLabel htmlFor="standard-adornment-amount">Price</InputLabel>
+                        <Input
+                            id="standard-adornment-amount"
                             value={values.price}
+                            name="price"
                             onChange={handleInputChange}
-                            />
-                            {errors.price && <FormHelperText>{errors.price}</FormHelperText>}
+                            startAdornment={<InputAdornment position="start">{currencyDictionary[values.valute]}</InputAdornment>}
+                            endAdornment={<InputAdornment position="end">/hour</InputAdornment>}
+                        />
+                        {errors.price && <FormHelperText color="#DC143C">{errors.price}</FormHelperText>}
                         </FormControl>
                     </Grid>
                     <Grid item sm={3}>
@@ -208,8 +248,8 @@ export default function GameForm(props) {
                     <Grid container justify="flex-start">
                         <FormControlLabel
                         name="isActive"
-                        value={values.isActive}
-                        onChange={handleInputChange}
+                        checked={values.isActive == undefined? false: values.isActive}
+                        onChange={handleCheckbox}
                         control={<Checkbox color="primary" />}
                         label="Active"
                         labelPlacement="end"
@@ -233,12 +273,17 @@ export default function GameForm(props) {
                         disabled={loading}
                         color="primary"
                         size="large"
-                        text="create"
+                        text={values.id === 0?"create":"update"}
                         type="submit"/>
                     </Grid>
                     
                 </Grid>
             </Grid>
         </Form>
+        <Notification
+        notify={notify}
+        setNotify={setNotify}
+        />
+        </>
     )
 }

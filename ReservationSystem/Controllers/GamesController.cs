@@ -215,14 +215,14 @@ namespace ReservationSystem.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult UpdateGame(string id, [FromForm]GameUpdateDto game)
+        public async Task<IActionResult> UpdateGame(string id, [FromForm]GameUpdateDto game)
         {
             try
             {
                 if(game.ImageFile != null)
                 {
                     DeleteImage(game.ImageName);
-                    game.ImageName = SaveImage(game.ImageFile);
+                    game.ImageName = await SaveImage(game.ImageFile);
                 }
                 Game g = _mapper.Map<Game>(game);
                 g.Id = id;

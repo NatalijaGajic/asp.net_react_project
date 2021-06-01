@@ -32,6 +32,7 @@ function App() {
         <Route path='/make-game-reservation/:id' component={MakeGameReservation}/>
         <Route path='/home-page' component={AdminHome}/>
         <Route path='/make-game' component={MakeGame}></Route>
+        <Route path='/update-game/:id' component={MakeGame}></Route>
       </Switch>
     </Layout>
     </AuthProvider>
