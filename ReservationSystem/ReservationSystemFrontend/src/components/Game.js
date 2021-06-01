@@ -49,10 +49,10 @@ export default function Game(props) {
         <CardMedia
           className={classes.media}
           component="img"
-          alt="Contemplative Reptile"
+          alt="Game"
           height="140"
-          src={images[props.id]}
-          title="Contemplative Reptile"
+          src={props.imagePath}
+          title="Board game"
         >
         </CardMedia>
         <CardContent className={classes.content}>

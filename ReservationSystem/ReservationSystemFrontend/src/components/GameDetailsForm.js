@@ -83,7 +83,7 @@ export default function GameDetailsForm(props) {
                 className={classes.media}
                 component="img"
                 alt="Contemplative Reptile"
-                src={images[game.id]}
+                src={game.imagePath}
                 title="Contemplative Reptile"
                  >
                 </CardMedia>

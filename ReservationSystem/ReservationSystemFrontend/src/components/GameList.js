@@ -43,7 +43,7 @@ return(
     <>
     <Grid container spacing={2}>
       {props.games.map((game) => {
-        return <Grid item sm={4} flexshrink={0}>
+        return <Grid item sm={4} flexshrink={0} key={game.id}>
                     <Game
                   key = {game.id}
                   id = {game.id}
@@ -52,6 +52,7 @@ return(
                   price = {game.price}
                   valute = {game.valute}
                   numberOfPlayers = {game.numberOfPlayers}
+                  imagePath = {game.imagePath}
                   onMakeReservationClick = {() => directToMakeReservation(game)}
                   handleCardClick={() => handleCardClick(game)}
                   />
