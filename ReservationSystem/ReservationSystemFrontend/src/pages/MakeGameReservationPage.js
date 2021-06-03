@@ -6,7 +6,8 @@ import {createAPIEndpoint, ENDPOINTS} from '../api/index';
 
 export default function MakeGameReservation(props) {
     const [gameID, setGameID] = useState({});
-    const [game, setGame] = useState({name: ''});
+    //const [game, setGame] = useState({name: ''}); //TODO: set on null
+    const [game, setGame] = useState(null);
 
     //TODO: fetching used to be in GameReservationForm; when navigated from game details not working
     useEffect(() => {
@@ -30,7 +31,7 @@ export default function MakeGameReservation(props) {
             subtitle="Make a table reservation"
             icon={<AddCircleOutlineOutlinedIcon fontSize="large"/>}
             />
-            <GameReservationForm gameID={gameID} game={game}></GameReservationForm>
+           {game && <GameReservationForm gameID={gameID} game={game}></GameReservationForm>}
         </div>
     )
 }

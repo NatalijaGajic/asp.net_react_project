@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {Grid, makeStyles} from "@material-ui/core"
 import {UseForm, Form} from './UseForm'
 import Controls from '../components/controls/Controls'
@@ -25,7 +25,11 @@ export default function LoginForm() {
     const classes = useStyles();
     const history = useHistory();
     const {login} = useAuth();
-    const {loginError} = useAuth();
+    const {loginError, setLoginError} = useAuth();
+
+    useEffect(() => {
+        setLoginError('')
+    })
 
     const validate = () => {
         return true;

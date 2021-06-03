@@ -73,6 +73,13 @@ export default function GameReservationForm(props) {
         ...initialFieldValues
     }, true, validate);  
 
+    useEffect(()=> {
+        setValues({
+            ...values,
+            game:game
+        });
+    }, [])
+
     useEffect(() => {
         //TODO: i have no idea whats going on
         setValues({
@@ -166,17 +173,18 @@ export default function GameReservationForm(props) {
                 table: values.table,
                 workDayId: values.workDayId
             })
-            setSubmitDate(values.date);
+           // setSubmitDate(values.date);
+           setSubmitDate(date);
         }
     }
 
     const handleSubmit = e => {
         e.preventDefault();
-        if(validate() && values.game.name !== '' && values.table.code !== ''){
+        if(validate() && game.name !== '' && values.table.code !== ''){
             createAPIEndpoint(ENDPOINTS.RESERVATIONS).create(
                 {
                     account: currentUser,
-                    game: values.game,
+                    game: game,
                     table: values.table,
                     firstAndLastName: postBody.firstAndLastName,
                     startHour: postBody.startHour,
@@ -192,7 +200,7 @@ export default function GameReservationForm(props) {
                 //TODO: set submit button to be disabled
                 const timer = setTimeout(() => {
                     history.push('/reservations');
-                  }, 3000);
+                  }, 1000);
                 
             })
             .catch(err => {
@@ -220,7 +228,7 @@ export default function GameReservationForm(props) {
                     <Controls.InputDisabled
                     name="gameDisabled"
                     label="Game"
-                    value={values.game.name}
+                    value={game.name}
                     style={{width: "100%", marginTop: "0.5em"}}
                     />
                 </Grid>
@@ -302,7 +310,7 @@ export default function GameReservationForm(props) {
                     <Controls.InputDisabled
                     name="dateDisabled"
                     label="Date"
-                    value={submitDate.length>7?submitDate:''}
+                    value={submitDate.length>6?submitDate:''}
                     />
                 </Grid>
                 <Grid item sm={6} container justify="center">
@@ -326,7 +334,7 @@ export default function GameReservationForm(props) {
                     <Controls.InputDisabled
                     name="gameDisabled"
                     label="Game"
-                    value={values.game.name}
+                    value={game.name}
                     />
                 </Grid>
                 <Grid item sm={6}>

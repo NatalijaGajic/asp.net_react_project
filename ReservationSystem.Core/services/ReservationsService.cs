@@ -63,7 +63,7 @@ namespace ReservationSystem.Core.services
 
         private double CheckPenalties(DateTime timeNow, DateTime dateOfReservation)
         {
-            TimeSpan ts = timeNow - dateOfReservation;
+            TimeSpan ts = dateOfReservation - timeNow;
             return ts.TotalHours;
         }
 

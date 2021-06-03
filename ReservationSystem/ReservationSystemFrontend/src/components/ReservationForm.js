@@ -188,7 +188,7 @@ export default function ReservationForm() {
                 //TODO: set submit button to be disabled
                 const timer = setTimeout(() => {
                     history.push('/reservations');
-                  }, 3000);
+                  }, 1000);
                 
 
             })

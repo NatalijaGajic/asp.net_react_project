@@ -11,7 +11,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import ReservationFormDisabled from '../components/ReservationFormDisabled';
 import Notification from '../components/Notification'
-import {cancelReservationWithId, createAPIEndpoint, ENDPOINTS} from '../api/index'; 
+import {cancelReservationWithId, createAPIEndpoint, ENDPOINTS, getUserFromToken} from '../api/index'; 
 import ConfirmDialog from '../components/ConfirmDialog'
 import {getStringDate} from '../utils/utils'
 import InformationDialog from './InformationDialog';
@@ -126,16 +126,26 @@ export default function ReservationsTable(props) {
     }
 
     const navigateTo = () => {
-        if(user.penalty === 3){
-            setInformationDialog({
-                isOpen:true,
-                title:'You have 3 penalties, you can not make reservation',
-                subtitle:'Penalties are deleted after one month.'
-            });
-        }
-        else{
-            history.push('/make-reservation');
-        }
+        getUserFromToken()
+        .fetch()
+        .then((res) => {
+            console.log(res.data);
+            setUser(res.data);
+            if(res.data.penalty === 3){
+                setInformationDialog({
+                    isOpen:true,
+                    title:'You have 3 penalties, you can not make reservation',
+                    subtitle:'Penalties are deleted after one month.'
+                });
+            }
+            else{
+                history.push('/make-reservation');
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        })
+        
     };
 
     const openInPopup = item => {
@@ -148,7 +158,7 @@ export default function ReservationsTable(props) {
         const timeNow = new Date();
         console.log(timeNow);
         console.log(reservationDate);
-        const milliseconds = Math.abs(timeNow - reservationDate);
+        const milliseconds = reservationDate - timeNow;
         const hours = milliseconds / 36e5;
         console.log(hours);
         return hours;

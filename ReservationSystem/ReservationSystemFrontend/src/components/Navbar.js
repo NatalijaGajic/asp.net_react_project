@@ -20,7 +20,7 @@ import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOut
 import AlarmOnTwoToneIcon from '@material-ui/icons/AlarmOnTwoTone';
 import {useAuth} from '../contexts/AuthContext';
 import ListTwoToneIcon from '@material-ui/icons/ListTwoTone';
-
+import PowerSettingsNewTwoToneIcon from '@material-ui/icons/PowerSettingsNewTwoTone';
 
 const ITEM_HEIGHT = 48;
 
@@ -150,7 +150,7 @@ const useStyles = makeStyles((theme) => ({
             >
               {options.map((option) => (
                 
-                <MenuItem key={option}  onClick={() => handleMenuItemClick(option)}>
+                <MenuItem key={option}  onClick={() => handleMenuItemClick(option)} disabled={option === "New reservation" && user.role.name === "Client" && user.penalty >= 3}>
                   <ListItemIcon>
                   {
                     (option === "Home Page")  &&
@@ -193,7 +193,8 @@ const useStyles = makeStyles((theme) => ({
                 open={openProfile}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleLogout}>Log out</MenuItem>
+                <MenuItem key="Logout" onClick={handleLogout}>
+                  <PowerSettingsNewTwoToneIcon/> Log out</MenuItem>
               </Menu>
             </div>
           )}

@@ -102,6 +102,7 @@ export function AuthProvider({children}) {
         currentUser, 
         login,
         loginError,
+        setLoginError,
         logout,
         signup,
         signupError, 

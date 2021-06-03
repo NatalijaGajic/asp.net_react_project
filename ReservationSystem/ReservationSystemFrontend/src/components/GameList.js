@@ -19,6 +19,7 @@ export default function GameList(props) {
   }, [currentUser]);
 
   const directToMakeReservation = (game) => {
+    console.log(user)
     if(user == null){
       history.push('/log-in/');
       
